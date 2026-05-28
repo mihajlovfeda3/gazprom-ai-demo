@@ -12,6 +12,7 @@ function App() {
   const [screen, setScreen] = useState("landing");
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
+  const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие курсы помогут прокачать системный дизайн?");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
@@ -52,37 +53,43 @@ function App() {
     }
   }
 
-  async function fetchKnowledgeAgent() {
-    setKnowledgeLoading(true);
+  async function fetchKnowledgeAgent(questionText = knowledgeQuestion) {
+  setKnowledgeLoading(true);
 
-    try {
-      const response = await fetch(`${API_URL}/api/knowledge-agent`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          question: "Какие курсы помогут прокачать системный дизайн?"
-        })
-      });
+  const finalQuestion =
+    questionText && questionText.trim().length > 0
+      ? questionText.trim()
+      : "Какие курсы помогут прокачать системный дизайн?";
 
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
+  try {
+    const response = await fetch(`${API_URL}/api/knowledge-agent`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: finalQuestion
+      })
+    });
 
-      const data = await response.json();
-      setKnowledgeResult(data);
-      setMode("live backend");
-    } catch (error) {
-      console.warn("Backend unavailable, using mock knowledge response");
-      setKnowledgeResult(mockKnowledgeResponse);
-      setMode("fallback demo");
-    } finally {
-      setTimeout(() => {
-        setKnowledgeLoading(false);
-      }, 700);
+    if (!response.ok) {
+      throw new Error("Backend error");
     }
+
+    const data = await response.json();
+    console.log("KNOWLEDGE DATA:", data);
+    setKnowledgeResult(data);
+    setMode("live backend");
+  } catch (error) {
+    console.warn("Backend unavailable, using mock knowledge response");
+    setKnowledgeResult(mockKnowledgeResponse);
+    setMode("fallback demo");
+  } finally {
+    setTimeout(() => {
+      setKnowledgeLoading(false);
+    }, 700);
   }
+}
 
   async function fetchManagerAgent() {
   try {
@@ -173,11 +180,13 @@ function App() {
       )}
 
       {screen === "knowledge" && (
-        <KnowledgeAgentScreen
-          knowledgeResult={knowledgeResult}
-          knowledgeLoading={knowledgeLoading}
-          fetchKnowledgeAgent={fetchKnowledgeAgent}
-        />
+       <KnowledgeAgentScreen
+  knowledgeResult={knowledgeResult}
+  knowledgeLoading={knowledgeLoading}
+  fetchKnowledgeAgent={fetchKnowledgeAgent}
+  knowledgeQuestion={knowledgeQuestion}
+  setKnowledgeQuestion={setKnowledgeQuestion}
+/>
       )}
 
       {screen === "manager" && (
@@ -329,7 +338,20 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
   );
 }
 
-function KnowledgeAgentScreen({ knowledgeResult, knowledgeLoading, fetchKnowledgeAgent }) {
+function KnowledgeAgentScreen({
+  knowledgeResult,
+  knowledgeLoading,
+  fetchKnowledgeAgent,
+  knowledgeQuestion,
+  setKnowledgeQuestion
+}) {
+  const exampleQuestions = [
+    "Какие курсы помогут прокачать системный дизайн?",
+    "Как перейти из Middle системного аналитика в Senior?",
+    "Когда нужно согласование руководителя?",
+    "Какие курсы нужны для архитектурного мышления?"
+  ];
+
   return (
     <main className="page">
       <section className="screenHeader">
@@ -337,19 +359,41 @@ function KnowledgeAgentScreen({ knowledgeResult, knowledgeLoading, fetchKnowledg
           <div className="eyebrow">Сценарий 2</div>
           <h2>Агент корпоративного знания</h2>
           <p>
-            Пользователь задает вопрос, а агент ищет релевантные материалы и
-            показывает ответ с источниками.
+            Пользователь задает свободный вопрос, а агент ищет релевантные
+            материалы и показывает ответ с источниками.
           </p>
         </div>
       </section>
 
-      <section className="formCard card">
+      <section className="formCard card knowledgeForm">
         <div className="field">
-          <label>Вопрос</label>
-          <div className="fakeInput">Какие курсы помогут прокачать системный дизайн?</div>
+          <label>Введите вопрос агенту знаний</label>
+
+          <textarea
+            className="questionInput"
+            value={knowledgeQuestion}
+            onChange={(event) => setKnowledgeQuestion(event.target.value)}
+            placeholder="Например: какие курсы помогут прокачать системный дизайн?"
+          />
+
+          <div className="exampleGrid">
+            {exampleQuestions.map((question) => (
+              <button
+                className="exampleButton"
+                key={question}
+                onClick={() => setKnowledgeQuestion(question)}
+                type="button"
+              >
+                {question}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <button className="primaryButton" onClick={fetchKnowledgeAgent}>
+        <button
+          className="primaryButton"
+          onClick={() => fetchKnowledgeAgent(knowledgeQuestion)}
+        >
           {knowledgeLoading ? "Ищем ответ..." : "Найти ответ"}
         </button>
       </section>
@@ -362,7 +406,11 @@ function KnowledgeAgentScreen({ knowledgeResult, knowledgeLoading, fetchKnowledg
 
           <div className="card largeCard">
             <h3>Ответ агента</h3>
-            <p className="answerText">{knowledgeResult.answer}</p>
+            <p className="answerText">
+              {typeof knowledgeResult.answer === "string"
+                ? knowledgeResult.answer
+                : "Ответ получен, но требует текстового отображения."}
+            </p>
           </div>
 
           <div className="card largeCard">

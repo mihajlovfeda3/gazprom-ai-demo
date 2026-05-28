@@ -642,3 +642,48 @@ h3 {
   color: #087c78;
   text-decoration: underline;
 }
+.knowledgeForm {
+  align-items: stretch;
+}
+
+.questionInput {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  color: #08233f;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  outline: none;
+}
+
+.questionInput:focus {
+  border-color: #1fc7be;
+  box-shadow: 0 0 0 4px rgba(31, 199, 190, 0.12);
+}
+
+.exampleGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.exampleButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: #edf8f7;
+  color: #087c78;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exampleButton:hover {
+  background: #dff5f2;
+}
