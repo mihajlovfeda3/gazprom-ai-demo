@@ -165,37 +165,176 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <Header screen={screen} setScreen={setScreen} mode={mode} />
+  <AppShell screen={screen} setScreen={setScreen} mode={mode}>
+    {screen === "landing" && <LandingScreen setScreen={setScreen} />}
 
-      {screen === "landing" && <LandingScreen setScreen={setScreen} />}
+    {screen === "route" && (
+      <RouteAgentScreen
+        routeResult={routeResult}
+        routeLoading={routeLoading}
+        fetchRouteAgent={fetchRouteAgent}
+        sendToManager={sendToManager}
+      />
+    )}
 
-      {screen === "route" && (
-        <RouteAgentScreen
-          routeResult={routeResult}
-          routeLoading={routeLoading}
-          fetchRouteAgent={fetchRouteAgent}
-          sendToManager={sendToManager}
-        />
-      )}
+    {screen === "knowledge" && (
+      <KnowledgeAgentScreen
+        knowledgeResult={knowledgeResult}
+        knowledgeLoading={knowledgeLoading}
+        fetchKnowledgeAgent={fetchKnowledgeAgent}
+        knowledgeQuestion={knowledgeQuestion}
+        setKnowledgeQuestion={setKnowledgeQuestion}
+      />
+    )}
 
-      {screen === "knowledge" && (
-       <KnowledgeAgentScreen
-  knowledgeResult={knowledgeResult}
-  knowledgeLoading={knowledgeLoading}
-  fetchKnowledgeAgent={fetchKnowledgeAgent}
-  knowledgeQuestion={knowledgeQuestion}
-  setKnowledgeQuestion={setKnowledgeQuestion}
-/>
-      )}
+    {screen === "manager" && (
+      <ManagerScreen
+        managerResult={managerResult}
+        managerStatus={managerStatus}
+        updateManagerStatus={updateManagerStatus}
+      />
+    )}
+  </AppShell>
+);
+}
 
-      {screen === "manager" && (
-        <ManagerScreen
-          managerResult={managerResult}
-          managerStatus={managerStatus}
-          updateManagerStatus={updateManagerStatus}
-        />
-      )}
+function AppShell({ screen, setScreen, mode, children }) {
+  const menuItems = [
+    { id: "landing", label: "Главная", icon: "⌂" },
+    { id: "route", label: "Моя траектория", icon: "↗" },
+    { id: "knowledge", label: "Поиск по базе", icon: "⌕" },
+    { id: "manager", label: "Руководитель", icon: "✓" }
+  ];
+
+  return (
+    <div className="productApp">
+      <aside className="blueRail">
+        <div className="railLogo">ГН</div>
+        <div className="railIcons">
+          <button>⌂</button>
+          <button>▤</button>
+          <button>☞</button>
+          <button>👥</button>
+          <button>☷</button>
+          <button>▣</button>
+        </div>
+        <div className="railBottom">
+          <button>🔔</button>
+          <button>⚙</button>
+        </div>
+      </aside>
+
+      <aside className="leftMenu">
+        <h2>Рабочий стол</h2>
+
+        <div className="menuGroupTitle">Мой профиль</div>
+        <nav className="sideNav">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              className={screen === item.id ? "sideNavItem active" : "sideNavItem"}
+              onClick={() => setScreen(item.id)}
+            >
+              <span>{item.icon}</span>
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="menuGroupTitle">Знания</div>
+        <div className="smallMenuItem">Центры компетенций</div>
+        <div className="smallMenuItem">Избранное</div>
+
+        <div className="menuGroupTitle">Онбординг</div>
+        <div className="progressMini">
+          <div className="progressLabel">
+            <span>Прогресс</span>
+            <strong>47%</strong>
+          </div>
+          <div className="progressTrack">
+            <div className="progressFill" />
+          </div>
+        </div>
+      </aside>
+
+      <main className="mainWorkspace">
+        <header className="topBar">
+          <div className="searchPill">
+            Спросите что угодно: «как получить доступ к среде?»
+          </div>
+
+          <div className="topActions">
+            <span className="aiActive">✦ ИИ-поиск активен</span>
+            <span className="userCircle">AC</span>
+          </div>
+        </header>
+
+        <div className="workspaceContent">
+          {children}
+        </div>
+      </main>
+
+      <aside className="rightPanel">
+        <div className="assistantCard">
+          <h3>✦ ИИ-ассистент</h3>
+          <p>
+            Нашёл материалы по маршруту, курсам и источникам. Можно задать
+            свободный вопрос агенту знаний.
+          </p>
+
+          <button className="assistantAsk" onClick={() => setScreen("knowledge")}>
+            Задать вопрос →
+          </button>
+        </div>
+
+        <div className="panelBlock">
+          <h3>Эксперты по теме</h3>
+
+          <div className="expertItem">
+            <span>МП</span>
+            <div>
+              <strong>Михаил Петров</strong>
+              <p>Облачные платформы</p>
+            </div>
+          </div>
+
+          <div className="expertItem">
+            <span>ЕК</span>
+            <div>
+              <strong>Елена Кирова</strong>
+              <p>DevOps / CI/CD</p>
+            </div>
+          </div>
+
+          <div className="expertItem">
+            <span>ДН</span>
+            <div>
+              <strong>Дмитрий Назаров</strong>
+              <p>Архитектура ИТ</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="panelBlock">
+          <h3>Уведомления</h3>
+
+          <div className="noticeItem">
+            Агент качества нашёл устаревший регламент.
+          </div>
+
+          <div className="noticeItem">
+            Курс добавлен в вашу траекторию.
+          </div>
+
+          <div className="noticeItem">
+            Пункт знакомства с командой выполнен.
+          </div>
+        </div>
+
+        <div className="backendMode">
+          {mode === "live backend" ? "Live backend" : "Demo mode"}
+        </div>
+      </aside>
     </div>
   );
 }
