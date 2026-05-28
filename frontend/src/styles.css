@@ -1054,3 +1054,369 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+.landingDashboard {
+  display: grid;
+  gap: 22px;
+}
+
+.gnHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.gnHeroContent {
+  min-height: 300px;
+  padding: 34px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(255, 138, 31, 0.24), transparent 30%),
+    linear-gradient(135deg, #123cbe 0%, #1f55e5 48%, #8fc8ff 100%);
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(31, 69, 216, 0.22);
+}
+
+.gnKicker {
+  width: fit-content;
+  margin-bottom: 18px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.gnHeroContent h1 {
+  max-width: 760px;
+  margin-bottom: 16px;
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: #ffffff;
+}
+
+.gnHeroContent p {
+  max-width: 720px;
+  margin-bottom: 26px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.gnHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gnPrimaryButton,
+.gnSecondaryButton {
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.gnPrimaryButton {
+  background: #ff8a1f;
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(255, 138, 31, 0.28);
+}
+
+.gnPrimaryButton:hover {
+  background: #f07812;
+  transform: translateY(-1px);
+}
+
+.gnSecondaryButton {
+  background: #ffffff;
+  color: #123cbe;
+}
+
+.gnSecondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.gnHeroStatus {
+  padding: 22px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  box-shadow: 0 18px 42px rgba(16, 33, 61, 0.08);
+}
+
+.statusHeader {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.statusHeader span {
+  color: #7a879d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.statusHeader strong {
+  color: #10213d;
+  font-size: 20px;
+}
+
+.statusList {
+  display: grid;
+  gap: 12px;
+  color: #536179;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.statusList div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.statusDot.blue {
+  background: #1f45d8;
+}
+
+.statusDot.orange {
+  background: #ff8a1f;
+}
+
+.statusDot.dark {
+  background: #0b2545;
+}
+
+.gnMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.gnMetricCard {
+  padding: 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  box-shadow: 0 14px 34px rgba(16, 33, 61, 0.06);
+}
+
+.gnMetricCard span {
+  color: #7a879d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.gnMetricCard strong {
+  display: block;
+  margin: 8px 0 4px;
+  color: #10213d;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.gnMetricCard p {
+  margin: 0;
+  color: #65728b;
+  font-size: 13px;
+}
+
+.gnSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.gnSectionHeader h2 {
+  margin-bottom: 6px;
+  color: #10213d;
+  font-size: 28px;
+}
+
+.gnSectionHeader p {
+  max-width: 760px;
+  margin: 0;
+  color: #65728b;
+  line-height: 1.55;
+}
+
+.gnAgentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.gnAgentCard {
+  min-height: 250px;
+  padding: 22px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 18px 42px rgba(16, 33, 61, 0.07);
+  transition: 0.18s ease;
+}
+
+.gnAgentCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 56px rgba(16, 33, 61, 0.12);
+}
+
+.gnAgentCard.blue {
+  border-top: 5px solid #1f45d8;
+}
+
+.gnAgentCard.orange {
+  border-top: 5px solid #ff8a1f;
+}
+
+.gnAgentCard.dark {
+  border-top: 5px solid #0b2545;
+}
+
+.agentLabel {
+  width: fit-content;
+  margin-bottom: 18px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #1f45d8;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.gnAgentCard.orange .agentLabel {
+  background: #fff4ea;
+  color: #f97316;
+}
+
+.gnAgentCard.dark .agentLabel {
+  background: #eef2f7;
+  color: #0b2545;
+}
+
+.gnAgentCard h3 {
+  color: #10213d;
+  font-size: 20px;
+}
+
+.gnAgentCard p {
+  color: #65728b;
+  line-height: 1.55;
+}
+
+.gnAgentCard span:last-child {
+  display: inline-flex;
+  margin-top: 12px;
+  color: #1f45d8;
+  font-weight: 900;
+}
+
+.gnWorkFlow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 16px;
+}
+
+.gnFlowCard,
+.gnQuickCard {
+  padding: 22px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  box-shadow: 0 18px 42px rgba(16, 33, 61, 0.07);
+}
+
+.flowSteps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.flowSteps div {
+  padding: 16px;
+  border-radius: 16px;
+  background: #f4f7fb;
+}
+
+.flowSteps strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #ff8a1f;
+  font-size: 18px;
+}
+
+.flowSteps span {
+  color: #536179;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.gnQuickCard {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.gnQuickCard button {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 13px;
+  background: #f4f7fb;
+  color: #10213d;
+  font-family: inherit;
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gnQuickCard button:hover {
+  background: #eef3ff;
+  color: #1f45d8;
+}
+
+@media (max-width: 1180px) {
+  .gnHero,
+  .gnWorkFlow {
+    grid-template-columns: 1fr;
+  }
+
+  .gnMetrics,
+  .gnAgentGrid,
+  .flowSteps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .gnHeroContent {
+    padding: 24px;
+  }
+
+  .gnMetrics,
+  .gnAgentGrid,
+  .flowSteps {
+    grid-template-columns: 1fr;
+  }
+}

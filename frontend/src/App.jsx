@@ -360,44 +360,181 @@ function Header({ screen, setScreen, mode }) {
 }
 
 function LandingScreen({ setScreen }) {
+  const agentCards = [
+    {
+      title: "Агент маршрута развития",
+      label: "Карьерная траектория",
+      text: "Строит путь от текущей роли к целевой позиции с учетом компетенций, курсов, источников и ИПР.",
+      action: "Сформировать маршрут",
+      screen: "route",
+      accent: "blue"
+    },
+    {
+      title: "Агент корпоративного знания",
+      label: "ИИ-поиск",
+      text: "Отвечает на вопросы по курсам, регламентам, матрицам компетенций и внутренним материалам.",
+      action: "Задать вопрос",
+      screen: "knowledge",
+      accent: "orange"
+    },
+    {
+      title: "Агент руководителя",
+      label: "Согласование",
+      text: "Помогает руководителю принять решение по обучению с учетом загрузки, цели развития и пользы для команды.",
+      action: "Открыть согласование",
+      screen: "manager",
+      accent: "dark"
+    }
+  ];
+
   return (
-    <main className="page">
-      <section className="hero">
-        <div className="heroText">
-          <div className="eyebrow">AI-слой для обучения и развития</div>
-          <h1>AI-карьерный слой для T&amp;D ИТ-кластера</h1>
+    <main className="page landingDashboard">
+      <section className="gnHero">
+        <div className="gnHeroContent">
+          <div className="gnKicker">Газпром нефть · AI T&amp;D платформа</div>
+
+          <h1>Единая экосистема AI-агентов для обучения и развития</h1>
+
           <p>
-            Помогает сотруднику, руководителю и карьерному консультанту собрать
-            маршрут развития на основе ролей, компетенций, курсов и ИПР.
+            Платформа помогает сотруднику строить карьерный маршрут,
+            находить релевантные курсы и источники, а руководителю — быстро
+            согласовывать обучение в управляемом контуре.
           </p>
 
-          <div className="heroActions">
-            <button className="primaryButton" onClick={() => setScreen("route")}>Попробовать демо</button>
-            <button className="secondaryButton" onClick={() => setScreen("knowledge")}>Задать вопрос агенту</button>
+          <div className="gnHeroActions">
+            <button className="gnPrimaryButton" onClick={() => setScreen("route")}>
+              Сформировать маршрут
+            </button>
+
+            <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
+              Спросить AI-агента
+            </button>
           </div>
         </div>
 
-        <div className="heroPanel">
-          <div className="pipelinePreview">
-            <div>Пользователь</div>
-            <span>→</span>
-            <div>Агент</div>
-            <span>→</span>
-            <div>Источники</div>
-            <span>→</span>
-            <div>Маршрут</div>
+        <div className="gnHeroStatus">
+          <div className="statusHeader">
+            <span>Статус экосистемы</span>
+            <strong>Демо-контур активен</strong>
+          </div>
+
+          <div className="statusList">
+            <div>
+              <span className="statusDot blue" />
+              Route Agent подключен
+            </div>
+
+            <div>
+              <span className="statusDot orange" />
+              Knowledge Agent подключен
+            </div>
+
+            <div>
+              <span className="statusDot dark" />
+              Manager Agent подключен
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="agentGrid">
-        <AgentCard title="Агент маршрута развития" text="Формирует путь от текущей роли к целевой позиции." button="Открыть сценарий" onClick={() => setScreen("route")} />
-        <AgentCard title="Агент корпоративного знания" text="Ищет ответы по курсам, ролям, компетенциям и регламентам." button="Задать вопрос" onClick={() => setScreen("knowledge")} />
-        <AgentCard title="Агент руководителя" text="Помогает согласовать обучение с учетом загрузки команды." button="Открыть экран" onClick={() => setScreen("manager")} />
+      <section className="gnMetrics">
+        <div className="gnMetricCard">
+          <span>AI-агентов</span>
+          <strong>3</strong>
+          <p>маршрут, знания, руководитель</p>
+        </div>
+
+        <div className="gnMetricCard">
+          <span>Сценариев</span>
+          <strong>4</strong>
+          <p>маршрут, поиск, курсы, согласование</p>
+        </div>
+
+        <div className="gnMetricCard">
+          <span>Источников</span>
+          <strong>RAG</strong>
+          <p>курсы, роли, ИПР, регламенты</p>
+        </div>
+
+        <div className="gnMetricCard">
+          <span>Режим</span>
+          <strong>Live</strong>
+          <p>backend + fallback demo-mode</p>
+        </div>
+      </section>
+
+      <section className="gnSectionHeader">
+        <div>
+          <h2>Рабочие AI-агенты</h2>
+          <p>
+            Каждый агент закрывает отдельный этап T&amp;D-процесса, но работает
+            в единой логике: запрос → источники → рекомендация → действие.
+          </p>
+        </div>
+      </section>
+
+      <section className="gnAgentGrid">
+        {agentCards.map((agent) => (
+          <button
+            className={`gnAgentCard ${agent.accent}`}
+            key={agent.title}
+            onClick={() => setScreen(agent.screen)}
+          >
+            <div className="agentLabel">{agent.label}</div>
+            <h3>{agent.title}</h3>
+            <p>{agent.text}</p>
+            <span>{agent.action} →</span>
+          </button>
+        ))}
+      </section>
+
+      <section className="gnWorkFlow">
+        <div className="gnFlowCard">
+          <h3>Как работает AI-слой</h3>
+
+          <div className="flowSteps">
+            <div>
+              <strong>01</strong>
+              <span>Пользователь задает запрос</span>
+            </div>
+
+            <div>
+              <strong>02</strong>
+              <span>Агент ищет источники и контекст</span>
+            </div>
+
+            <div>
+              <strong>03</strong>
+              <span>Система собирает маршрут или ответ</span>
+            </div>
+
+            <div>
+              <strong>04</strong>
+              <span>Руководитель принимает решение</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="gnQuickCard">
+          <h3>Быстрые действия</h3>
+
+          <button onClick={() => setScreen("route")}>
+            Построить маршрут Middle → Senior
+          </button>
+
+          <button onClick={() => setScreen("knowledge")}>
+            Найти курсы по системному дизайну
+          </button>
+
+          <button onClick={() => setScreen("manager")}>
+            Перейти к согласованию руководителем
+          </button>
+        </div>
       </section>
     </main>
   );
 }
+
 
 function AgentCard({ title, text, button, onClick }) {
   return (
