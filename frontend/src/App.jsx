@@ -431,12 +431,13 @@ function PipelineBlock({ pipeline = [] }) {
     <div className="card largeCard">
       <h3>AI-пайплайн</h3>
       <div className="pipelineList">
-        {pipeline.map((item) => (
-          <div className="pipelineItem" key={item.step}>
+        {pipeline.map((item, index) => (
+          <div className="pipelineItem" key={`${item.step || "step"}-${index}`}>
             <span className="check">✓</span>
             <div>
-              <strong>{item.step}</strong>
-              <p>{item.model}</p>
+              <strong>{item.step || "Этап выполнен"}</strong>
+              <p>{item.model || ""}</p>
+              {item.description && <p>{item.description}</p>}
             </div>
           </div>
         ))}
@@ -448,9 +449,25 @@ function PipelineBlock({ pipeline = [] }) {
 function TagList({ items = [] }) {
   return (
     <div className="tagList">
-      {items.map((item) => (
-        <span className="tag" key={item}>{item}</span>
-      ))}
+      {items.map((item, index) => {
+        if (typeof item === "string") {
+          return (
+            <span className="tag" key={item}>
+              {item}
+            </span>
+          );
+        }
+
+        return (
+          <div className="skillItem" key={item.skill || item.title || index}>
+            <strong>{item.title || item.skill || "Компетенция"}</strong>
+            <span>
+              {item.current_level ?? "—"} → {item.target_level ?? "—"}
+            </span>
+            <span>Разрыв: {item.gap ?? "—"}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -458,13 +475,18 @@ function TagList({ items = [] }) {
 function CourseList({ courses = [] }) {
   return (
     <div className="courseList">
-      {courses.map((course) => (
-        <div className="courseItem" key={course.title}>
+      {courses.map((course, index) => (
+        <div className="courseItem" key={course.id || course.title || index}>
           <div>
-            <strong>{course.title}</strong>
-            <p>{course.reason}</p>
+            <strong>{course.title || "Курс"}</strong>
+            {course.reason && <p>{course.reason}</p>}
+            {course.description && <p>{course.description}</p>}
+            {course.source && <p>{course.source}</p>}
           </div>
-          {course.duration_hours && <span className="hours">{course.duration_hours} ч</span>}
+
+          {course.duration_hours && (
+            <span className="hours">{course.duration_hours} ч</span>
+          )}
         </div>
       ))}
     </div>
@@ -484,10 +506,17 @@ function NumberedList({ items = [] }) {
 function SourceList({ sources = [] }) {
   return (
     <div className="sourceList">
-      {sources.map((source) => (
-        <div className="sourceItem" key={source.title}>
-          <strong>{source.title}</strong>
-          <span>{source.type}</span>
+      {sources.map((source, index) => (
+        <div className="sourceItem" key={`${source.title || "source"}-${index}`}>
+          <strong>{source.title || "Источник"}</strong>
+
+          <span>
+            {source.type || "Документ"}
+            {" · relevance: "}
+            {typeof source.score === "number" ? source.score.toFixed(2) : "—"}
+          </span>
+
+          {source.text && <p>{source.text}</p>}
         </div>
       ))}
     </div>
