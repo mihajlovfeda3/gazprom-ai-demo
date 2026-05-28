@@ -85,33 +85,68 @@ function App() {
   }
 
   async function fetchManagerAgent() {
-    try {
-      const response = await fetch(`${API_URL}/api/manager-agent`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          employee_id: "emp_001"
-        })
-      });
+  try {
+    const response = await fetch(`${API_URL}/api/manager-agent`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        employee_id: "emp_001"
+      })
+    });
 
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
-
-      const data = await response.json();
-      setManagerResult({
-        ...mockManagerResponse,
-        ...data
-      });
-      setMode("live backend");
-    } catch (error) {
-      console.warn("Backend unavailable, using mock manager response");
-      setManagerResult(mockManagerResponse);
-      setMode("fallback demo");
+    if (!response.ok) {
+      throw new Error("Backend error");
     }
+
+    const data = await response.json();
+    console.log("MANAGER DATA:", data);
+
+    const employeeObject =
+      typeof data.employee === "object" && data.employee !== null
+        ? data.employee
+        : data;
+
+    const normalizedManager = {
+      employee:
+        typeof data.employee === "string"
+          ? data.employee
+          : employeeObject.name || "Иван Петров",
+      current_role:
+        data.current_role ||
+        employeeObject.current_role ||
+        "Middle системный аналитик",
+      target_role:
+        data.target_role ||
+        employeeObject.target_role ||
+        "Senior системный аналитик",
+      status:
+        data.status ||
+        data.route_status ||
+        employeeObject.status ||
+        employeeObject.route_status ||
+        "Маршрут готов к согласованию",
+      workload:
+        data.workload ||
+        employeeObject.workload ||
+        "Высокая загрузка ближайшие 2 недели",
+      recommendation:
+        data.recommendation ||
+        employeeObject.recommendation ||
+        "Согласовать обучение с началом через 3 недели из-за высокой загрузки ближайшие 2 недели."
+    };
+
+    setManagerResult(normalizedManager);
+    setManagerStatus(normalizedManager.status);
+    setMode("live backend");
+  } catch (error) {
+    console.warn("Backend unavailable, using mock manager response");
+    setManagerResult(mockManagerResponse);
+    setManagerStatus(mockManagerResponse.status || "Маршрут готов к согласованию");
+    setMode("fallback demo");
   }
+}
 
   function sendToManager() {
     fetchManagerAgent();
