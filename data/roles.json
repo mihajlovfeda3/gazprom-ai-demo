@@ -1,0 +1,42 @@
+[
+  {
+    "role": "Junior системный аналитик",
+    "skills": {
+      "requirements_management": 2,
+      "system_design": 1,
+      "business_communication": 2,
+      "architecture_basics": 1,
+      "integration_design": 1
+    }
+  },
+  {
+    "role": "Middle системный аналитик",
+    "skills": {
+      "requirements_management": 3,
+      "system_design": 2,
+      "business_communication": 2,
+      "architecture_basics": 1,
+      "integration_design": 2
+    }
+  },
+  {
+    "role": "Senior системный аналитик",
+    "skills": {
+      "requirements_management": 4,
+      "system_design": 4,
+      "business_communication": 4,
+      "architecture_basics": 3,
+      "integration_design": 4
+    }
+  },
+  {
+    "role": "Системный архитектор",
+    "skills": {
+      "requirements_management": 4,
+      "system_design": 5,
+      "business_communication": 4,
+      "architecture_basics": 5,
+      "integration_design": 5
+    }
+  }
+]

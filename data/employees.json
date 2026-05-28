@@ -1,0 +1,30 @@
+[
+  {
+    "id": "emp_001",
+    "name": "Иван Петров",
+    "current_role": "Middle системный аналитик",
+    "target_role": "Senior системный аналитик",
+    "skills": {
+      "requirements_management": 3,
+      "system_design": 2,
+      "business_communication": 2,
+      "architecture_basics": 1,
+      "integration_design": 2
+    },
+    "workload": "Высокая загрузка ближайшие 2 недели"
+  },
+  {
+    "id": "emp_002",
+    "name": "Анна Смирнова",
+    "current_role": "Junior системный аналитик",
+    "target_role": "Middle системный аналитик",
+    "skills": {
+      "requirements_management": 2,
+      "system_design": 1,
+      "business_communication": 2,
+      "architecture_basics": 1,
+      "integration_design": 1
+    },
+    "workload": "Средняя загрузка, есть окно для обучения"
+  }
+]
