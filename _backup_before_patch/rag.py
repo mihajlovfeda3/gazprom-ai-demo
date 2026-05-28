@@ -22,23 +22,6 @@ def load_json(filename: str) -> Any:
         return json.load(file)
 
 
-def approval_to_text(requires_approval: bool) -> str:
-    """
-    Переводит boolean-флаг согласования в текст для RAG-поиска.
-    """
-    return "требует согласования" if requires_approval else "не требует согласования"
-
-
-def price_to_text(price_rub: int | None) -> str:
-    """
-    Переводит цену в текст для RAG-поиска.
-    """
-    if price_rub is None or price_rub == 0:
-        return "бесплатно для сотрудника"
-
-    return f"стоимость {price_rub} рублей"
-
-
 class RagLiteIndex:
     """
     Мини-RAG для демо.
@@ -68,20 +51,14 @@ class RagLiteIndex:
 
         for course in self.courses:
             skills = ", ".join(course.get("skills", []))
-            requires_approval = bool(course.get("requires_approval", False))
-            price_rub = course.get("price_rub")
 
             text = (
                 f"Курс: {course.get('title', '')}. "
                 f"Навыки: {skills}. "
                 f"Уровень: {course.get('level', '')}. "
-                f"Формат прохождения: {course.get('format', '')}. "
-                f"Тип курса: {course.get('course_type', '')}. "
-                f"Провайдер: {course.get('provider', '')}. "
+                f"Формат: {course.get('format', '')}. "
                 f"Длительность: {course.get('duration_hours', '')} часов. "
                 f"Источник: {course.get('source', '')}. "
-                f"Согласование: {approval_to_text(requires_approval)}. "
-                f"Цена: {price_to_text(price_rub)}. "
                 f"Описание: {course.get('description', '')}"
             )
 

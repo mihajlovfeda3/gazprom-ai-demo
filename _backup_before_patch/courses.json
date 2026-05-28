@@ -1,0 +1,102 @@
+[
+  {
+    "id": "course_001",
+    "title": "Основы архитектуры информационных систем",
+    "skills": ["system_design", "architecture_basics", "integration_design"],
+    "level": "middle_to_senior",
+    "duration_hours": 20,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс помогает понять архитектурные принципы, интеграции и проектирование сложных ИТ-систем."
+  },
+  {
+    "id": "course_002",
+    "title": "Системный анализ: продвинутый уровень",
+    "skills": ["requirements_management", "stakeholder_management", "system_design"],
+    "level": "middle_to_senior",
+    "duration_hours": 16,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс развивает навыки работы с требованиями, системным мышлением и согласованием решений с бизнесом."
+  },
+  {
+    "id": "course_003",
+    "title": "Коммуникация с бизнес-заказчиком",
+    "skills": ["business_communication", "stakeholder_management"],
+    "level": "middle_to_senior",
+    "duration_hours": 12,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс помогает выстраивать коммуникацию с заказчиками, собирать ожидания и аргументировать решения."
+  },
+  {
+    "id": "course_004",
+    "title": "Проектирование интеграций и API",
+    "skills": ["integration_design", "system_design", "api_design"],
+    "level": "middle_to_senior",
+    "duration_hours": 18,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс посвящен проектированию интеграций между системами, работе с API и описанию интеграционных требований."
+  },
+  {
+    "id": "course_005",
+    "title": "Управление требованиями в ИТ-проектах",
+    "skills": ["requirements_management", "business_analysis"],
+    "level": "junior_to_middle",
+    "duration_hours": 14,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс помогает формализовать, согласовывать и контролировать требования в ИТ-проектах."
+  },
+  {
+    "id": "course_006",
+    "title": "BPMN и моделирование бизнес-процессов",
+    "skills": ["process_modeling", "business_analysis"],
+    "level": "junior_to_middle",
+    "duration_hours": 10,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс дает базовые навыки описания бизнес-процессов и построения BPMN-диаграмм."
+  },
+  {
+    "id": "course_007",
+    "title": "SQL для аналитиков",
+    "skills": ["sql", "data_analysis"],
+    "level": "junior_to_middle",
+    "duration_hours": 12,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс развивает базовые навыки работы с данными и SQL-запросами."
+  },
+  {
+    "id": "course_008",
+    "title": "Основы продуктового мышления",
+    "skills": ["product_thinking", "business_value", "prioritization"],
+    "level": "middle_to_senior",
+    "duration_hours": 12,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс помогает связывать ИТ-решения с бизнес-ценностью, метриками и приоритетами продукта."
+  },
+  {
+    "id": "course_009",
+    "title": "Подготовка к роли Senior системного аналитика",
+    "skills": ["system_design", "requirements_management", "business_communication", "architecture_basics"],
+    "level": "middle_to_senior",
+    "duration_hours": 24,
+    "format": "internal",
+    "source": "Карьерный портал",
+    "description": "Комплексный курс для перехода с уровня Middle на Senior в системном анализе."
+  },
+  {
+    "id": "course_010",
+    "title": "Архитектурное мышление для аналитиков",
+    "skills": ["architecture_basics", "system_design"],
+    "level": "middle_to_senior",
+    "duration_hours": 16,
+    "format": "internal",
+    "source": "Портал знаний",
+    "description": "Курс помогает аналитикам понимать архитектурные ограничения и проектировать решения с учетом системного контекста."
+  }
+]
