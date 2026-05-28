@@ -616,3 +616,29 @@ h3 {
   font-size: 14px;
   font-weight: 750;
 }
+.courseMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.courseMeta span {
+  width: fit-content;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: #edf8f7;
+  color: #087c78;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.courseItem a {
+  color: #08233f;
+  text-decoration: none;
+}
+
+.courseItem a:hover {
+  color: #087c78;
+  text-decoration: underline;
+}

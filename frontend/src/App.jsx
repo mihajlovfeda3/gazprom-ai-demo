@@ -381,6 +381,36 @@ function KnowledgeAgentScreen({ knowledgeResult, knowledgeLoading, fetchKnowledg
 }
 
 function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
+  const employeeObject =
+    typeof managerResult.employee === "object" && managerResult.employee !== null
+      ? managerResult.employee
+      : {};
+
+  const employeeName =
+    typeof managerResult.employee === "string"
+      ? managerResult.employee
+      : employeeObject.name || managerResult.name || "Иван Петров";
+
+  const currentRole =
+    managerResult.current_role ||
+    employeeObject.current_role ||
+    "Middle системный аналитик";
+
+  const targetRole =
+    managerResult.target_role ||
+    employeeObject.target_role ||
+    "Senior системный аналитик";
+
+  const workload =
+    managerResult.workload ||
+    employeeObject.workload ||
+    "Высокая загрузка ближайшие 2 недели";
+
+  const recommendation =
+    managerResult.recommendation ||
+    employeeObject.recommendation ||
+    "Согласовать обучение с началом через 3 недели из-за высокой загрузки ближайшие 2 недели.";
+
   return (
     <main className="page">
       <section className="screenHeader">
@@ -397,9 +427,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
       <section className="managerLayout">
         <div className="card managerCard">
           <div className="employeeAvatar">ИП</div>
+
           <div>
-            <h3>{managerResult.employee}</h3>
-            <p>{managerResult.current_role} → {managerResult.target_role}</p>
+            <h3>{employeeName}</h3>
+            <p>
+              {currentRole} → {targetRole}
+            </p>
           </div>
 
           <div className="statusBlock">
@@ -409,18 +442,35 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 
           <div className="infoBlock">
             <span>Загрузка</span>
-            <p>{managerResult.workload}</p>
+            <p>{workload}</p>
           </div>
 
           <div className="infoBlock">
             <span>Рекомендация</span>
-            <p>{managerResult.recommendation}</p>
+            <p>{recommendation}</p>
           </div>
 
           <div className="buttonRow">
-            <button className="primaryButton" onClick={() => updateManagerStatus("Согласовано")}>Согласовать</button>
-            <button className="secondaryButton" onClick={() => updateManagerStatus("Требует корректировки")}>Скорректировать</button>
-            <button className="dangerButton" onClick={() => updateManagerStatus("Отложено")}>Отложить</button>
+            <button
+              className="primaryButton"
+              onClick={() => updateManagerStatus("Согласовано")}
+            >
+              Согласовать
+            </button>
+
+            <button
+              className="secondaryButton"
+              onClick={() => updateManagerStatus("Требует корректировки")}
+            >
+              Скорректировать
+            </button>
+
+            <button
+              className="dangerButton"
+              onClick={() => updateManagerStatus("Отложено")}
+            >
+              Отложить
+            </button>
           </div>
         </div>
 
@@ -513,10 +563,44 @@ function CourseList({ courses = [] }) {
       {courses.map((course, index) => (
         <div className="courseItem" key={course.id || course.title || index}>
           <div>
-            <strong>{course.title || "Курс"}</strong>
+            <strong>
+              {course.url ? (
+                <a href={course.url} target="_blank" rel="noreferrer">
+                  {course.title || "Курс"}
+                </a>
+              ) : (
+                course.title || "Курс"
+              )}
+            </strong>
+
             {course.reason && <p>{course.reason}</p>}
             {course.description && <p>{course.description}</p>}
-            {course.source && <p>{course.source}</p>}
+
+            <div className="courseMeta">
+              {(course.provider || course.source) && (
+                <span>{course.provider || course.source}</span>
+              )}
+
+              {course.course_type && (
+                <span>
+                  {course.course_type === "external"
+                    ? "Внешний курс"
+                    : "Внутренний курс"}
+                </span>
+              )}
+
+              {typeof course.requires_approval === "boolean" && (
+                <span>
+                  {course.requires_approval
+                    ? "Требует согласования"
+                    : "Не требует согласования"}
+                </span>
+              )}
+
+              {course.price_rub !== undefined && course.price_rub !== null && (
+                <span>{course.price_rub} ₽</span>
+              )}
+            </div>
           </div>
 
           {course.duration_hours && (
