@@ -2,101 +2,226 @@
   {
     "id": "course_001",
     "title": "Основы архитектуры информационных систем",
-    "skills": ["system_design", "architecture_basics", "integration_design"],
+    "skills": [
+      "system_design",
+      "architecture_basics",
+      "integration_design"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 20,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
-    "description": "Курс помогает понять архитектурные принципы, интеграции и проектирование сложных ИТ-систем."
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_001",
+    "course_type": "internal",
+    "requires_approval": true,
+    "price_rub": 0,
+    "description": "Курс помогает понять архитектурные принципы, интеграции и проектирование сложных ИТ-систем. Подходит для аналитиков, которые переходят к более сложным системным задачам."
   },
   {
     "id": "course_002",
     "title": "Системный анализ: продвинутый уровень",
-    "skills": ["requirements_management", "stakeholder_management", "system_design"],
+    "skills": [
+      "requirements_management",
+      "stakeholder_management",
+      "system_design"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 16,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_002",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс развивает навыки работы с требованиями, системным мышлением и согласованием решений с бизнесом."
   },
   {
     "id": "course_003",
     "title": "Коммуникация с бизнес-заказчиком",
-    "skills": ["business_communication", "stakeholder_management"],
+    "skills": [
+      "business_communication",
+      "stakeholder_management"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 12,
-    "format": "internal",
+    "format": "workshop",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_003",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс помогает выстраивать коммуникацию с заказчиками, собирать ожидания и аргументировать решения."
   },
   {
     "id": "course_004",
     "title": "Проектирование интеграций и API",
-    "skills": ["integration_design", "system_design", "api_design"],
+    "skills": [
+      "integration_design",
+      "system_design",
+      "api_design"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 18,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Центр компетенций системного анализа",
+    "url": "/courses/course_004",
+    "course_type": "internal",
+    "requires_approval": true,
+    "price_rub": 0,
     "description": "Курс посвящен проектированию интеграций между системами, работе с API и описанию интеграционных требований."
   },
   {
     "id": "course_005",
     "title": "Управление требованиями в ИТ-проектах",
-    "skills": ["requirements_management", "business_analysis"],
+    "skills": [
+      "requirements_management",
+      "business_analysis"
+    ],
     "level": "junior_to_middle",
     "duration_hours": 14,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_005",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс помогает формализовать, согласовывать и контролировать требования в ИТ-проектах."
   },
   {
     "id": "course_006",
     "title": "BPMN и моделирование бизнес-процессов",
-    "skills": ["process_modeling", "business_analysis"],
+    "skills": [
+      "process_modeling",
+      "business_analysis"
+    ],
     "level": "junior_to_middle",
     "duration_hours": 10,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_006",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс дает базовые навыки описания бизнес-процессов и построения BPMN-диаграмм."
   },
   {
     "id": "course_007",
     "title": "SQL для аналитиков",
-    "skills": ["sql", "data_analysis"],
+    "skills": [
+      "sql",
+      "data_analysis"
+    ],
     "level": "junior_to_middle",
     "duration_hours": 12,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_007",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс развивает базовые навыки работы с данными и SQL-запросами."
   },
   {
     "id": "course_008",
     "title": "Основы продуктового мышления",
-    "skills": ["product_thinking", "business_value", "prioritization"],
+    "skills": [
+      "product_thinking",
+      "business_value",
+      "prioritization"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 12,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Корпоративный университет Газпром нефти",
+    "url": "/courses/course_008",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс помогает связывать ИТ-решения с бизнес-ценностью, метриками и приоритетами продукта."
   },
   {
     "id": "course_009",
     "title": "Подготовка к роли Senior системного аналитика",
-    "skills": ["system_design", "requirements_management", "business_communication", "architecture_basics"],
+    "skills": [
+      "system_design",
+      "requirements_management",
+      "business_communication",
+      "architecture_basics"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 24,
-    "format": "internal",
+    "format": "blended",
     "source": "Карьерный портал",
-    "description": "Комплексный курс для перехода с уровня Middle на Senior в системном анализе."
+    "provider": "Карьерный портал ИТ-кластера",
+    "url": "/courses/course_009",
+    "course_type": "internal",
+    "requires_approval": true,
+    "price_rub": 0,
+    "description": "Комплексный курс для перехода с уровня Middle на Senior в системном анализе. Включает карьерный трек, практические задания и рекомендации для ИПР."
   },
   {
     "id": "course_010",
     "title": "Архитектурное мышление для аналитиков",
-    "skills": ["architecture_basics", "system_design"],
+    "skills": [
+      "architecture_basics",
+      "system_design"
+    ],
     "level": "middle_to_senior",
     "duration_hours": 16,
-    "format": "internal",
+    "format": "online",
     "source": "Портал знаний",
+    "provider": "Центр компетенций архитектуры",
+    "url": "/courses/course_010",
+    "course_type": "internal",
+    "requires_approval": false,
+    "price_rub": 0,
     "description": "Курс помогает аналитикам понимать архитектурные ограничения и проектировать решения с учетом системного контекста."
+  },
+  {
+    "id": "course_011",
+    "title": "System Design для корпоративных ИТ-систем",
+    "skills": [
+      "system_design",
+      "architecture_basics",
+      "integration_design",
+      "business_communication"
+    ],
+    "level": "middle_to_senior",
+    "duration_hours": 32,
+    "format": "external_online",
+    "source": "Внешнее обучение",
+    "provider": "Внешний образовательный провайдер",
+    "url": "https://external-learning.demo/system-design-enterprise",
+    "course_type": "external",
+    "requires_approval": true,
+    "price_rub": 48000,
+    "description": "Внешняя программа по системному дизайну, интеграционным паттернам и архитектурным решениям для крупных корпоративных ИТ-ландшафтов. Требует согласования бюджета и времени обучения."
+  },
+  {
+    "id": "course_012",
+    "title": "API Design и интеграционные паттерны",
+    "skills": [
+      "api_design",
+      "integration_design",
+      "system_design"
+    ],
+    "level": "middle_to_senior",
+    "duration_hours": 20,
+    "format": "external_online",
+    "source": "Внешнее обучение",
+    "provider": "Внешний образовательный провайдер",
+    "url": "https://external-learning.demo/api-design-patterns",
+    "course_type": "external",
+    "requires_approval": true,
+    "price_rub": 36000,
+    "description": "Внешний курс по проектированию API, контрактам интеграций и описанию взаимодействия между системами. Рекомендуется при сильном разрыве по интеграционному дизайну."
   }
 ]

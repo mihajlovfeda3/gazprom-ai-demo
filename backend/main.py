@@ -27,7 +27,7 @@ def load_json(filename: str) -> Any:
 app = FastAPI(
     title="Gazprom AI T&D Demo Backend",
     description="Демо backend для AI-карьерного слоя",
-    version="0.2.0",
+    version="0.4.0",
 )
 
 app.add_middleware(
@@ -145,6 +145,68 @@ def get_skill_title(skill: str) -> str:
     return titles.get(skill, skill)
 
 
+def format_price(price_rub: Optional[int]) -> str:
+    """
+    Возвращает короткий текст для карточки курса.
+    """
+    if price_rub is None or price_rub == 0:
+        return "Бесплатно"
+
+    return f"{price_rub:,}".replace(",", " ") + " ₽"
+
+
+def format_course_type(course_type: str) -> str:
+    """
+    Человекочитаемый бейдж типа курса.
+    """
+    labels = {
+        "internal": "Внутренний курс",
+        "external": "Внешнее обучение",
+    }
+    return labels.get(course_type, course_type)
+
+
+def build_course_payload(
+    course: Dict[str, Any],
+    matched_skills: Optional[List[str]] = None,
+    score: Optional[float] = None,
+) -> Dict[str, Any]:
+    """
+    Единый формат курса для frontend.
+    Важно: возвращаем плоский объект с полями, а не raw-объект.
+    """
+    course_type = course.get("course_type", "internal")
+    requires_approval = bool(course.get("requires_approval", False))
+    price_rub = course.get("price_rub", 0)
+
+    payload: Dict[str, Any] = {
+        "id": course.get("id"),
+        "title": course.get("title"),
+        "skills": course.get("skills", []),
+        "level": course.get("level"),
+        "duration_hours": course.get("duration_hours"),
+        "format": course.get("format", "online"),
+        "source": course.get("source", "Демо-база"),
+        "provider": course.get("provider", course.get("source", "Демо-база")),
+        "url": course.get("url", "#"),
+        "course_type": course_type,
+        "course_type_label": format_course_type(course_type),
+        "requires_approval": requires_approval,
+        "approval_label": "Требует согласования" if requires_approval else "Без согласования",
+        "price_rub": price_rub,
+        "price_label": format_price(price_rub),
+        "description": course.get("description", ""),
+    }
+
+    if matched_skills is not None:
+        payload["matched_skills"] = matched_skills
+
+    if score is not None:
+        payload["score"] = score
+
+    return payload
+
+
 def calculate_skill_gap(
     current_skills: Dict[str, int],
     target_skills: Dict[str, int],
@@ -186,29 +248,29 @@ def recommend_courses_by_gap(skill_gap: List[Dict[str, Any]]) -> List[Dict[str, 
 
     for course in courses:
         course_skills = set(course.get("skills", []))
-        matched_skills = list(gap_skills.intersection(course_skills))
+        matched_skill_codes = list(gap_skills.intersection(course_skills))
 
-        if matched_skills:
-            recommendations.append(
-                {
-                    "id": course["id"],
-                    "title": course["title"],
-                    "duration_hours": course["duration_hours"],
-                    "format": course["format"],
-                    "source": course["source"],
-                    "matched_skills": [
-                        get_skill_title(skill) for skill in matched_skills
-                    ],
-                    "reason": (
-                        "Курс закрывает разрыв по навыкам: "
-                        + ", ".join(get_skill_title(skill) for skill in matched_skills)
-                        + "."
-                    ),
-                    "description": course["description"],
-                }
+        if matched_skill_codes:
+            matched_skills = [get_skill_title(skill) for skill in matched_skill_codes]
+            payload = build_course_payload(
+                course=course,
+                matched_skills=matched_skills,
             )
+            payload["reason"] = (
+                "Курс закрывает разрыв по навыкам: "
+                + ", ".join(matched_skills)
+                + "."
+            )
+            payload["matched_skills_count"] = len(matched_skills)
+            recommendations.append(payload)
 
-    recommendations.sort(key=lambda item: len(item["matched_skills"]), reverse=True)
+    recommendations.sort(
+        key=lambda item: (
+            item["matched_skills_count"],
+            item.get("duration_hours") or 0,
+        ),
+        reverse=True,
+    )
     return recommendations[:4]
 
 
@@ -219,16 +281,47 @@ def get_rag_sources(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
 
     results = search_knowledge(query=query, top_k=top_k)
 
-    return [
-        {
-            "title": item["title"],
-            "type": item["type"],
-            "score": item["score"],
-            "text": item["text"],
-            "kind": item["kind"],
-        }
-        for item in results
-    ]
+    sources = []
+
+    for item in results:
+        raw = item.get("raw", {})
+        sources.append(
+            {
+                "id": item.get("id"),
+                "title": item.get("title"),
+                "type": item.get("type"),
+                "score": item.get("score"),
+                "text": item.get("text"),
+                "kind": item.get("kind"),
+                "source": raw.get("source"),
+                "provider": raw.get("provider"),
+                "url": raw.get("url"),
+                "course_type": raw.get("course_type"),
+            }
+        )
+
+    return sources
+
+
+def build_knowledge_answer(question: str, related_courses: List[Dict[str, Any]]) -> str:
+    """
+    Demo-ответ без настоящей LLM: формируем понятный текст из найденных курсов.
+    """
+    if not related_courses:
+        return (
+            "В демо-базе не найдено точного курса под этот запрос. "
+            "Можно уточнить роль, навык или направление развития, например: системный дизайн, "
+            "интеграции, API, управление требованиями или коммуникация с бизнес-заказчиком."
+        )
+
+    course_titles = ", ".join(f"«{course['title']}»" for course in related_courses[:3])
+
+    return (
+        f"По запросу «{question}» система нашла релевантные материалы в каталоге обучения. "
+        f"В первую очередь можно рассмотреть: {course_titles}. "
+        "Рекомендация сформирована на основе демо-каталога курсов, матрицы компетенций и карьерных материалов. "
+        "Курсы, требующие бюджета или рабочего времени, должны быть согласованы с руководителем."
+    )
 
 
 @app.get("/")
@@ -244,9 +337,10 @@ def health() -> Dict[str, Any]:
     return {
         "status": "ok",
         "message": "Backend работает",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "rag_mode": get_rag_mode(),
     }
+
 
 @app.get("/api/debug/search")
 def debug_search(query: str) -> Dict[str, Any]:
@@ -259,9 +353,10 @@ def debug_search(query: str) -> Dict[str, Any]:
         "results": results,
     }
 
+
 @app.post("/api/route-agent")
 def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
-    employee = find_employee(request.employee_id)
+    employee = find_employee(request.employee_id or "emp_001")
     current_role = find_role(request.current_role)
     target_role = find_role(request.target_role)
 
@@ -292,17 +387,23 @@ def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
     recommended_courses = recommend_courses_by_gap(skill_gap)
 
     ipr_draft = [
-        f"Добавить курс «{course['title']}» в ИПР."
+        (
+            f"Добавить курс «{course['title']}» в ИПР "
+            f"({course['course_type_label'].lower()}, {course['price_label'].lower()}, "
+            f"{course['approval_label'].lower()})."
+        )
         for course in recommended_courses[:3]
     ]
 
     ipr_draft.append(
         "Согласовать обучение с руководителем, если курс требует рабочего времени или бюджета."
     )
+
     query = (
         f"{request.current_role} перейти в {request.target_role}. "
         f"Какие компетенции, курсы, карьерный трек и регламенты нужны?"
     )
+
     return {
         "status": "success",
         "agent": "Агент маршрута развития",
@@ -319,42 +420,201 @@ def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
         "sources": get_rag_sources(query=query, top_k=5),
         "summary": (
             f"Для перехода из роли «{request.current_role}» в «{request.target_role}» "
-            f"системе нужно закрыть ключевые разрывы компетенций и добавить релевантные курсы в ИПР."
+            f"системе нужно закрыть ключевые разрывы компетенций и добавить релевантные курсы в ИПР. "
+            f"Подбор учитывает тип курса, провайдера, стоимость и необходимость согласования."
         ),
     }
+def expand_knowledge_query(question: str) -> str:
+    """
+    Расширяет пользовательский вопрос для RAG-lite.
+    Нужно из-за того, что TF-IDF не понимает формы слов:
+    'внешние' и 'внешнее' для него разные слова.
+    """
 
+    query = question.strip()
+    lower = query.lower()
+
+    if "внеш" in lower:
+        query += " внешнее обучение external внешний провайдер платный бюджет согласование"
+
+    if "платн" in lower or "бюджет" in lower or "стоим" in lower or "цен" in lower:
+        query += " цена стоимость бюджет платный требует согласования external"
+
+    if "системн" in lower or "system design" in lower:
+        query += " system_design системный дизайн архитектура интеграции"
+
+    if "интеграц" in lower or "api" in lower:
+        query += " integration_design api_design интеграции API"
+
+    if "архитект" in lower:
+        query += " architecture_basics архитектурные основы"
+
+    return query
+
+
+def infer_query_skills(question: str) -> set[str]:
+    """
+    Определяет примерные навыки из вопроса.
+    Это fallback на случай, если RAG-lite не поднял нужный курс в top-k.
+    """
+
+    lower = question.lower()
+    skills = set()
+
+    if "системн" in lower or "system design" in lower:
+        skills.add("system_design")
+
+    if "архитект" in lower:
+        skills.add("architecture_basics")
+
+    if "интеграц" in lower:
+        skills.add("integration_design")
+
+    if "api" in lower:
+        skills.add("api_design")
+
+    if "требован" in lower:
+        skills.add("requirements_management")
+
+    if "коммуникац" in lower or "заказчик" in lower:
+        skills.add("business_communication")
+
+    return skills
 
 @app.post("/api/knowledge-agent")
 def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
     courses = load_json("courses.json")
-    sources = get_rag_sources(query=request.question, top_k=5)
 
-    related_courses = [
-    item
-    for item in search_knowledge(query=request.question, top_k=8)
-    if item["kind"] == "course"
-][:4]
+    question = request.question.strip()
+    expanded_query = expand_knowledge_query(question)
+
+    wants_external = "внеш" in question.lower()
+    query_skills = infer_query_skills(question)
+
+    search_results = search_knowledge(query=expanded_query, top_k=20)
+    sources = get_rag_sources(query=expanded_query, top_k=5)
+
+    def course_to_card(course: Dict[str, Any], score: Optional[float] = None) -> Dict[str, Any]:
+        price_rub = course.get("price_rub", 0)
+        requires_approval = course.get("requires_approval", False)
+        course_type = course.get("course_type", "internal")
+
+        return {
+            "id": course.get("id"),
+            "title": course.get("title"),
+            "skills": course.get("skills", []),
+            "level": course.get("level"),
+            "duration_hours": course.get("duration_hours"),
+            "format": course.get("format"),
+            "source": course.get("source"),
+            "provider": course.get("provider", "Демо-база"),
+            "url": course.get("url", "#"),
+            "course_type": course_type,
+            "course_type_label": (
+                "Внешнее обучение" if course_type == "external" else "Внутренний курс"
+            ),
+            "requires_approval": requires_approval,
+            "approval_label": (
+                "Требует согласования" if requires_approval else "Без согласования"
+            ),
+            "price_rub": price_rub,
+            "price_label": (
+                "Бесплатно" if not price_rub else f"{price_rub:,} ₽".replace(",", " ")
+            ),
+            "description": course.get("description", ""),
+            "score": score,
+        }
+
+    related_courses = []
+    seen_course_ids = set()
+
+    for item in search_results:
+        if item["kind"] != "course":
+            continue
+
+        course = item["raw"]
+
+        if wants_external and course.get("course_type") != "external":
+            continue
+
+        course_id = course.get("id")
+        if course_id in seen_course_ids:
+            continue
+
+        related_courses.append(course_to_card(course=course, score=item["score"]))
+        seen_course_ids.add(course_id)
+
+        if len(related_courses) >= 4:
+            break
+
+    # Fallback: если пользователь явно спросил про внешнее обучение,
+    # но RAG-lite не поднял внешние курсы в top-k, добираем их из каталога.
+    if wants_external and len(related_courses) < 2:
+        for course in courses:
+            if course.get("course_type") != "external":
+                continue
+
+            course_id = course.get("id")
+            if course_id in seen_course_ids:
+                continue
+
+            course_skills = set(course.get("skills", []))
+
+            if query_skills and not query_skills.intersection(course_skills):
+                continue
+
+            related_courses.append(course_to_card(course=course, score=None))
+            seen_course_ids.add(course_id)
+
+            if len(related_courses) >= 4:
+                break
+
+    # Общий fallback: если курсы не нашлись вообще, показываем любые релевантные курсы из поиска.
+    if not related_courses:
+        for item in search_results:
+            if item["kind"] != "course":
+                continue
+
+            course = item["raw"]
+            course_id = course.get("id")
+
+            if course_id in seen_course_ids:
+                continue
+
+            related_courses.append(course_to_card(course=course, score=item["score"]))
+            seen_course_ids.add(course_id)
+
+            if len(related_courses) >= 4:
+                break
+
+    if related_courses:
+        course_titles = ", ".join(f"«{course['title']}»" for course in related_courses[:3])
+
+        if wants_external:
+            answer = (
+                f"По запросу «{question}» система нашла внешние программы обучения: "
+                f"{course_titles}. Такие курсы требуют согласования, если затрагивают бюджет "
+                f"или рабочее время сотрудника."
+            )
+        else:
+            answer = (
+                f"По запросу «{question}» система нашла релевантные материалы и курсы: "
+                f"{course_titles}. Рекомендация сформирована на основе демо-каталога курсов, "
+                f"матрицы компетенций и карьерных материалов."
+            )
+    else:
+        answer = (
+            f"По запросу «{question}» в демо-базе не найдено точного курса. "
+            f"В production-версии агент расширит поиск по корпоративному RAG и внешним провайдерам."
+        )
 
     return {
         "status": "success",
         "agent": "Агент корпоративного знания",
-        "question": request.question,
+        "question": question,
         "pipeline": get_pipeline(include_high_stakes=False),
-        "answer": (
-            "По найденным материалам система рекомендует начать с курсов по системному анализу, "
-            "архитектурным основам и проектированию интеграций. "
-            "Рекомендация сформирована на основе каталога курсов, матрицы компетенций и карьерного трека."
-        ),
-        "related_courses": [
-    {
-        "title": course["raw"]["title"],
-        "source": course["raw"].get("source", "Демо-база"),
-        "duration_hours": course["raw"].get("duration_hours"),
-        "description": course["raw"].get("description", ""),
-        "score": course["score"],
-    }
-    for course in related_courses
-],
+        "answer": answer,
+        "related_courses": related_courses,
         "sources": sources,
     }
 
