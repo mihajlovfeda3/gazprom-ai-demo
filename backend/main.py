@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from rag import get_rag_mode, search_knowledge
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -211,24 +212,22 @@ def recommend_courses_by_gap(skill_gap: List[Dict[str, Any]]) -> List[Dict[str, 
     return recommendations[:4]
 
 
-def get_demo_sources() -> List[Dict[str, Any]]:
+def get_rag_sources(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     """
-    Пока RAG еще не подключен, возвращаем главные источники для демо.
-    Следующим шагом заменим это на настоящий поиск по sources/courses.
+    Возвращает релевантные источники через RAG-lite поиск.
     """
 
-    sources = load_json("sources.json")
-
-    selected_sources = sources[:5]
+    results = search_knowledge(query=query, top_k=top_k)
 
     return [
         {
-            "title": source["title"],
-            "type": source["type"],
-            "text": source["text"],
-            "score": 1.0,
+            "title": item["title"],
+            "type": item["type"],
+            "score": item["score"],
+            "text": item["text"],
+            "kind": item["kind"],
         }
-        for source in selected_sources
+        for item in results
     ]
 
 
@@ -245,9 +244,20 @@ def health() -> Dict[str, Any]:
     return {
         "status": "ok",
         "message": "Backend работает",
-        "version": "0.2.0",
+        "version": "0.3.0",
+        "rag_mode": get_rag_mode(),
     }
 
+@app.get("/api/debug/search")
+def debug_search(query: str) -> Dict[str, Any]:
+    results = search_knowledge(query=query, top_k=5)
+
+    return {
+        "status": "success",
+        "query": query,
+        "rag_mode": get_rag_mode(),
+        "results": results,
+    }
 
 @app.post("/api/route-agent")
 def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
@@ -289,7 +299,10 @@ def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
     ipr_draft.append(
         "Согласовать обучение с руководителем, если курс требует рабочего времени или бюджета."
     )
-
+    query = (
+        f"{request.current_role} перейти в {request.target_role}. "
+        f"Какие компетенции, курсы, карьерный трек и регламенты нужны?"
+    )
     return {
         "status": "success",
         "agent": "Агент маршрута развития",
@@ -303,7 +316,7 @@ def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
         "skill_gap": skill_gap,
         "recommended_courses": recommended_courses,
         "ipr_draft": ipr_draft,
-        "sources": get_demo_sources(),
+        "sources": get_rag_sources(query=query, top_k=5),
         "summary": (
             f"Для перехода из роли «{request.current_role}» в «{request.target_role}» "
             f"системе нужно закрыть ключевые разрывы компетенций и добавить релевантные курсы в ИПР."
@@ -314,9 +327,13 @@ def route_agent(request: RouteAgentRequest) -> Dict[str, Any]:
 @app.post("/api/knowledge-agent")
 def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
     courses = load_json("courses.json")
-    sources = get_demo_sources()
+    sources = get_rag_sources(query=request.question, top_k=5)
 
-    related_courses = courses[:4]
+    related_courses = [
+    item
+    for item in search_knowledge(query=request.question, top_k=8)
+    if item["kind"] == "course"
+][:4]
 
     return {
         "status": "success",
@@ -329,14 +346,15 @@ def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
             "Рекомендация сформирована на основе каталога курсов, матрицы компетенций и карьерного трека."
         ),
         "related_courses": [
-            {
-                "title": course["title"],
-                "source": course["source"],
-                "duration_hours": course["duration_hours"],
-                "description": course["description"],
-            }
-            for course in related_courses
-        ],
+    {
+        "title": course["raw"]["title"],
+        "source": course["raw"].get("source", "Демо-база"),
+        "duration_hours": course["raw"].get("duration_hours"),
+        "description": course["raw"].get("description", ""),
+        "score": course["score"],
+    }
+    for course in related_courses
+],
         "sources": sources,
     }
 
