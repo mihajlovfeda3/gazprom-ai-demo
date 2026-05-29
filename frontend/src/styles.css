@@ -3467,3 +3467,175 @@ h3,
     max-width: none;
   }
 }
+
+/* Search fields and form buttons refinement. */
+.searchPill,
+.activeSearch {
+  height: 52px;
+  border-radius: 14px;
+  padding: 0 8px 0 18px;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, #ffffff, #f7fafc);
+  border: 1px solid #cfdbe8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 22px rgba(25, 52, 86, 0.06);
+}
+
+.activeSearch::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  border: 2px solid #7b9cbd;
+  border-radius: 999px;
+  box-shadow: 6px 6px 0 -4px #7b9cbd;
+  transform: rotate(-12deg);
+}
+
+.globalSearchInput {
+  height: 100%;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.globalSearchInput::placeholder {
+  color: #8191a4;
+  font-weight: 500;
+}
+
+.globalSearchButton {
+  min-width: 86px;
+  min-height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  box-shadow: 0 7px 16px rgba(0, 91, 170, 0.16);
+}
+
+.formCard,
+.materialTaskForm,
+.knowledgeForm {
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 250px);
+  gap: 20px;
+  align-items: end;
+}
+
+.questionInput {
+  min-height: 132px;
+  padding: 17px 18px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, #ffffff, #f8fbfd);
+  border: 1px solid #cfdbe8;
+  color: var(--gn-text);
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 22px rgba(25, 52, 86, 0.05);
+}
+
+.questionInput::placeholder {
+  color: #8392a4;
+  font-weight: 500;
+}
+
+.questionInput:focus {
+  border-color: var(--gn-blue);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(0, 91, 170, 0.10),
+    0 10px 24px rgba(25, 52, 86, 0.08);
+}
+
+.knowledgeForm .primaryButton,
+.materialTaskForm .primaryButton {
+  width: 100%;
+  max-width: none;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  box-shadow: 0 10px 22px rgba(0, 91, 170, 0.18);
+}
+
+.knowledgeForm .primaryButton {
+  min-width: 210px;
+}
+
+.materialTaskForm .primaryButton {
+  min-width: 230px;
+}
+
+.loadingLabel {
+  gap: 7px;
+}
+
+@media (max-width: 980px) {
+  .formCard,
+  .materialTaskForm,
+  .knowledgeForm {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledgeForm .primaryButton,
+  .materialTaskForm .primaryButton {
+    width: fit-content;
+    min-width: 210px;
+  }
+}
+
+@media (max-width: 760px) {
+  .searchPill,
+  .activeSearch {
+    height: 48px;
+    padding-left: 14px;
+  }
+
+  .globalSearchButton {
+    min-width: 76px;
+    padding: 0 13px;
+  }
+
+  .questionInput {
+    min-height: 124px;
+  }
+
+  .knowledgeForm .primaryButton,
+  .materialTaskForm .primaryButton {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.topBar .searchPill.activeSearch {
+  height: 52px;
+  min-height: 52px;
+  border-radius: 14px;
+}
+
+.materialTaskForm textarea.questionInput,
+.knowledgeForm textarea.questionInput {
+  min-height: 132px;
+  border-radius: 14px;
+}
+
+.materialTaskForm button.primaryButton,
+.knowledgeForm button.primaryButton {
+  min-height: 52px;
+  border-radius: 12px;
+}
+
+@media (max-width: 760px) {
+  .topBar .searchPill.activeSearch {
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .materialTaskForm textarea.questionInput,
+  .knowledgeForm textarea.questionInput {
+    min-height: 124px;
+  }
+}
