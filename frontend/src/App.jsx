@@ -292,6 +292,12 @@ function AppShell({
   }
 
   return (
+    <div className="gazpromShell">
+      <div className="corporateNotice">
+        <span>Прототип ИИ T&amp;D платформы</span>
+        <strong>Газпром нефть · проверенные материалы под рабочую задачу</strong>
+      </div>
+
     <div className="productApp productAppCompact">
       <aside className="blueRail cleanRail">
         <button
@@ -302,6 +308,14 @@ function AppShell({
           <span />
           <span />
           <span />
+        </button>
+
+        <button
+          className="railBrandMark"
+          onClick={() => openScreen("landing")}
+          aria-label="Газпром нефть"
+        >
+          ГН
         </button>
 
         <div className="internProfileWrap">
@@ -324,7 +338,7 @@ function AppShell({
 
   <div className="internTooltip">
     <strong>Алексей Смирнов</strong>
-    <span>Стажёр ИТ-кластера</span>
+    <span>Сотрудник ИТ-кластера</span>
     <p>Рабочий профиль сотрудника</p>
   </div>
 </div>
@@ -389,6 +403,20 @@ function AppShell({
 
       <main className="mainWorkspace">
         <header className="topBar cleanTopBar">
+          <button
+            className="topBrandBlock"
+            onClick={() => openScreen("landing")}
+            type="button"
+          >
+            <span className="brandSymbol">
+              <span />
+            </span>
+            <span className="brandText">
+              <strong>Газпром нефть</strong>
+              <span>ИИ T&amp;D платформа</span>
+            </span>
+          </button>
+
           <form
   className="searchPill activeSearch"
   onSubmit={(event) => {
@@ -464,6 +492,7 @@ function AppShell({
         </div>
       </aside>
     </div>
+    </div>
   );
 }
 
@@ -533,6 +562,11 @@ function formatDisplayText(value) {
   }
 
   return value
+    .replace(/Сформирован маршрут развития и черновик ИПР\./gi, "Сформирована подборка материалов для проверки.")
+    .replace(/Найдены релевантные курсы, матрицы компетенций и регламенты\./gi, "Найдены релевантные материалы, матрицы тем и регламенты.")
+    .replace(/Внешнее обучение/g, "Внешний материал")
+    .replace(/внешнего обучения/gi, "внешних материалов")
+    .replace(/времени обучения/gi, "времени на изучение")
     .replace(/при сильном разрыве по/gi, "при фокусе на")
     .replace(/Курс закрывает разрыв по навыкам:/g, "Материал связан с темами:")
     .replace(/курс закрывает разрыв по навыкам:/g, "материал связан с темами:")
@@ -550,10 +584,10 @@ function formatDisplayText(value) {
     .replace(/курс/g, "материал")
     .replace(/Курс/g, "Материал")
     .replace(/Согласовать обучение/gi, "Согласовать время на изучение")
-    .replace(/обучения/gi, "изучения")
-    .replace(/обучение/gi, "изучение")
     .replace(/Подготовка к роли Senior системного аналитика/g, "Подготовка к сложным задачам системного аналитика")
     .replace(/Матрица компетенций Senior системного аналитика/g, "Матрица тем системного анализа")
+    .replace(/матрицы компетенций/gi, "матрицы тем")
+    .replace(/Матрица компетенций/g, "Матрица тем")
     .replace(/Карьерный трек системного аналитика/g, "Навигация по материалам системного анализа")
     .replace(/Переход из Middle системного аналитика в Senior требует/gi, "Рабочие задачи повышенной сложности требуют")
     .replace(/перехода с уровня Middle на Senior/gi, "работы с задачами повышенной сложности")
