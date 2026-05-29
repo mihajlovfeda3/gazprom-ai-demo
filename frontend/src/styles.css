@@ -1815,3 +1815,155 @@ h3 {
 .railBrandMark {
   display: none;
 }
+.internProfileWrap {
+  position: relative;
+  margin: 22px 0 30px;
+}
+
+.internProfileWrap .internAvatarButton {
+  margin: 0;
+}
+
+.internTooltip {
+  position: absolute;
+  top: 50%;
+  left: 58px;
+  z-index: 120;
+  min-width: 210px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  box-shadow: 0 18px 44px rgba(16, 33, 61, 0.18);
+  transform: translateY(-50%) translateX(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.16s ease;
+}
+
+.internTooltip::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-left: 1px solid #dfe7f2;
+  border-bottom: 1px solid #dfe7f2;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.internTooltip strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #10213d;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.internTooltip span {
+  display: block;
+  margin-bottom: 6px;
+  color: #1746d1;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.internTooltip p {
+  margin: 0;
+  color: #65728b;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.internProfileWrap:hover .internTooltip,
+.internProfileWrap:focus-within .internTooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+.landingDashboard {
+  max-width: 100%;
+}
+
+.landingDashboard .gnHeroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.landingDashboard .gnKicker {
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+
+.landingDashboard .gnHeroContent h1 {
+  max-width: 780px;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+
+.landingDashboard .gnHeroContent p {
+  max-width: 760px;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+
+.landingDashboard .gnHeroActions {
+  justify-content: flex-start;
+}
+
+.landingDashboard .gnHeroStatus {
+  text-align: left;
+}
+
+.landingDashboard .gnMetrics {
+  align-items: stretch;
+}
+
+.landingDashboard .gnMetricCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.landingDashboard .gnSectionHeader {
+  display: block;
+  text-align: left;
+  margin-top: 4px;
+}
+
+.landingDashboard .gnSectionHeader h2 {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.landingDashboard .gnSectionHeader p {
+  max-width: 760px;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+
+.landingDashboard .gnAgentGrid {
+  align-items: stretch;
+}
+
+.landingDashboard .gnAgentCard {
+  text-align: left;
+}
+
+.landingDashboard .gnFlowCard,
+.landingDashboard .gnQuickCard {
+  text-align: left;
+}
+
+.landingDashboard .flowSteps div {
+  text-align: left;
+}

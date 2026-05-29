@@ -265,22 +265,30 @@ function AppShell({
           <span />
         </button>
 
-        <button
-  className="internAvatarButton"
-  onClick={() => openScreen("landing")}
-  title="Профиль стажера"
->
-  <span className="internAvatar">
-    <svg
-      viewBox="0 0 40 40"
-      aria-hidden="true"
-      className="internAvatarSvg"
-    >
-      <circle cx="20" cy="14" r="7" />
-      <path d="M8 34c1.8-7.4 6.2-11 12-11s10.2 3.6 12 11" />
-    </svg>
-  </span>
-</button>
+        <div className="internProfileWrap">
+  <button
+    className="internAvatarButton"
+    onClick={() => openScreen("landing")}
+    aria-label="Профиль стажера"
+  >
+    <span className="internAvatar">
+      <svg
+        viewBox="0 0 40 40"
+        aria-hidden="true"
+        className="internAvatarSvg"
+      >
+        <circle cx="20" cy="14" r="7" />
+        <path d="M8 34c1.8-7.4 6.2-11 12-11s10.2 3.6 12 11" />
+      </svg>
+    </span>
+  </button>
+
+  <div className="internTooltip">
+    <strong>Алексей Смирнов</strong>
+    <span>Стажёр ИТ-кластера</span>
+    <p>Рабочий профиль сотрудника</p>
+  </div>
+</div>
 
         <div className="railIcons cleanRailIcons">
           {menuItems.map((item) => (
