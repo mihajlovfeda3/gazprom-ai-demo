@@ -12,12 +12,12 @@ function App() {
   const [screen, setScreen] = useState("landing");
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
-  const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие курсы помогут прокачать системный дизайн?");
+  const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие материалы помогут разобраться с проектированием API?");
   const [globalSearch, setGlobalSearch] = useState("");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
-  const [managerStatus, setManagerStatus] = useState("Маршрут готов к согласованию");
+  const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
   const [mode, setMode] = useState("demo");
 
   async function fetchRouteAgent() {
@@ -242,9 +242,9 @@ function AppShell({
 
   const menuItems = [
   { id: "landing", label: "Рабочий стол", short: "Г" },
-  { id: "route", label: "Моя траектория", short: "Т" },
+  { id: "route", label: "Подбор материалов", short: "М" },
   { id: "knowledge", label: "База знаний", short: "Б" },
-  { id: "manager", label: "Помощник руководителя", short: "Р" }
+  { id: "manager", label: "Проверка подборки", short: "Р" }
 ];
 
   function openScreen(screenId) {
@@ -342,7 +342,7 @@ function AppShell({
             </nav>
 
             <div className="drawerHint">
-              Единая экосистема ИИ-агентов для обучения, развития и согласования маршрутов сотрудников.
+              Единая экосистема ИИ-помощников для поиска проверенных материалов, источников и ответственных.
             </div>
           </aside>
         </>
@@ -361,7 +361,7 @@ function AppShell({
     className="globalSearchInput"
     value={globalSearch}
     onChange={(event) => setGlobalSearch(event.target.value)}
-    placeholder="Спросите ИИ-агента: «как перейти в Senior?»"
+    placeholder="Спросите ИИ-помощника: «где материалы по API?»"
   />
 
   <button className="globalSearchButton" type="submit">
@@ -389,8 +389,8 @@ function AppShell({
           </div>
 
           <p>
-            Помогает найти курсы, источники, карьерные требования и подготовить
-            маршрут развития сотрудника.
+            Помогает найти проверенные материалы, источники и ответственных
+            под рабочую задачу.
           </p>
 
           <button className="assistantAsk" onClick={() => openScreen("knowledge")}>
@@ -402,15 +402,15 @@ function AppShell({
           <h3>Быстрые действия</h3>
 
           <button onClick={() => openScreen("route")}>
-            Сформировать маршрут
+            Найти материалы под задачу
           </button>
 
           <button onClick={() => openScreen("knowledge")}>
-            Найти знания и курсы
+            Найти знания и материалы
           </button>
 
           <button onClick={() => openScreen("manager")}>
-            Согласование руководителя
+            Проверка подборки
           </button>
         </div>
 
@@ -503,7 +503,7 @@ function LandingScreen({ setScreen }) {
               <span className="sectionKicker">Рабочий стол</span>
               <h1>Добрый день, Александр</h1>
               <p>
-                День 14 из 90 · Middle системный аналитик · ИТ-кластер, Тюмень
+                ИТ-кластер, Тюмень · рабочие задачи, материалы и источники в одном контуре
               </p>
             </div>
 
@@ -517,7 +517,7 @@ function LandingScreen({ setScreen }) {
 
           <div className="heroActionsRow">
             <button className="gnPrimaryButton" onClick={() => setScreen("route")}>
-              Построить траекторию
+              Найти материалы под задачу
             </button>
 
             <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
@@ -533,8 +533,8 @@ function LandingScreen({ setScreen }) {
           </div>
 
           <p>
-            Нашёл 3 материала по архитектуре и доступам. Можно обновить
-            траекторию развития или задать вопрос по базе знаний.
+            Нашёл 3 материала по архитектуре и доступам. Можно собрать
+            подборку под задачу или задать вопрос по базе знаний.
           </p>
 
           <button onClick={() => setScreen("knowledge")}>
@@ -545,7 +545,7 @@ function LandingScreen({ setScreen }) {
 
       <section className="employeeStats">
         <div className="employeeStatCard">
-          <span>Курсов назначено</span>
+          <span>Материалов найдено</span>
           <strong>12</strong>
           <p>3 новых этой неделе</p>
         </div>
@@ -563,17 +563,17 @@ function LandingScreen({ setScreen }) {
         </div>
 
         <div className="employeeStatCard">
-          <span>Развитие</span>
+          <span>Подборка</span>
           <strong>47%</strong>
-          <p>маршрут 30/60/90 дней</p>
+          <p>готовность к проверке</p>
         </div>
       </section>
 
       <section className="dashboardGrid">
         <div className="dashboardCard coursesPanel">
           <div className="cardHeaderLine">
-            <h2>Мои курсы</h2>
-            <button onClick={() => setScreen("route")}>Все курсы →</button>
+            <h2>Мои материалы</h2>
+            <button onClick={() => setScreen("route")}>Все материалы →</button>
           </div>
 
           <div className="courseRows">
@@ -599,25 +599,25 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard trajectoryPanel">
           <div className="cardHeaderLine">
-            <h2>Моя траектория</h2>
+            <h2>Подбор материалов</h2>
             <button onClick={() => setScreen("route")}>Открыть →</button>
           </div>
 
           <div className="trajectoryRoles">
             <div>
-              <span>Текущая роль</span>
-              <strong>Middle системный аналитик</strong>
+              <span>Рабочая задача</span>
+              <strong>Проектирование API</strong>
             </div>
 
             <div>
-              <span>Целевая роль</span>
-              <strong>Senior системный аналитик</strong>
+              <span>Цель</span>
+              <strong>Найти проверенные материалы</strong>
             </div>
           </div>
 
           <div className="trajectoryProgress">
             <div>
-              <span>Компетенции</span>
+              <span>Темы запроса</span>
               <strong>61%</strong>
             </div>
 
@@ -627,7 +627,7 @@ function LandingScreen({ setScreen }) {
           </div>
 
           <button className="panelAction" onClick={() => setScreen("route")}>
-            Обновить маршрут развития
+            Обновить подборку материалов
           </button>
         </div>
 
@@ -655,13 +655,13 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard managerPanel">
           <div className="cardHeaderLine">
-            <h2>Помощник руководителя</h2>
+            <h2>Проверка подборки</h2>
             <button onClick={() => setScreen("manager")}>Перейти →</button>
           </div>
 
           <p>
-            Маршрут сотрудника готов к согласованию. Система рекомендует начать
-            обучение через 3 недели с учетом загрузки команды.
+            Подборка материалов готова к проверке. Руководитель может
+            согласовать время на изучение или попросить уточнить источники.
           </p>
 
           <div className="managerDecisionPreview">
@@ -670,7 +670,7 @@ function LandingScreen({ setScreen }) {
           </div>
 
           <button className="panelAction" onClick={() => setScreen("manager")}>
-            Открыть согласование
+            Открыть проверку
           </button>
         </div>
       </section>
@@ -694,11 +694,11 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
     <main className="page">
       <section className="screenHeader">
         <div>
-          <div className="eyebrow">Развитие сотрудника</div>
-<h2>Моя траектория</h2>
+          <div className="eyebrow">Подбор материалов</div>
+<h2>Найти материалы под задачу</h2>
 <p>
-  Сотрудник выбирает текущую и целевую роль, а система собирает маршрут
-  развития с курсами, источниками и черновиком плана развития.
+  Опишите рабочую задачу или цель развития. ИИ-помощник подберет проверенные
+  материалы, источники и ответственных по теме.
 </p>
         </div>
       </section>
@@ -706,25 +706,24 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
       <section className="formCard card">
         <div className="fieldGrid">
           <div className="field">
-            <label>Текущая роль</label>
-            <div className="fakeInput">Разрыв компетенций → Компетенции к развитию
-Рекомендованные курсы → Подобранные курсы
-Черновик ИПР → Черновик плана развития
+            <label>Запрос</label>
+            <div className="fakeInput">Рабочая задача → Темы запроса
+Рекомендованные курсы → Рекомендованные материалы
+Черновик ИПР → Черновик подборки для развития
 Источники → Использованные источники
-Следующий шаг → Согласование маршрута</div>
+Следующий шаг → Проверка подборки</div>
           </div>
           <div className="field">
-            <label>Целевая роль</label>
-            <div className="fakeInput">Разрыв компетенций → Компетенции к развитию
-Рекомендованные курсы → Подобранные курсы
-Черновик ИПР → Черновик плана развития
-Источники → Использованные источники
-Следующий шаг → Согласование маршрута</div>
+            <label>Фокус результата</label>
+            <div className="fakeInput">ИИ не оценивает сотрудника
+ИИ не назначает обучение автоматически
+ИИ показывает источники и ответственных
+Руководитель проверяет подборку</div>
           </div>
         </div>
 
         <button className="primaryButton" onClick={fetchRouteAgent}>
-          {routeLoading ? "Формируем маршрут..." : "Сформировать маршрут"}
+          {routeLoading ? "Ищем материалы..." : "Найти материалы под задачу"}
         </button>
       </section>
 
@@ -735,31 +734,31 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
           <PipelineBlock pipeline={routeResult.pipeline} />
 
           <div className="card">
-            <h3>Разрыв компетенций</h3>
+            <h3>Темы запроса</h3>
             <TagList items={routeResult.skill_gap} />
           </div>
 
           <div className="card largeCard">
-            <h3>Рекомендованные курсы</h3>
+            <h3>Рекомендованные материалы</h3>
             <CourseList courses={routeResult.recommended_courses} />
           </div>
 
           <div className="card largeCard">
-            <h3>Черновик ИПР</h3>
+            <h3>Черновик подборки для развития</h3>
             <NumberedList items={routeResult.ipr_draft} />
           </div>
 
           <div className="card">
-            <h3>Источники</h3>
+            <h3>Использованные источники</h3>
             <SourceList sources={routeResult.sources} />
           </div>
 
           <div className="card actionCard">
             <h3>Следующий шаг</h3>
             <p>
-  После проверки маршрут можно отправить руководителю для согласования обучения
+  После проверки подборку можно отправить руководителю для согласования времени на изучение.
 </p>
-            <button className="primaryButton" onClick={sendToManager}>Отправить руководителю</button>
+            <button className="primaryButton" onClick={sendToManager}>Отправить подборку руководителю</button>
           </div>
         </section>
       )}
