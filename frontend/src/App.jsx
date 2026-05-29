@@ -164,6 +164,18 @@ function App() {
   function updateManagerStatus(status) {
     setManagerStatus(status);
   }
+  function handleGlobalSearch(query = globalSearch) {
+  const finalQuery = query.trim();
+
+  if (!finalQuery) {
+    return;
+  }
+
+  setKnowledgeQuestion(finalQuery);
+  setKnowledgeResult(null);
+  setScreen("knowledge");
+  fetchKnowledgeAgent(finalQuery);
+}
 
   return (
   <AppShell
@@ -253,7 +265,22 @@ function AppShell({
           <span />
         </button>
 
-        <div className="railBrandMark">ИИ</div>
+        <button
+  className="internAvatarButton"
+  onClick={() => openScreen("landing")}
+  title="Профиль стажера"
+>
+  <span className="internAvatar">
+    <svg
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+      className="internAvatarSvg"
+    >
+      <circle cx="20" cy="14" r="7" />
+      <path d="M8 34c1.8-7.4 6.2-11 12-11s10.2 3.6 12 11" />
+    </svg>
+  </span>
+</button>
 
         <div className="railIcons cleanRailIcons">
           {menuItems.map((item) => (
@@ -316,23 +343,23 @@ function AppShell({
       <main className="mainWorkspace">
         <header className="topBar cleanTopBar">
           <form
-            className="searchPill activeSearch"
-            onSubmit={(event) => {
-              event.preventDefault();
-              onGlobalSearch(globalSearch);
-            }}
-          >
-            <input
-              className="globalSearchInput"
-              value={globalSearch}
-              onChange={(event) => setGlobalSearch(event.target.value)}
-              placeholder="Спросите ИИ-агента: «как перейти в Senior?»"
-            />
+  className="searchPill activeSearch"
+  onSubmit={(event) => {
+    event.preventDefault();
+    onGlobalSearch(globalSearch);
+  }}
+>
+  <input
+    className="globalSearchInput"
+    value={globalSearch}
+    onChange={(event) => setGlobalSearch(event.target.value)}
+    placeholder="Спросите ИИ-агента: «как перейти в Senior?»"
+  />
 
-            <button className="globalSearchButton" type="submit">
-              Найти
-            </button>
-          </form>
+  <button className="globalSearchButton" type="submit">
+    Найти
+  </button>
+</form>
 
           <div className="topActions cleanTopActions">
             <button className="topKnowledgeButton" onClick={() => openScreen("knowledge")}>

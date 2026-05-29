@@ -1774,3 +1774,44 @@ h3 {
     width: min(320px, 86vw);
   }
 }
+.internAvatarButton {
+  width: 46px;
+  height: 46px;
+  margin: 22px 0 30px;
+  border: 0;
+  border-radius: 16px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.internAvatarButton:hover {
+  transform: translateY(-1px);
+}
+
+.internAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #eaf1ff, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.internAvatarSvg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: #1746d1;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.railBrandMark {
+  display: none;
+}
