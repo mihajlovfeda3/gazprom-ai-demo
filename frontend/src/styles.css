@@ -4391,3 +4391,143 @@ h3,
     max-width: 100%;
   }
 }
+
+/* Material and manager review polish. */
+.materialList {
+  gap: 10px;
+}
+
+.materialItemCard {
+  border-left: 3px solid var(--gn-blue);
+  gap: 9px;
+  padding: 15px;
+  box-shadow: none;
+}
+
+.materialItemCard:nth-child(2n),
+.materialItemCard:nth-child(3n) {
+  border-left-color: var(--gn-blue);
+}
+
+.materialCardHeader {
+  align-items: start;
+}
+
+.materialCardHeader strong {
+  color: var(--gn-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.materialCardHeader span:not(.hours),
+.tag,
+.courseMeta span {
+  border-radius: 6px;
+  color: var(--gn-blue);
+  background: var(--gn-blue-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.materialItemCard p {
+  margin: 0;
+  color: var(--gn-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.materialMeta {
+  gap: 6px;
+}
+
+.materialMeta span {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: var(--gn-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.hours {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: var(--gn-blue);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.openMaterialButton {
+  min-height: 32px;
+  padding: 8px 11px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.managerLayout {
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+}
+
+.managerCard {
+  gap: 14px;
+}
+
+.employeeAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: var(--gn-blue);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.managerCard h3 {
+  margin-bottom: 6px;
+}
+
+.statusBlock,
+.infoBlock {
+  padding: 13px;
+  box-shadow: none;
+}
+
+.statusBlock span,
+.infoBlock span,
+.trajectoryRoles span,
+.trajectoryProgress span,
+.managerDecisionPreview span {
+  color: var(--gn-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.statusBlock strong {
+  color: var(--gn-blue);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.buttonRow {
+  gap: 8px;
+}
+
+.buttonRow .primaryButton,
+.buttonRow .secondaryButton,
+.buttonRow .dangerButton {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.plainList {
+  padding-left: 18px;
+}
+
+.plainList li {
+  margin-bottom: 8px;
+}

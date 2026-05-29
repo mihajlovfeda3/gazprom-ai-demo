@@ -471,26 +471,6 @@ function AppShell({
 }
 
 
-function Header({ screen, setScreen, mode }) {
-  return (
-    <header className="header">
-      <div>
-        <div className="logo">Gazprom ИИ T&amp;D</div>
-        <div className="subtitle">RAG-lite demo prototype</div>
-      </div>
-
-      <nav className="nav">
-        <button className={screen === "landing" ? "navButton active" : "navButton"} onClick={() => setScreen("landing")}>Лендинг</button>
-        <button className={screen === "route" ? "navButton active" : "navButton"} onClick={() => setScreen("route")}>Материалы</button>
-        <button className={screen === "knowledge" ? "navButton active" : "navButton"} onClick={() => setScreen("knowledge")}>Знания</button>
-        <button className={screen === "manager" ? "navButton active" : "navButton"} onClick={() => setScreen("manager")}>Руководитель</button>
-      </nav>
-
-      <div className="modeBadge">{mode}</div>
-    </header>
-  );
-}
-
 function normalizeSelectionData(data = {}) {
   return {
     topics: data.detected_topics || data.topics || data.skill_gap || [],
