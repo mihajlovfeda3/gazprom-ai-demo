@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rag import get_rag_mode, search_knowledge
-from llm import generate_knowledge_answer
+from llm import generate_knowledge_answer, generate_material_answer
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -997,6 +997,14 @@ def material_agent(request: MaterialAgentRequest) -> Dict[str, Any]:
         for material in recommended_materials[:3]
     ]
 
+    llm_result = generate_material_answer(
+        query=query,
+        detected_topics=detected_topics,
+        recommended_materials=recommended_materials,
+        quality_alerts=quality_alerts,
+        fallback_answer=answer,
+    )
+
     return {
         "status": "success",
         "agent": "Агент подбора материалов",
@@ -1007,9 +1015,9 @@ def material_agent(request: MaterialAgentRequest) -> Dict[str, Any]:
         "draft_selection": draft_selection,
         "quality_alerts": quality_alerts,
         "sources": sources,
-        "answer": answer,
-        "answer_mode": "template",
-        "llm_model": None,
+        "answer": llm_result["answer"],
+        "answer_mode": llm_result["answer_mode"],
+        "llm_model": llm_result["llm_model"],
         "summary": (
             "Система подбирает внутренние материалы под задачу пользователя на основе корпоративных источников. "
             "Она не делает выводов о квалификации сотрудника и не выполняет автономных действий."
