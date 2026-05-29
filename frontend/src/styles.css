@@ -4209,3 +4209,185 @@ h3,
     grid-template-columns: 1fr;
   }
 }
+
+/* Search, source and pipeline compactness. */
+.materialTaskForm,
+.knowledgeForm {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+}
+
+.materialTaskForm textarea.questionInput,
+.knowledgeForm textarea.questionInput,
+.questionInput {
+  min-height: 104px;
+  padding: 14px 15px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.materialTaskForm button.primaryButton,
+.knowledgeForm button.primaryButton {
+  min-height: 40px;
+  min-width: 142px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.materialTaskForm button.primaryButton {
+  min-width: 210px;
+}
+
+.primaryButton:disabled {
+  cursor: progress;
+  opacity: 0.88;
+}
+
+.exampleButton {
+  border: 1px solid #d5e1f1;
+  background: #f7f9fc;
+  color: var(--gn-blue);
+  font-weight: 500;
+}
+
+.exampleButton:hover {
+  background: var(--gn-blue-soft);
+}
+
+.loadingLabel {
+  gap: 2px;
+}
+
+.loadingDots {
+  min-width: 18px;
+  gap: 0;
+  align-items: baseline;
+  font-weight: 700;
+}
+
+.loadingDots span {
+  width: auto;
+  height: auto;
+  background: none;
+  animation: loadingTextDotPulse 1.05s infinite ease-in-out;
+}
+
+.pipelineCompact h3,
+.loadingCard h3 {
+  margin-bottom: 14px;
+}
+
+.pipelineCompact .pipelineList,
+.loadingCard .pipelineList {
+  gap: 8px;
+}
+
+.pipelineCompact .pipelineItem,
+.loadingCard .pipelineItem {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  box-shadow: none;
+}
+
+.pipelineCompact .pipelineItem strong {
+  color: var(--gn-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pipelineCompact .pipelineItem p,
+.loadingCard .pipelineItem p {
+  margin-top: 3px;
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.check {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  border-radius: 999px;
+  background: var(--gn-blue) !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sourcesCard {
+  align-self: start;
+}
+
+.sourcesCard h3 {
+  margin-bottom: 10px;
+}
+
+.sourcesCard .sourceCompact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sourceCompact .sourceItem {
+  gap: 4px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  box-shadow: none;
+}
+
+.sourceCompact .sourceItem strong {
+  color: var(--gn-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.sourceCompact .sourceItem span {
+  color: var(--gn-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.sourceCompact .sourceItem p {
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .materialTaskForm,
+  .knowledgeForm {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledgeForm button.primaryButton,
+  .materialTaskForm button.primaryButton {
+    width: fit-content;
+    justify-self: start;
+  }
+
+  .sourcesCard .sourceCompact {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .knowledgeForm button.primaryButton,
+  .materialTaskForm button.primaryButton {
+    max-width: 100%;
+  }
+}

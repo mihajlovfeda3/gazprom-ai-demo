@@ -851,7 +851,7 @@ function RouteAgentScreen({
           </div>
         </div>
 
-        <button className="primaryButton" type="submit">
+        <button className="primaryButton" type="submit" disabled={routeLoading}>
           {routeLoading ? <LoadingLabel text="Ищем материалы" /> : "Найти материалы под задачу"}
         </button>
       </form>
@@ -929,9 +929,15 @@ function KnowledgeAgentScreen({
         </div>
       </section>
 
-      <section className="formCard card knowledgeForm">
+      <form
+        className="formCard card knowledgeForm"
+        onSubmit={(event) => {
+          event.preventDefault();
+          fetchKnowledgeAgent(knowledgeQuestion);
+        }}
+      >
         <div className="field">
-          <label>Введите вопрос агенту знаний</label>
+          <label>Введите вопрос по базе знаний</label>
 
           <textarea
             className="questionInput"
@@ -956,11 +962,12 @@ function KnowledgeAgentScreen({
 
         <button
           className="primaryButton"
-          onClick={() => fetchKnowledgeAgent(knowledgeQuestion)}
+          type="submit"
+          disabled={knowledgeLoading}
         >
           {knowledgeLoading ? <LoadingLabel text="Ищем ответ" /> : "Найти ответ"}
         </button>
-      </section>
+      </form>
 
       {knowledgeLoading && <LoadingPipeline />}
 
@@ -1150,7 +1157,7 @@ function LoadingLabel({ text }) {
 
 function PipelineBlock({ pipeline = [] }) {
   return (
-    <div className="card largeCard">
+    <div className="card largeCard pipelineCompact">
       <h3>Как сформирована подборка</h3>
       <div className="pipelineList">
         {pipeline.map((item, index) => {
@@ -1271,7 +1278,7 @@ function NumberedList({ items = [] }) {
 
 function SourceList({ sources = [] }) {
   return (
-    <div className="sourceList">
+    <div className="sourceList sourceCompact">
       {sources.map((item, index) => {
         const source =
           typeof item === "object" && item !== null
