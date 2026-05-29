@@ -66,7 +66,28 @@ function App() {
         throw new Error("Backend error");
       }
 
-      const data = await response.json();
+      let data = await response.json();
+
+      if (data.status === "error") {
+        response = await fetch(`${API_URL}/api/route-agent`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(legacyPayload)
+        });
+
+        if (!response.ok) {
+          throw new Error("Backend error");
+        }
+
+        data = await response.json();
+
+        if (data.status === "error") {
+          throw new Error(data.message || "Backend error");
+        }
+      }
+
       console.log("MATERIAL SELECTION DATA:", data);
       setRouteResult(data);
       setMode("live backend");
@@ -87,7 +108,7 @@ function App() {
   const finalQuestion =
     questionText && questionText.trim().length > 0
       ? questionText.trim()
-      : "Какие курсы помогут прокачать системный дизайн?";
+      : "Какие материалы помогут разобраться с проектированием API?";
 
   try {
     const response = await fetch(`${API_URL}/api/knowledge-agent`, {
@@ -247,18 +268,6 @@ function updateManagerStatus(status) {
   </AppShell>
 );
 }
-function handleGlobalSearch(query = globalSearch) {
-  const finalQuery = query.trim();
-
-  if (!finalQuery) {
-    return;
-  }
-
-  setKnowledgeQuestion(finalQuery);
-  setScreen("knowledge");
-  fetchKnowledgeAgent(finalQuery);
-}
-
 function AppShell({
   screen,
   setScreen,
@@ -469,7 +478,7 @@ function Header({ screen, setScreen, mode }) {
 
       <nav className="nav">
         <button className={screen === "landing" ? "navButton active" : "navButton"} onClick={() => setScreen("landing")}>Лендинг</button>
-        <button className={screen === "route" ? "navButton active" : "navButton"} onClick={() => setScreen("route")}>Маршрут</button>
+        <button className={screen === "route" ? "navButton active" : "navButton"} onClick={() => setScreen("route")}>Материалы</button>
         <button className={screen === "knowledge" ? "navButton active" : "navButton"} onClick={() => setScreen("knowledge")}>Знания</button>
         <button className={screen === "manager" ? "navButton active" : "navButton"} onClick={() => setScreen("manager")}>Руководитель</button>
       </nav>
@@ -516,6 +525,46 @@ function formatScore(score) {
   }
 
   return score.toFixed(2);
+}
+
+function formatDisplayText(value) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value
+    .replace(/при сильном разрыве по/gi, "при фокусе на")
+    .replace(/Курс закрывает разрыв по навыкам:/g, "Материал связан с темами:")
+    .replace(/курс закрывает разрыв по навыкам:/g, "материал связан с темами:")
+    .replace(/закрывает разрыв по навыкам:/g, "связан с темами:")
+    .replace(/разрыв по навыкам:/g, "темы запроса:")
+    .replace(/разрыв по/gi, "фокус по")
+    .replace(/Разрыв/gi, "Тема")
+    .replace(/Черновик ИПР/g, "Черновик подборки для развития")
+    .replace(/ИПР/g, "подборку")
+    .replace(/маршрут развития/gi, "подборку материалов")
+    .replace(/маршрут/gi, "подборку")
+    .replace(/курсы/gi, "материалы")
+    .replace(/курса/gi, "материала")
+    .replace(/курсу/gi, "материалу")
+    .replace(/курс/g, "материал")
+    .replace(/Курс/g, "Материал")
+    .replace(/Согласовать обучение/gi, "Согласовать время на изучение")
+    .replace(/обучения/gi, "изучения")
+    .replace(/обучение/gi, "изучение")
+    .replace(/Подготовка к роли Senior системного аналитика/g, "Подготовка к сложным задачам системного аналитика")
+    .replace(/Матрица компетенций Senior системного аналитика/g, "Матрица тем системного анализа")
+    .replace(/Карьерный трек системного аналитика/g, "Навигация по материалам системного анализа")
+    .replace(/Переход из Middle системного аналитика в Senior требует/gi, "Рабочие задачи повышенной сложности требуют")
+    .replace(/перехода с уровня Middle на Senior/gi, "работы с задачами повышенной сложности")
+    .replace(/Senior системный аналитик/gi, "Системный аналитик")
+    .replace(/Senior/gi, "сложные задачи")
+    .replace(/Middle/gi, "базовый уровень")
+    .replace(/Темае/gi, "фокусе")
+    .replace(/подборку \./g, "подборку.")
+    .replace(/\([^)]*₽[^)]*\)/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function LandingScreen({ setScreen }) {
@@ -850,7 +899,7 @@ function RouteAgentScreen({
           {selection.summary && (
             <div className="card">
               <h3>Пояснение</h3>
-              <p className="answerText">{selection.summary}</p>
+              <p className="answerText">{formatDisplayText(selection.summary)}</p>
             </div>
           )}
 
@@ -875,10 +924,10 @@ function KnowledgeAgentScreen({
   setKnowledgeQuestion
 }) {
   const exampleQuestions = [
-    "Какие курсы помогут прокачать системный дизайн?",
-    "Как перейти из Middle системного аналитика в Senior?",
+    "Какие материалы помогут разобраться с проектированием API?",
+    "Что изучить перед задачей по системному дизайну?",
     "Когда нужно согласование руководителя?",
-    "Какие курсы нужны для архитектурного мышления?"
+    "Какие внутренние материалы есть по архитектурному мышлению?"
   ];
 
   return (
@@ -889,7 +938,7 @@ function KnowledgeAgentScreen({
 <h2>База знаний</h2>
 <p>
   Пользователь задает вопрос, а ИИ-помощник ищет релевантные материалы,
-  курсы и источники в корпоративной базе знаний.
+  источники и ответственных в корпоративной базе знаний.
 </p>
         </div>
       </section>
@@ -902,7 +951,7 @@ function KnowledgeAgentScreen({
             className="questionInput"
             value={knowledgeQuestion}
             onChange={(event) => setKnowledgeQuestion(event.target.value)}
-            placeholder="Например: какие курсы помогут прокачать системный дизайн?"
+            placeholder="Например: какие материалы помогут разобраться с проектированием API?"
           />
 
           <div className="exampleGrid">
@@ -942,7 +991,7 @@ function KnowledgeAgentScreen({
             </div>
             <p className="answerText">
               {typeof knowledgeResult.answer === "string"
-                ? knowledgeResult.answer
+                ? formatDisplayText(knowledgeResult.answer)
                 : "Ответ получен, но требует текстового отображения."}
             </p>
           </div>
@@ -992,6 +1041,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
     managerResult.recommendation ||
     employeeObject.recommendation ||
     "Согласовать время на изучение после текущего спринта и проверить актуальность источников.";
+  const currentContext = /middle|senior/i.test(currentRole)
+    ? "Сотрудник ИТ-кластера"
+    : formatDisplayText(currentRole);
+  const targetContext = /middle|senior/i.test(targetRole)
+    ? "Решение рабочей задачи"
+    : formatDisplayText(targetRole);
 
   return (
     <main className="page">
@@ -1013,7 +1068,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <div>
             <h3>{employeeName}</h3>
             <p>
-              {currentRole} · {targetRole}
+              {currentContext} · {targetContext}
             </p>
           </div>
 
@@ -1024,12 +1079,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 
           <div className="infoBlock">
             <span>Загрузка</span>
-            <p>{workload}</p>
+            <p>{formatDisplayText(workload)}</p>
           </div>
 
           <div className="infoBlock">
             <span>Рекомендация</span>
-            <p>{recommendation}</p>
+            <p>{formatDisplayText(recommendation)}</p>
           </div>
 
           <div className="buttonRow">
@@ -1109,9 +1164,9 @@ function PipelineBlock({ pipeline = [] }) {
           <div className="pipelineItem" key={`${pipelineItem.step || "step"}-${index}`}>
             <span className="check">✓</span>
             <div>
-              <strong>{pipelineItem.step || "Этап выполнен"}</strong>
+              <strong>{formatDisplayText(pipelineItem.step) || "Этап выполнен"}</strong>
               <p>{pipelineItem.model || ""}</p>
-              {pipelineItem.description && <p>{pipelineItem.description}</p>}
+              {pipelineItem.description && <p>{formatDisplayText(pipelineItem.description)}</p>}
             </div>
           </div>
         );
@@ -1138,6 +1193,10 @@ function CourseList({ courses = [] }) {
 }
 
 function MaterialList({ materials = [] }) {
+  if (!materials.length) {
+    return <p className="emptyStateText">Материалы пока не найдены. Попробуйте уточнить рабочую задачу.</p>;
+  }
+
   return (
     <div className="materialList courseList">
       {materials.map((item, index) => {
@@ -1165,8 +1224,8 @@ function MaterialList({ materials = [] }) {
           <div className="materialItemCard courseItem" key={material.id || material.title || index}>
             <div className="materialCardHeader">
               <div>
-                <strong>{material.title || "Материал"}</strong>
-                <span>{materialType}</span>
+                <strong>{formatDisplayText(material.title) || "Материал"}</strong>
+                <span>{formatDisplayText(materialType) || "Материал"}</span>
               </div>
 
               {material.duration_hours && (
@@ -1174,13 +1233,13 @@ function MaterialList({ materials = [] }) {
               )}
             </div>
 
-            {material.description && <p>{material.description}</p>}
-            {material.reason && <p>{material.reason}</p>}
+            {material.description && <p>{formatDisplayText(material.description)}</p>}
+            {material.reason && <p>{formatDisplayText(material.reason)}</p>}
 
             <div className="materialMeta courseMeta">
-              {provider && <span>{provider}</span>}
-              {responsible && <span>Ответственный: {responsible}</span>}
-              {approval && <span>{approval}</span>}
+              {provider && <span>{formatDisplayText(provider)}</span>}
+              {responsible && <span>Ответственный: {formatDisplayText(responsible)}</span>}
+              {approval && <span>{formatDisplayText(approval)}</span>}
               {score && <span>Совпадение: {score}</span>}
             </div>
 
@@ -1205,7 +1264,7 @@ function NumberedList({ items = [] }) {
             ? item
             : item?.title || item?.text || item?.description || "Пункт подборки";
 
-        return <li key={`${text}-${index}`}>{text}</li>;
+        return <li key={`${text}-${index}`}>{formatDisplayText(text)}</li>;
       })}
     </ol>
   );
@@ -1223,14 +1282,14 @@ function SourceList({ sources = [] }) {
 
         return (
         <div className="sourceItem" key={`${source.title || "source"}-${index}`}>
-          <strong>{source.title || source.name || "Источник"}</strong>
+          <strong>{formatDisplayText(source.title || source.name) || "Источник"}</strong>
 
           <span>
-            {source.type || "Документ"}
+            {formatDisplayText(source.type) || "Документ"}
             {score ? ` · совпадение: ${score}` : ""}
           </span>
 
-          {source.text && <p>{source.text}</p>}
+          {source.text && <p>{formatDisplayText(source.text)}</p>}
         </div>
         );
       })}
