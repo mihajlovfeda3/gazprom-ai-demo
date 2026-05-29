@@ -45,6 +45,9 @@ class RouteAgentRequest(BaseModel):
     target_role: str
     employee_id: Optional[str] = "emp_001"
 
+class MaterialAgentRequest(BaseModel):
+    query: str
+    employee_id: Optional[str] = None
 
 class KnowledgeAgentRequest(BaseModel):
     question: str
@@ -100,6 +103,68 @@ def get_pipeline(include_high_stakes: bool = True) -> List[Dict[str, str]]:
 
     return pipeline
 
+def get_material_pipeline() -> List[Dict[str, str]]:
+    """
+    Pipeline для нового material-agent после pivot.
+    Агент не оценивает сотрудника, не строит skill gap и не назначает обучение.
+    """
+
+    return [
+        {
+            "step": "Классификация запроса",
+            "model": "Ministral 3 14B в production / rules in demo",
+            "status": "done",
+            "description": (
+                "Определен тип запроса: поиск корпоративных материалов под рабочую задачу "
+                "или цель развития."
+            ),
+        },
+        {
+            "step": "Выделение тем запроса",
+            "model": "Router + topic extraction",
+            "status": "done",
+            "description": (
+                "Из запроса выделены темы, например API design, интеграции, НМД, "
+                "видео-материалы или архитектурные практики."
+            ),
+        },
+        {
+            "step": "Поиск по корпоративной базе знаний",
+            "model": "Corporate RAG в production / TF-IDF RAG-lite in demo",
+            "status": "done",
+            "description": (
+                "Найдены внутренние курсы, НМД, методички, документы и видео-транскрипты "
+                "из проверяемых корпоративных источников."
+            ),
+        },
+        {
+            "step": "Ранжирование материалов",
+            "model": "Embedding + reranker в production / top-k retrieval in demo",
+            "status": "done",
+            "description": (
+                "Материалы отсортированы по степени совпадения с задачей пользователя, "
+                "а не по предполагаемой оценке сотрудника."
+            ),
+        },
+        {
+            "step": "Проверка владельца и актуальности",
+            "model": "Rules + metadata validation",
+            "status": "done",
+            "description": (
+                "Для каждого материала показаны ответственный, статус актуальности "
+                "и предупреждения, если материал требует проверки."
+            ),
+        },
+        {
+            "step": "Формирование объяснения",
+            "model": "Mistral Small 4 в production / template or Qwen in demo",
+            "status": "done",
+            "description": (
+                "Сформировано объяснение, почему материалы подходят под задачу. "
+                "Агент не назначает обучение и не принимает решений за человека."
+            ),
+        },
+    ]
 
 def find_role(role_name: str) -> Optional[Dict[str, Any]]:
     roles = load_json("roles.json")
@@ -302,6 +367,261 @@ def build_course_payload(
 
     return payload
 
+def infer_material_topics(query: str) -> List[Dict[str, str]]:
+    """
+    Выделяет темы запроса без оценки сотрудника.
+    Это не skill gap, а просто темы, найденные в рабочей задаче / цели.
+    """
+
+    lower = query.lower()
+    topics = []
+
+    topic_rules = [
+        ("api_design", "Проектирование API", ["api", "апи", "контракт"]),
+        ("integration_design", "Интеграции", ["интеграц", "интеграцион", "шина", "обмен данными"]),
+        ("system_design", "Системный дизайн", ["системн", "system design", "дизайн системы"]),
+        ("architecture_basics", "Архитектурные основы", ["архитект", "архитектур"]),
+        ("requirements_management", "Управление требованиями", ["требован", "requirements"]),
+        ("nmd", "Нормативно-методические документы", ["нмд", "регламент", "норматив", "методич"]),
+        ("video_learning", "Видеоматериалы и записи", ["видео", "запись", "вебинар", "лекци"]),
+        ("career_materials", "Карьерные материалы", ["карьер", "роль", "трек", "развит"]),
+    ]
+
+    for topic, title, keywords in topic_rules:
+        if any(keyword in lower for keyword in keywords):
+            topics.append(
+                {
+                    "topic": topic,
+                    "title": title,
+                    "reason": "Тема найдена в запросе пользователя.",
+                }
+            )
+
+    if not topics:
+        topics.append(
+            {
+                "topic": "general_learning_request",
+                "title": "Общий запрос на подбор материалов",
+                "reason": "Запрос относится к поиску корпоративных знаний и материалов.",
+            }
+        )
+
+    return topics
+
+
+def expand_material_query(query: str) -> str:
+    """
+    Расширяет запрос для RAG-lite.
+    В production это будет делать router / малая LLM.
+    """
+
+    lower = query.lower()
+    expanded = query.strip()
+
+    if "api" in lower or "апи" in lower:
+        expanded += " api_design проектирование API контракты интеграции"
+
+    if "интеграц" in lower:
+        expanded += " integration_design интеграционные паттерны взаимодействие систем"
+
+    if "системн" in lower or "system design" in lower:
+        expanded += " system_design системный дизайн архитектура корпоративных систем"
+
+    if "архитект" in lower:
+        expanded += " architecture_basics архитектурные основы"
+
+    if "нмд" in lower or "регламент" in lower:
+        expanded += " НМД регламент нормативно методический документ"
+
+    if "видео" in lower or "вебинар" in lower or "запись" in lower:
+        expanded += " видео транскрипт запись вебинар лекция"
+
+    return expanded
+
+
+def get_material_responsible(material: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Возвращает ответственного за материал.
+    Для курса используем уже существующую get_course_responsible.
+    Для документов/НМД/видео — демо-ответственные.
+    """
+
+    if material.get("responsible_label"):
+        return {
+            "responsible_name": material.get("responsible_name", ""),
+            "responsible_role": material.get("responsible_role", ""),
+            "responsible_unit": material.get("responsible_unit", ""),
+            "responsible_label": material.get("responsible_label", ""),
+        }
+
+    material_type = material.get("type", "")
+    source_type = material.get("source_type", "")
+
+    if source_type == "video_transcript" or "видео" in material_type.lower():
+        return {
+            "responsible_name": "Елена Морозова",
+            "responsible_role": "L&D-координатор видеоматериалов",
+            "responsible_unit": "Корпоративный университет",
+            "responsible_label": "Елена Морозова — L&D-координатор видеоматериалов",
+        }
+
+    if "нмд" in material_type.lower() or "регламент" in material_type.lower():
+        return {
+            "responsible_name": "Ирина Соколова",
+            "responsible_role": "владелец методологии",
+            "responsible_unit": "Центр компетенций",
+            "responsible_label": "Ирина Соколова — владелец методологии",
+        }
+
+    if "карьер" in material_type.lower():
+        return {
+            "responsible_name": "Алексей Романов",
+            "responsible_role": "карьерный консультант ИТ-кластера",
+            "responsible_unit": "Карьерный портал",
+            "responsible_label": "Алексей Романов — карьерный консультант ИТ-кластера",
+        }
+
+    return {
+        "responsible_name": "Ирина Соколова",
+        "responsible_role": "методолог корпоративного обучения",
+        "responsible_unit": "Портал знаний",
+        "responsible_label": "Ирина Соколова — методолог корпоративного обучения",
+    }
+
+
+def get_actuality_payload(material: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Возвращает статус актуальности материала.
+    В production статус будет приходить из LMS/НМД/портала знаний.
+    """
+
+    status = material.get("actuality_status", "actual")
+
+    labels = {
+        "actual": "Актуально",
+        "needs_review": "Требует проверки",
+        "outdated": "Устарело",
+    }
+
+    return {
+        "actuality_status": status,
+        "actuality_label": material.get("actuality_label", labels.get(status, "Актуально")),
+        "last_reviewed_at": material.get("last_reviewed_at", "2026-05-01"),
+        "valid_until": material.get("valid_until", "2026-12-31"),
+    }
+
+
+def build_material_payload_from_search_item(
+    item: Dict[str, Any],
+    rank_index: int,
+) -> Dict[str, Any]:
+    """
+    Собирает единую карточку материала.
+    Материалом может быть курс, документ, НМД, видео-транскрипт, карьерный материал.
+    """
+
+    kind = item.get("kind")
+    raw = item.get("raw", {})
+    score = item.get("score")
+
+    if kind == "course":
+        payload = build_course_payload(
+            course=raw,
+            matched_skills=None,
+            score=score,
+        )
+
+        payload["material_type"] = "course"
+        payload["material_type_label"] = "Курс"
+
+        # После pivot в material-agent не показываем цены:
+        # фокус не на бюджете внешнего обучения, а на поиске внутренних материалов.
+        payload.pop("price_rub", None)
+        payload.pop("price_label", None)
+
+        # На всякий случай убираем внешние поля, если они не нужны UI.
+        payload.pop("course_type_label", None)
+
+    else:
+        responsible = get_material_responsible(raw)
+        actuality = get_actuality_payload(raw)
+
+        payload = {
+            "id": raw.get("id", item.get("id")),
+            "title": raw.get("title", item.get("title")),
+            "material_type": raw.get("source_type", "document"),
+            "material_type_label": raw.get("type", item.get("type", "Материал")),
+            "type": raw.get("type", item.get("type")),
+            "source": raw.get("source", "Корпоративная база знаний"),
+            "provider": raw.get("provider", raw.get("source", "Корпоративная база знаний")),
+            "url": raw.get("url", "#"),
+            "description": raw.get("description", raw.get("text", ""))[:500],
+            "text": raw.get("text", item.get("text", "")),
+            "score": score,
+            "responsible_name": responsible["responsible_name"],
+            "responsible_role": responsible["responsible_role"],
+            "responsible_unit": responsible["responsible_unit"],
+            "responsible_label": responsible["responsible_label"],
+            "actuality_status": actuality["actuality_status"],
+            "actuality_label": actuality["actuality_label"],
+            "last_reviewed_at": actuality["last_reviewed_at"],
+            "valid_until": actuality["valid_until"],
+            "transcript_status": raw.get("transcript_status"),
+            "video_duration_min": raw.get("video_duration_min"),
+        }
+
+    # Для демо даем понятный процент совпадения по рангу, а не сырой TF-IDF score.
+    payload["match_percent"] = max(60, 92 - rank_index * 5)
+    payload["match_label"] = f"{payload['match_percent']}% совпадения"
+
+    payload["reason"] = (
+        "Материал рекомендован, потому что совпадает с темами запроса "
+        "и найден в корпоративной базе знаний."
+    )
+
+    return payload
+
+
+def build_quality_alerts(materials: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    """
+    Демо-контур проверки качества базы знаний.
+    Показывает, что система отслеживает актуальность материалов.
+    """
+
+    alerts = []
+
+    for material in materials:
+        if material.get("actuality_status") == "needs_review":
+            alerts.append(
+                {
+                    "material_id": material.get("id"),
+                    "status": "warning",
+                    "message": "Материал требует проверки актуальности владельцем.",
+                    "owner_action": "Отправить владельцу материала на валидацию.",
+                }
+            )
+
+        if material.get("actuality_status") == "outdated":
+            alerts.append(
+                {
+                    "material_id": material.get("id"),
+                    "status": "critical",
+                    "message": "Материал помечен как устаревший и не должен быть основой рекомендации.",
+                    "owner_action": "Обновить материал или исключить из выдачи.",
+                }
+            )
+
+        if material.get("material_type") == "video_transcript" and material.get("transcript_status") == "draft":
+            alerts.append(
+                {
+                    "material_id": material.get("id"),
+                    "status": "warning",
+                    "message": "Видео-транскрипт распознан, но еще не подтвержден владельцем.",
+                    "owner_action": "Проверить расшифровку и подтвердить актуальность.",
+                }
+            )
+
+    return alerts
 
 def calculate_skill_gap(
     current_skills: Dict[str, int],
@@ -576,6 +896,126 @@ def infer_query_skills(question: str) -> set[str]:
         skills.add("business_communication")
 
     return skills
+
+@app.post("/api/material-agent")
+def material_agent(request: MaterialAgentRequest) -> Dict[str, Any]:
+    """
+    Новый безопасный агент после pivot:
+    не оценивает сотрудника, не строит skill gap, не назначает обучение.
+    Ищет и ранжирует проверенные внутренние материалы под задачу / цель.
+    """
+
+    import re
+
+    query = request.query.strip()
+    expanded_query = expand_material_query(query)
+    detected_topics = infer_material_topics(query)
+
+    search_results = search_knowledge(query=expanded_query, top_k=20)
+
+    recommended_materials = []
+    seen_ids = set()
+
+    for item in search_results:
+        raw = item.get("raw", {})
+        kind = item.get("kind")
+
+        # После pivot ядро material-agent работает только с внутренними
+        # и проверяемыми корпоративными материалами.
+        if kind == "course" and raw.get("course_type") == "external":
+            continue
+
+        material_id = raw.get("id", item.get("id"))
+
+        if material_id in seen_ids:
+            continue
+
+        material_payload = build_material_payload_from_search_item(
+            item=item,
+            rank_index=len(recommended_materials),
+        )
+
+        # В новом material-agent цены не показываем.
+        material_payload.pop("price_rub", None)
+        material_payload.pop("price_label", None)
+
+        recommended_materials.append(material_payload)
+        seen_ids.add(material_id)
+
+        if len(recommended_materials) >= 6:
+            break
+
+    quality_alerts = build_quality_alerts(recommended_materials)
+
+    raw_sources = get_rag_sources(query=expanded_query, top_k=20)
+
+    sources = []
+    for source in raw_sources:
+        # Убираем внешние курсы из источников нового material-agent.
+        if source.get("course_type") == "external":
+            continue
+
+        cleaned_source = dict(source)
+        cleaned_source.pop("price_rub", None)
+        cleaned_source.pop("price_label", None)
+
+        # Чистим текст источника от ценовых фраз.
+        text = cleaned_source.get("text")
+        if isinstance(text, str):
+            text = re.sub(
+                r"\s*Цена:\s*(бесплатно для сотрудника|стоимость\s+\d+\s+рублей)\.",
+                "",
+                text,
+            )
+            cleaned_source["text"] = text.strip()
+
+        sources.append(cleaned_source)
+
+        if len(sources) >= 5:
+            break
+
+    if recommended_materials:
+        top_titles = ", ".join(
+            f"«{material.get('title')}»"
+            for material in recommended_materials[:3]
+        )
+
+        answer = (
+            f"По запросу «{query}» система нашла релевантные внутренние материалы: "
+            f"{top_titles}. Агент не оценивает сотрудника и не назначает обучение, "
+            f"а показывает проверенные источники, владельцев материалов и степень совпадения с задачей."
+        )
+    else:
+        answer = (
+            f"По запросу «{query}» точных внутренних материалов в демо-базе не найдено. "
+            f"В production-контуре запрос будет расширен по корпоративному RAG, включая документы, "
+            f"НМД, курсы и видео-транскрипты."
+        )
+
+    draft_selection = [
+        f"Добавить материал «{material.get('title')}» в подборку."
+        for material in recommended_materials[:3]
+    ]
+
+    return {
+        "status": "success",
+        "agent": "Агент подбора материалов",
+        "query": query,
+        "pipeline": get_material_pipeline(),
+        "detected_topics": detected_topics,
+        "recommended_materials": recommended_materials,
+        "draft_selection": draft_selection,
+        "quality_alerts": quality_alerts,
+        "sources": sources,
+        "answer": answer,
+        "answer_mode": "template",
+        "llm_model": None,
+        "summary": (
+            "Система подбирает внутренние материалы под задачу пользователя на основе корпоративных источников. "
+            "Она не делает выводов о квалификации сотрудника и не выполняет автономных действий."
+        ),
+    }
+    
 
 @app.post("/api/knowledge-agent")
 def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
