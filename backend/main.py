@@ -897,6 +897,57 @@ def infer_query_skills(question: str) -> set[str]:
 
     return skills
 
+
+def is_material_query_allowed(query: str) -> bool:
+    """
+    Guardrail для material-agent: пропускает только запросы про поиск
+    корпоративных T&D-материалов под рабочую задачу или цель развития.
+    """
+
+    lower = query.strip().lower()
+
+    if not lower:
+        return False
+
+    allowed_keywords = [
+        "обуч",
+        "развит",
+        "курс",
+        "материал",
+        "документ",
+        "docs",
+        "document",
+        "нмд",
+        "регламент",
+        "методич",
+        "видео",
+        "video",
+        "вебинар",
+        "webinar",
+        "запис",
+        "api",
+        "апи",
+        "интеграц",
+        "integration",
+        "архитект",
+        "architecture",
+        "системн",
+        "system design",
+        "проект",
+        "задач",
+        "компетенц",
+        "навык",
+        "skill",
+        "карьер",
+        "цель",
+        "руководител",
+        "согласован",
+        "время",
+    ]
+
+    return any(keyword in lower for keyword in allowed_keywords)
+
+
 @app.post("/api/material-agent")
 def material_agent(request: MaterialAgentRequest) -> Dict[str, Any]:
     """
@@ -908,6 +959,24 @@ def material_agent(request: MaterialAgentRequest) -> Dict[str, Any]:
     import re
 
     query = request.query.strip()
+
+    if not is_material_query_allowed(query):
+        return {
+            "status": "success",
+            "agent": "Агент подбора материалов",
+            "query": query,
+            "pipeline": get_material_pipeline(),
+            "detected_topics": [],
+            "recommended_materials": [],
+            "draft_selection": [],
+            "quality_alerts": [],
+            "sources": [],
+            "answer": "Я помогаю искать корпоративные материалы, курсы, НМД, видео-транскрипты и документы под рабочую задачу или цель развития. Попробуйте сформулировать запрос через задачу, навык, материал или направление обучения.",
+            "answer_mode": "guardrail",
+            "llm_model": None,
+            "summary": "Запрос не относится к поиску корпоративных T&D-материалов.",
+        }
+
     expanded_query = expand_material_query(query)
     detected_topics = infer_material_topics(query)
 
