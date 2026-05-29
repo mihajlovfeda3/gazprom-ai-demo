@@ -151,17 +151,17 @@ function App() {
       current_role:
         data.current_role ||
         employeeObject.current_role ||
-        "Middle системный аналитик",
+        "Сотрудник ИТ-кластера",
       target_role:
         data.target_role ||
         employeeObject.target_role ||
-        "Senior системный аналитик",
+        "Решение рабочей задачи",
       status:
         data.status ||
         data.route_status ||
         employeeObject.status ||
         employeeObject.route_status ||
-        "Маршрут готов к согласованию",
+        "Подборка готова к проверке",
       workload:
         data.workload ||
         employeeObject.workload ||
@@ -169,7 +169,7 @@ function App() {
       recommendation:
         data.recommendation ||
         employeeObject.recommendation ||
-        "Согласовать обучение с началом через 3 недели из-за высокой загрузки ближайшие 2 недели."
+        "Согласовать время на изучение после текущего спринта и проверить актуальность источников."
     };
 
     setManagerResult(normalizedManager);
@@ -178,7 +178,7 @@ function App() {
   } catch (error) {
     console.warn("Backend unavailable, using mock manager response");
     setManagerResult(mockManagerResponse);
-    setManagerStatus(mockManagerResponse.status || "Маршрут готов к согласованию");
+    setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
     setMode("fallback demo");
   }
 }
@@ -976,12 +976,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const currentRole =
     managerResult.current_role ||
     employeeObject.current_role ||
-    "Middle системный аналитик";
+    "Сотрудник ИТ-кластера";
 
   const targetRole =
     managerResult.target_role ||
     employeeObject.target_role ||
-    "Senior системный аналитик";
+    "Решение рабочей задачи";
 
   const workload =
     managerResult.workload ||
@@ -991,17 +991,17 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const recommendation =
     managerResult.recommendation ||
     employeeObject.recommendation ||
-    "Согласовать обучение с началом через 3 недели из-за высокой загрузки ближайшие 2 недели.";
+    "Согласовать время на изучение после текущего спринта и проверить актуальность источников.";
 
   return (
     <main className="page">
       <section className="screenHeader">
         <div>
-         <div className="eyebrow">Управленческое согласование</div>
-<h2>Помощник руководителя</h2>
+         <div className="eyebrow">Проверка подборки</div>
+<h2>Проверка подборки материалов</h2>
 <p>
-  Руководитель видит маршрут сотрудника, текущую загрузку и рекомендацию
-  по согласованию обучения.
+  Руководитель видит подобранные материалы, источники и рекомендацию по
+  времени на изучение.
 </p>
         </div>
       </section>
@@ -1013,7 +1013,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <div>
             <h3>{employeeName}</h3>
             <p>
-              {currentRole} → {targetRole}
+              {currentRole} · {targetRole}
             </p>
           </div>
 
@@ -1035,23 +1035,23 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <div className="buttonRow">
             <button
               className="primaryButton"
-              onClick={() => updateManagerStatus("Согласовано")}
+              onClick={() => updateManagerStatus("Время на изучение согласовано")}
             >
-              Согласовать
+              Согласовать время на изучение
             </button>
 
             <button
               className="secondaryButton"
-              onClick={() => updateManagerStatus("Требует корректировки")}
+              onClick={() => updateManagerStatus("Требуется уточнить подборку")}
             >
-              Скорректировать
+              Попросить уточнить подборку
             </button>
 
             <button
               className="dangerButton"
-              onClick={() => updateManagerStatus("Отложено")}
+              onClick={() => updateManagerStatus("Отправлено владельцу направления")}
             >
-              Отложить
+              Отправить владельцу направления
             </button>
           </div>
         </div>
@@ -1060,10 +1060,9 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <h3>Роль руководителя в процессе</h3>
           <ul className="plainList">
             <li>Руководитель остается в контуре принятия решений</li>
-<li>ИИ не согласует обучение автоматически</li>
-<li>Система дает рекомендацию с учетом загрузки и целевой роли</li>
-            <li>ИИ не согласует обучение автоматически.</li>
-            <li>Система дает рекомендацию с учетом загрузки и целевой роли.</li>
+            <li>ИИ не назначает обучение автоматически</li>
+            <li>Проверяются источники, ответственные и актуальность материалов</li>
+            <li>Система помогает согласовать время на изучение с учетом загрузки</li>
           </ul>
         </div>
       </section>
