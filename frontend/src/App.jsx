@@ -293,11 +293,6 @@ function AppShell({
 
   return (
     <div className="gazpromShell">
-      <div className="corporateNotice">
-        <span>Прототип ИИ T&amp;D платформы</span>
-        <strong>Газпром нефть · проверенные материалы под рабочую задачу</strong>
-      </div>
-
     <div className="productApp productAppCompact">
       <aside className="blueRail cleanRail">
         <button
@@ -460,7 +455,7 @@ function AppShell({
             под рабочую задачу.
           </p>
 
-          <button className="assistantAsk" onClick={() => openScreen("knowledge")}>
+          <button className="assistantAsk" onClick={() => openScreen("knowledge")} type="button">
             Задать вопрос
           </button>
         </div>
@@ -900,7 +895,7 @@ function RouteAgentScreen({
         </div>
 
         <button className="primaryButton" type="submit">
-          {routeLoading ? "Ищем материалы..." : "Найти материалы под задачу"}
+          {routeLoading ? <LoadingLabel text="Ищем материалы" /> : "Найти материалы под задачу"}
         </button>
       </form>
 
@@ -925,7 +920,7 @@ function RouteAgentScreen({
             <NumberedList items={selection.draft} />
           </div>
 
-          <div className="card">
+          <div className="card largeCard sourcesCard">
             <h3>Использованные источники</h3>
             <SourceList sources={selection.sources} />
           </div>
@@ -1006,7 +1001,7 @@ function KnowledgeAgentScreen({
           className="primaryButton"
           onClick={() => fetchKnowledgeAgent(knowledgeQuestion)}
         >
-          {knowledgeLoading ? "Ищем ответ..." : "Найти ответ"}
+          {knowledgeLoading ? <LoadingLabel text="Ищем ответ" /> : "Найти ответ"}
         </button>
       </section>
 
@@ -1035,7 +1030,7 @@ function KnowledgeAgentScreen({
             <CourseList courses={knowledgeResult.related_courses} />
           </div>
 
-          <div className="card">
+          <div className="card largeCard sourcesCard">
             <h3>Использованные источники</h3>
             <SourceList sources={knowledgeResult.sources} />
           </div>
@@ -1180,6 +1175,19 @@ function LoadingPipeline() {
         ))}
       </div>
     </section>
+  );
+}
+
+function LoadingLabel({ text }) {
+  return (
+    <span className="loadingLabel">
+      {text}
+      <span className="loadingDots" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </span>
+    </span>
   );
 }
 
