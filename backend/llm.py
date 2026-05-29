@@ -251,6 +251,81 @@ def _build_materials_context(materials: List[Dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def _build_required_material_titles_context(materials: List[Dict[str, Any]]) -> str:
+    titles = [
+        material.get("title", "Untitled")
+        for material in materials[:3]
+        if material.get("title")
+    ]
+
+    if not titles:
+        return "No material titles available."
+
+    return "; ".join(titles)
+
+
+def _get_required_material_titles(materials: List[Dict[str, Any]]) -> List[str]:
+    return [
+        material.get("title", "Untitled")
+        for material in materials[:3]
+        if material.get("title")
+    ]
+
+
+def _format_titles_for_answer(titles: List[str]) -> str:
+    quoted_titles = [f"«{title}»" for title in titles[:3]]
+
+    if len(quoted_titles) <= 1:
+        return quoted_titles[0] if quoted_titles else "найденный внутренний материал"
+
+    if len(quoted_titles) == 2:
+        return " и ".join(quoted_titles)
+
+    return f"{quoted_titles[0]}, {quoted_titles[1]} и {quoted_titles[2]}"
+
+
+def _build_constrained_material_answer(materials: List[Dict[str, Any]]) -> Optional[str]:
+    titles = _get_required_material_titles(materials)
+
+    if not titles:
+        return None
+
+    return (
+        f"Для задачи подходят материалы {_format_titles_for_answer(titles)}. "
+        "У этих материалов есть ответственные или владельцы, поэтому понятно, к кому обращаться за уточнением актуальности и применения. "
+        "Агент не назначает обучение и не принимает решение, а только объясняет найденные внутренние материалы."
+    )
+
+
+def _is_material_answer_compliant(answer: str, materials: List[Dict[str, Any]]) -> bool:
+    if "\n" in answer or re.search(r"(^|\n)\s*[-*0-9]+[.)-]?\s+", answer):
+        return False
+
+    sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", answer.strip())
+        if sentence.strip()
+    ]
+
+    if len(sentences) != 3:
+        return False
+
+    lower_answer = answer.lower()
+    if "не назначает обучение" not in lower_answer or "не принимает решение" not in lower_answer:
+        return False
+
+    if "ответствен" not in lower_answer and "владельц" not in lower_answer:
+        return False
+
+    required_titles = _get_required_material_titles(materials)
+    if len(required_titles) >= 2:
+        mentioned_titles = sum(1 for title in required_titles if title in answer)
+        if mentioned_titles < 2:
+            return False
+
+    return True
+
+
 def _build_quality_alerts_context(quality_alerts: List[Dict[str, Any]]) -> str:
     if not quality_alerts:
         return "No quality alerts."
@@ -304,15 +379,26 @@ def generate_material_answer(
     """
 
     system_prompt = (
-        "You are the wording layer for an internal corporate material search agent. "
-        "The agent helps explain already found internal materials for a work task. "
-        "Do not evaluate the employee. Do not build a skill gap. Do not assign training. "
-        "Do not invent materials, owners, links, prices, providers, dates, or facts. "
-        "Use only the provided recommended materials, detected topics, quality alerts, and fallback draft. "
-        "Do not mention external courses or prices. "
-        "Answer in Russian in 2-4 concise business-style sentences. "
-        "Do not use markdown, tables, or numbered lists. "
-        "Do not reveal reasoning."
+        "Ты генеративный слой внутреннего агента подбора корпоративных материалов. "
+        "Ты объясняешь только те материалы, которые уже найдены deterministic search/ranking. "
+        "Нельзя оценивать сотрудника, строить skill gap, назначать обучение или принимать решение за пользователя/руководителя. "
+        "Нельзя придумывать материалы, владельцев, ссылки, цены, провайдеров, даты или факты. "
+        "Используй только provided recommended materials, detected topics, quality alerts и fallback draft. "
+        "Назови ровно 2 или 3 материала из provided recommended materials. "
+        "Обязательно дословно используй названия из блока Required material titles to name. "
+        "Обязательно упомяни, что у материалов есть ответственные или владельцы. "
+        "Обязательно используй фразу 'не назначает обучение'. "
+        "Не упоминай внешние курсы и цены. "
+        "Верни ровно один абзац из 3 предложений на русском языке. "
+        "Предложение 1 должно назвать 2 или 3 материала. "
+        "Предложение 2 должно сказать, что у этих материалов есть ответственные или владельцы. "
+        "Предложение 2 обязательно начинается словами 'У этих материалов'. "
+        "Предложение 3 должно сказать, что агент не назначает обучение и не принимает решение. "
+        "Предложение 3 обязательно начинается словами 'Агент не назначает обучение'. "
+        "Не объединяй предложения 1 и 2, не объединяй предложения 2 и 3. "
+        "Запрещены markdown, списки, маркеры, нумерация, таблицы и переносы строк. "
+        "Не выводи служебные метки вроде '1-е предложение', 'Предложение 1' или placeholders. "
+        "Не показывай ход рассуждений и не добавляй вводные фразы."
     )
 
     prompt = f"""
@@ -325,13 +411,16 @@ Detected topics:
 Recommended internal materials:
 {_build_materials_context(recommended_materials)}
 
+Required material titles to name:
+{_build_required_material_titles_context(recommended_materials)}
+
 Quality alerts:
 {_build_quality_alerts_context(quality_alerts)}
 
 Fallback draft answer:
 {fallback_answer}
 
-Rewrite the fallback draft into a clear final answer. Explain only these already found materials and their usefulness for the user's task. Keep the safety constraints.
+Сформулируй финальный ответ обычным абзацем без markdown, списков, нумерации, служебных меток и переносов строк. Не объединяй предложения: после названий материалов поставь точку, второе предложение начни словами "У этих материалов", третье предложение начни словами "Агент не назначает обучение". Структура смысла: сначала дословно назови 2-3 материала из Required material titles to name, затем скажи, что у них есть ответственные или владельцы, затем скажи, что агент не назначает обучение и не принимает решение, а только объясняет найденные внутренние материалы.
 """
 
     llm_answer = _call_ollama(
@@ -341,6 +430,16 @@ Rewrite the fallback draft into a clear final answer. Explain only these already
     )
 
     if llm_answer:
+        if not _is_material_answer_compliant(llm_answer, recommended_materials):
+            constrained_answer = _build_constrained_material_answer(recommended_materials)
+
+            if constrained_answer:
+                return {
+                    "answer": constrained_answer,
+                    "answer_mode": "template_fallback",
+                    "llm_model": None,
+                }
+
         return {
             "answer": llm_answer,
             "answer_mode": "llm",
