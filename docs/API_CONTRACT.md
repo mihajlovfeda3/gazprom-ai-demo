@@ -1,226 +1,121 @@
-# API Contract — Gazprom AI T&D Demo
+# API Contract
 
-Документ фиксирует контракт между backend и frontend. Frontend работает только с полями, описанными ниже, и не пытается выводить объекты целиком.
+## Pivot endpoint
 
-## Базовый URL
+`POST /api/material-agent` is the primary endpoint after the project pivot.
 
-```txt
-http://127.0.0.1:8000
+The material agent searches and ranks internal corporate materials for a work task or a development goal. It does not evaluate an employee, does not build a skill gap, does not assign training, and does not autonomously update an individual development plan.
+
+Legacy/support endpoints remain available for demo continuity:
+
+- `POST /api/route-agent`
+- `POST /api/knowledge-agent`
+- `POST /api/manager-agent`
+
+These legacy/support endpoints are not the main pivot scenario.
+
+## Request
+
+```http
+POST /api/material-agent
+Content-Type: application/json
 ```
-
-## Общие правила для frontend
-
-1. Backend возвращает поля в `snake_case`.
-2. Нельзя ожидать `skillGap`, `recommendedCourses`, `iprDraft`.
-3. Нельзя рендерить объект целиком: `{course}`, `{skill}`, `{source}`, `{managerData.employee}`.
-4. Нужно выводить конкретные поля: `course.title`, `skill.title`, `source.title`, `managerData.employee.name`.
-5. Для fallback demo-mode можно использовать `frontend/src/mockResponses_for_frontend.js`.
-
----
-
-## GET `/api/health`
-
-### Response
 
 ```json
 {
-  "status": "ok",
-  "message": "Backend работает",
-  "version": "0.4.0",
-  "rag_mode": "tfidf-rag-lite"
-}
-```
-
----
-
-## GET `/api/debug/search?query=...`
-
-Технический endpoint для проверки RAG-lite.
-
-### Response
-
-```json
-{
-  "status": "success",
-  "query": "системный дизайн",
-  "rag_mode": "tfidf-rag-lite",
-  "results": []
-}
-```
-
-`results` содержит объекты с полями:
-
-| Поле | Тип | Комментарий |
-|---|---:|---|
-| `id` | string | ID курса или источника |
-| `kind` | string | `course` или `source` |
-| `title` | string | Название |
-| `type` | string | Тип материала |
-| `text` | string | Текстовый chunk, по которому искал RAG-lite |
-| `score` | number | Релевантность |
-| `raw` | object | Сырой объект. Во frontend напрямую не рендерить. |
-
----
-
-## POST `/api/route-agent`
-
-Формирует маршрут развития сотрудника.
-
-### Request
-
-```json
-{
-  "current_role": "Middle системный аналитик",
-  "target_role": "Senior системный аналитик",
+  "query": "Нужно разобраться, как описывать API и интеграции в проекте",
   "employee_id": "emp_001"
 }
 ```
 
-### Response: ключевые поля
+### Request fields
 
-```json
-{
-  "status": "success",
-  "agent": "Агент маршрута развития",
-  "employee": {
-    "name": "Иван Петров",
-    "current_role": "Middle системный аналитик",
-    "target_role": "Senior системный аналитик",
-    "workload": "Высокая загрузка ближайшие 2 недели"
-  },
-  "pipeline": [],
-  "skill_gap": [],
-  "recommended_courses": [],
-  "ipr_draft": [],
-  "sources": [],
-  "summary": "..."
-}
-```
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `query` | string | yes | Work task, material search request, or development goal. |
+| `employee_id` | string | no | Employee identifier used by the demo UI. The material-agent flow does not evaluate the employee. |
 
-### `skill_gap[]`
+## Response fields
 
-| Поле | Тип | Комментарий |
-|---|---:|---|
-| `skill` | string | Технический код навыка |
-| `title` | string | Человекочитаемое название |
-| `current_level` | number | Текущий уровень |
-| `target_level` | number | Целевой уровень |
-| `gap` | number | Разрыв |
+| Field | Type | Description |
+| --- | --- | --- |
+| `status` | string | Request status, usually `success`. |
+| `agent` | string | Agent display name: `Агент подбора материалов`. |
+| `query` | string | Original user query after trimming. |
+| `pipeline` | array | Demo pipeline steps shown in the UI. |
+| `detected_topics` | array | Topics extracted from the query, for example API design or integrations. |
+| `recommended_materials` | array | Ranked internal materials. External courses are filtered out. |
+| `draft_selection` | array | Draft UI actions for adding top materials to a selection. |
+| `quality_alerts` | array | Warnings about material actuality or transcript validation. |
+| `sources` | array | Source snippets used by the material-agent response. External courses and price fields are filtered out. |
+| `answer` | string | Short explanation for why the found materials are relevant. |
+| `answer_mode` | string | `llm`, `template_fallback`, or `guardrail`. |
+| `llm_model` | string or null | Local model name when Qwen/Ollama generated the answer, otherwise `null`. |
+| `summary` | string | Short explanation of the endpoint behavior. |
 
-### `recommended_courses[]`
+## recommended_materials
 
-| Поле | Тип | Комментарий |
-|---|---:|---|
-| `id` | string | ID курса |
-| `title` | string | Название курса |
-| `skills` | array | Коды навыков |
-| `level` | string | Уровень |
-| `duration_hours` | number | Длительность |
-| `format` | string | Формат прохождения: `online`, `workshop`, `blended`, `external_online` |
-| `source` | string | Внутренний источник или внешний источник |
-| `provider` | string | Провайдер курса |
-| `url` | string | Ссылка для клика по карточке |
-| `course_type` | string | `internal` или `external` |
-| `course_type_label` | string | Бейдж для UI |
-| `requires_approval` | boolean | Требует ли согласования |
-| `approval_label` | string | Бейдж для UI |
-| `price_rub` | number | Стоимость в рублях |
-| `price_label` | string | Текст цены для UI |
-| `description` | string | Описание курса |
-| `matched_skills` | array | Какие навыки закрывает курс |
-| `matched_skills_count` | number | Количество совпавших навыков |
-| `reason` | string | Почему курс рекомендован |
+Each item in `recommended_materials` is a material card.
 
-### Как рендерить карточку курса
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Material or course identifier. |
+| `title` | string | Material title. |
+| `material_type` | string | Normalized material type, for example `video_transcript`, `nmd`, or `course`. |
+| `material_type_label` | string | Human-readable material type label. |
+| `type` | string | Source type label used by the demo data. |
+| `source` | string | Internal source system, portal, or knowledge base. |
+| `provider` | string | Internal provider or owner organization. |
+| `url` | string | Demo material URL. |
+| `description` | string | Short material description. |
+| `score` | number | Retrieval score from the deterministic search stage. |
+| `match_percent` | number | Demo-friendly match percentage. |
+| `match_label` | string | Human-readable match label, for example `92% совпадения`. |
+| `responsible_name` | string | Responsible person name. |
+| `responsible_role` | string | Responsible person role. |
+| `responsible_unit` | string | Responsible person unit. |
+| `responsible_label` | string | Combined responsible label for UI display. |
+| `actuality_status` | string | Actuality status, for example `actual`, `needs_review`, or `outdated`. |
+| `actuality_label` | string | Human-readable actuality label. |
+| `last_reviewed_at` | string | Last review date in demo data. |
+| `valid_until` | string | Validity date in demo data. |
+| `transcript_status` | string or null | Transcript processing/validation status for video materials. |
+| `video_duration_min` | number or null | Video duration in minutes for video materials. |
+| `reason` | string | Explanation of why the material was recommended. |
 
-```jsx
-<a href={course.url} target="_blank" rel="noreferrer">
-  <h3>{course.title}</h3>
-  <p>{course.description}</p>
-  <span>{course.course_type_label}</span>
-  <span>{course.provider}</span>
-  <span>{course.approval_label}</span>
-  <span>{course.price_label}</span>
-  <span>{course.duration_hours} ч.</span>
-</a>
-```
+### Explicit exclusions
 
----
+`price_rub` and `price_label` are not used in `material-agent` responses.
 
-## POST `/api/knowledge-agent`
+External courses are not returned by `material-agent`. The endpoint focuses on internal corporate materials such as courses, NMD, methodical documents, documents, and video transcripts.
 
-Свободный поиск по базе знаний и курсам.
+## quality_alerts
 
-### Request
+`quality_alerts` contains material quality and actuality warnings.
 
-```json
-{
-  "question": "Какие курсы помогут прокачать системный дизайн?"
-}
-```
+| Field | Type | Description |
+| --- | --- | --- |
+| `material_id` | string | ID of the material that needs attention. |
+| `status` | string | Alert status, for example `warning`. |
+| `message` | string | Alert text for the UI. |
+| `owner_action` | string | Suggested owner-side action. |
 
-### Response
+## answer_mode
 
-```json
-{
-  "status": "success",
-  "agent": "Агент корпоративного знания",
-  "question": "Какие курсы помогут прокачать системный дизайн?",
-  "pipeline": [],
-  "answer": "...",
-  "related_courses": [],
-  "sources": []
-}
-```
+| Value | Meaning |
+| --- | --- |
+| `llm` | The answer was generated by local Qwen/Ollama. `llm_model` contains the model name, for example `qwen3:0.6b`. |
+| `template_fallback` | Qwen/Ollama is unavailable or the LLM answer did not pass safety/format checks, so the endpoint returned a deterministic template answer. |
+| `guardrail` | The query is outside the material-agent scope. The endpoint does not run retrieval or LLM generation. |
 
-`related_courses[]` использует тот же формат, что `recommended_courses[]`, но дополнительно содержит `score`.
+## Guardrail behavior
 
----
+For irrelevant requests, `POST /api/material-agent` returns `answer_mode = "guardrail"` and empty arrays for:
 
-## POST `/api/manager-agent`
+- `detected_topics`
+- `recommended_materials`
+- `draft_selection`
+- `quality_alerts`
+- `sources`
 
-Показывает экран руководителя для согласования маршрута.
-
-### Request
-
-```json
-{
-  "employee_id": "emp_001"
-}
-```
-
-### Response
-
-```json
-{
-  "status": "success",
-  "agent": "Агент руководителя",
-  "manager": {
-    "id": "mgr_001",
-    "name": "Мария Кузнецова",
-    "role": "Руководитель отдела системного анализа"
-  },
-  "employee": {
-    "employee_id": "emp_001",
-    "name": "Иван Петров",
-    "current_role": "Middle системный аналитик",
-    "target_role": "Senior системный аналитик",
-    "route_status": "Маршрут готов к согласованию",
-    "workload": "Высокая загрузка ближайшие 2 недели",
-    "recommendation": "Согласовать обучение с началом через 3 недели"
-  },
-  "pipeline": [],
-  "decision_options": ["Согласовать", "Скорректировать", "Отложить"]
-}
-```
-
----
-
-## Demo flow для frontend
-
-1. Вызвать `/api/route-agent`.
-2. Показать `employee`, `skill_gap`, `recommended_courses`, `ipr_draft`, `sources`.
-3. По кнопке “Отправить руководителю” вызвать `/api/manager-agent`.
-4. Показать `manager`, `employee`, `decision_options`.
-5. В свободном поиске вызвать `/api/knowledge-agent`.
-6. Показать `answer`, `related_courses`, `sources`.
+The guardrail response explains that the agent helps search corporate materials, courses, NMD, video transcripts, and documents for a work task or development goal.

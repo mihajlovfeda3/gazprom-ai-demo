@@ -1,137 +1,165 @@
-# Test Requests — Gazprom AI T&D Demo Backend
+# Test Requests
 
-## 1. Запуск backend
+Use these requests to validate the backend after the pivot to `POST /api/material-agent`.
+
+Run the backend from `backend/`:
 
 ```powershell
-cd backend
+python -m uvicorn main:app --reload
+```
+
+If the project uses a virtual environment:
+
+```powershell
 .\venv\Scripts\python.exe -m uvicorn main:app --reload
 ```
 
-Если `venv` еще нет:
+## A. Health
 
-```powershell
-cd backend
-py -3.12 -m venv venv
-.\venv\Scripts\python.exe -m pip install --upgrade pip
-.\venv\Scripts\python.exe -m pip install -r requirements.txt
-.\venv\Scripts\python.exe -m uvicorn main:app --reload
+```http
+GET /api/health
 ```
 
----
+Expected:
 
-## 2. Health check
+- `status = ok`
 
-Открыть в браузере:
+## B. Guardrail
 
-```txt
-http://127.0.0.1:8000/api/health
+```http
+POST /api/material-agent
+Content-Type: application/json
 ```
-
-Ожидаемый результат:
 
 ```json
 {
-  "status": "ok",
-  "message": "Backend работает",
-  "version": "0.4.0",
-  "rag_mode": "tfidf-rag-lite"
+  "query": "как дела квен",
+  "employee_id": "emp_001"
 }
 ```
 
----
+Expected:
 
-## 3. Debug RAG search
+- `answer_mode = guardrail`
+- `recommended_materials = []`
+- `sources = []`
+- `quality_alerts = []`
+- retrieval is not executed
+- LLM generation is not executed
 
-Открыть в браузере:
+## C. Main Scenario: API And Integrations
 
-```txt
-http://127.0.0.1:8000/api/debug/search?query=системный%20дизайн
+```http
+POST /api/material-agent
+Content-Type: application/json
 ```
-
-Еще проверки:
-
-```txt
-http://127.0.0.1:8000/api/debug/search?query=внешнее%20обучение%20интеграции
-http://127.0.0.1:8000/api/debug/search?query=курс%20требует%20согласования
-http://127.0.0.1:8000/api/debug/search?query=API%20Design
-```
-
----
-
-## 4. Route agent через PowerShell
-
-```powershell
-Invoke-RestMethod `
-  -Uri "http://127.0.0.1:8000/api/route-agent" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"current_role":"Middle системный аналитик","target_role":"Senior системный аналитик","employee_id":"emp_001"}'
-```
-
-Что проверить в ответе:
-
-- `status = success`
-- `skill_gap` не пустой
-- `recommended_courses` не пустой
-- у курсов есть `provider`, `url`, `course_type`, `requires_approval`, `price_rub`, `price_label`
-- `ipr_draft` не пустой
-- `sources` не пустой
-
----
-
-## 5. Knowledge agent через PowerShell
-
-```powershell
-Invoke-RestMethod `
-  -Uri "http://127.0.0.1:8000/api/knowledge-agent" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"question":"Какие внешние курсы помогут прокачать системный дизайн и интеграции?"}'
-```
-
-Еще вопросы для проверки свободного поиска:
 
 ```json
-{"question":"Какие курсы требуют согласования руководителя?"}
-{"question":"Что пройти для развития API и интеграционного проектирования?"}
-{"question":"Какие внутренние курсы есть для системного аналитика?"}
-{"question":"Как сформировать ИПР для перехода на Senior системного аналитика?"}
+{
+  "query": "Нужно разобраться, как описывать API и интеграции в проекте",
+  "employee_id": "emp_001"
+}
 ```
 
----
+Expected:
 
-## 6. Manager agent через PowerShell
+- `status = success`
+- `agent = Агент подбора материалов`
+- `detected_topics` contains API and integrations
+- `recommended_materials` is not empty
+- at least one `video_transcript` material is present
+- at least one NMD material is present
+- at least one material has `responsible_label`
+- at least one material has `match_label`
+- at least one material has `actuality_label`
+- `quality_alerts` may contain `warning`
+- `answer_mode = llm` when Ollama is available
+- `answer_mode = template_fallback` when Ollama is unavailable
+- no external courses are returned
+- `price_rub` and `price_label` are not returned
+
+## D. NMD Request
+
+```http
+POST /api/material-agent
+Content-Type: application/json
+```
+
+```json
+{
+  "query": "Где найти НМД по описанию API и интеграционных взаимодействий?",
+  "employee_id": "emp_001"
+}
+```
+
+Expected:
+
+- `status = success`
+- `recommended_materials` is not empty
+- NMD-related materials are ranked highly
+- `responsible_label` is present for returned materials
+- `price_rub` and `price_label` are not returned
+
+## E. Video Request
+
+```http
+POST /api/material-agent
+Content-Type: application/json
+```
+
+```json
+{
+  "query": "Есть ли запись или вебинар про проектирование API?",
+  "employee_id": "emp_001"
+}
+```
+
+Expected:
+
+- `status = success`
+- `recommended_materials` is not empty
+- video or webinar materials are returned
+- video materials may include `transcript_status` and `video_duration_min`
+- transcript-related `quality_alerts` may be present
+
+## F. System Design Request
+
+```http
+POST /api/material-agent
+Content-Type: application/json
+```
+
+```json
+{
+  "query": "Какие внутренние материалы помогут разобраться с системным дизайном?",
+  "employee_id": "emp_001"
+}
+```
+
+Expected:
+
+- `status = success`
+- `recommended_materials` is not empty
+- materials are related to system design, architecture, or integrations
+- external courses are not returned
+- `price_rub` and `price_label` are not returned
+
+## Optional Python Smoke Checks
+
+From `backend/`:
 
 ```powershell
-Invoke-RestMethod `
-  -Uri "http://127.0.0.1:8000/api/manager-agent" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"employee_id":"emp_001"}'
+python -m py_compile llm.py main.py rag.py
 ```
 
-Что проверить:
+Guardrail check:
 
-- `manager.name`
-- `employee.name`
-- `employee.workload`
-- `employee.recommendation`
-- `decision_options`
-
----
-
-## 7. Проверка через Swagger UI
-
-Открыть:
-
-```txt
-http://127.0.0.1:8000/docs
+```powershell
+python -c "from fastapi.testclient import TestClient; from main import app; d=TestClient(app).post('/api/material-agent', json={'query':'как дела квен','employee_id':'emp_001'}).json(); print(d['answer_mode'], d['recommended_materials'], d['sources'], d['quality_alerts'])"
 ```
 
-Дальше вручную протестировать:
+Main scenario check:
 
-1. `GET /api/health`
-2. `GET /api/debug/search`
-3. `POST /api/route-agent`
-4. `POST /api/knowledge-agent`
-5. `POST /api/manager-agent`
+```powershell
+python -c "from fastapi.testclient import TestClient; from main import app; d=TestClient(app).post('/api/material-agent', json={'query':'Нужно разобраться, как описывать API и интеграции в проекте','employee_id':'emp_001'}).json(); print(d['status'], d['answer_mode'], len(d['recommended_materials']), len(d['sources']))"
+```
