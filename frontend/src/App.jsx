@@ -241,11 +241,11 @@ function AppShell({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const menuItems = [
-    { id: "landing", label: "Главная", short: "Г" },
-    { id: "route", label: "Траектория", short: "Т" },
-    { id: "knowledge", label: "ИИ-поиск", short: "П" },
-    { id: "manager", label: "Руководитель", short: "Р" }
-  ];
+  { id: "landing", label: "Рабочий стол", short: "Г" },
+  { id: "route", label: "Моя траектория", short: "Т" },
+  { id: "knowledge", label: "База знаний", short: "Б" },
+  { id: "manager", label: "Помощник руководителя", short: "Р" }
+];
 
   function openScreen(screenId) {
     setScreen(screenId);
@@ -399,7 +399,7 @@ function AppShell({
         </div>
 
         <div className="panelBlock cleanPanelBlock">
-          <h3>Активные сценарии</h3>
+          <h3>Быстрые действия</h3>
 
           <button onClick={() => openScreen("route")}>
             Сформировать маршрут
@@ -694,12 +694,12 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
     <main className="page">
       <section className="screenHeader">
         <div>
-          <div className="eyebrow">Сценарий 1</div>
-          <h2>Агент маршрута развития</h2>
-          <p>
-            Сотрудник выбирает текущую и целевую роль, а агент собирает маршрут
-            развития с курсами, источниками и черновиком ИПР.
-          </p>
+          <div className="eyebrow">Развитие сотрудника</div>
+<h2>Моя траектория</h2>
+<p>
+  Сотрудник выбирает текущую и целевую роль, а система собирает маршрут
+  развития с курсами, источниками и черновиком плана развития.
+</p>
         </div>
       </section>
 
@@ -707,11 +707,19 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
         <div className="fieldGrid">
           <div className="field">
             <label>Текущая роль</label>
-            <div className="fakeInput">Middle системный аналитик</div>
+            <div className="fakeInput">Разрыв компетенций → Компетенции к развитию
+Рекомендованные курсы → Подобранные курсы
+Черновик ИПР → Черновик плана развития
+Источники → Использованные источники
+Следующий шаг → Согласование маршрута</div>
           </div>
           <div className="field">
             <label>Целевая роль</label>
-            <div className="fakeInput">Senior системный аналитик</div>
+            <div className="fakeInput">Разрыв компетенций → Компетенции к развитию
+Рекомендованные курсы → Подобранные курсы
+Черновик ИПР → Черновик плана развития
+Источники → Использованные источники
+Следующий шаг → Согласование маршрута</div>
           </div>
         </div>
 
@@ -748,7 +756,9 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
 
           <div className="card actionCard">
             <h3>Следующий шаг</h3>
-            <p>Маршрут можно отправить руководителю для согласования обучения.</p>
+            <p>
+  После проверки маршрут можно отправить руководителю для согласования обучения
+</p>
             <button className="primaryButton" onClick={sendToManager}>Отправить руководителю</button>
           </div>
         </section>
@@ -775,12 +785,12 @@ function KnowledgeAgentScreen({
     <main className="page">
       <section className="screenHeader">
         <div>
-          <div className="eyebrow">Сценарий 2</div>
-          <h2>Агент корпоративного знания</h2>
-          <p>
-            Пользователь задает свободный вопрос, а агент ищет релевантные
-            материалы и показывает ответ с источниками.
-          </p>
+          <div className="eyebrow">Корпоративные знания</div>
+<h2>База знаний</h2>
+<p>
+  Пользователь задает вопрос, а ИИ-помощник ищет релевантные материалы,
+  курсы и источники в корпоративной базе знаний.
+</p>
         </div>
       </section>
 
@@ -882,12 +892,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
     <main className="page">
       <section className="screenHeader">
         <div>
-          <div className="eyebrow">Сценарий 3</div>
-          <h2>Экран руководителя</h2>
-          <p>
-            Руководитель видит маршрут сотрудника, загрузку и рекомендацию по
-            согласованию обучения.
-          </p>
+         <div className="eyebrow">Управленческое согласование</div>
+<h2>Помощник руководителя</h2>
+<p>
+  Руководитель видит маршрут сотрудника, текущую загрузку и рекомендацию
+  по согласованию обучения.
+</p>
         </div>
       </section>
 
@@ -942,9 +952,11 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
         </div>
 
         <div className="card">
-          <h3>Что показывает этот экран</h3>
+          <h3>Роль руководителя в процессе</h3>
           <ul className="plainList">
-            <li>Руководитель остается в контуре принятия решений.</li>
+            <li>Руководитель остается в контуре принятия решений</li>
+<li>ИИ не согласует обучение автоматически</li>
+<li>Система дает рекомендацию с учетом загрузки и целевой роли</li>
             <li>ИИ не согласует обучение автоматически.</li>
             <li>Система дает рекомендацию с учетом загрузки и целевой роли.</li>
           </ul>
@@ -956,16 +968,16 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 
 function LoadingPipeline() {
   const steps = [
-    "Запрос классифицирован",
+    "Запрос обработан",
     "Источники найдены",
     "Материалы отобраны",
-    "Маршрут сформирован",
-    "High-stakes проверка пройдена"
+    "Рекомендация сформирована",
+    "Проверка результата пройдена"
   ];
 
   return (
     <section className="card loadingCard">
-      <h3>Live backend</h3>
+      <h3>Как формируется рекомендация</h3>
       <div className="pipelineList">
         {steps.map((step) => (
           <div className="pipelineItem" key={step}>
@@ -981,7 +993,7 @@ function LoadingPipeline() {
 function PipelineBlock({ pipeline = [] }) {
   return (
     <div className="card largeCard">
-      <h3>Live backend</h3>
+      <h3>Как сформирована рекомендация</h3>
       <div className="pipelineList">
         {pipeline.map((item, index) => (
           <div className="pipelineItem" key={`${item.step || "step"}-${index}`}>
