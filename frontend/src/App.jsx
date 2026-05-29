@@ -433,7 +433,7 @@ function Header({ screen, setScreen, mode }) {
   return (
     <header className="header">
       <div>
-        <div className="logo">Gazprom AI T&amp;D</div>
+        <div className="logo">Gazprom ИИ T&amp;D</div>
         <div className="subtitle">RAG-lite demo prototype</div>
       </div>
 
@@ -450,174 +450,227 @@ function Header({ screen, setScreen, mode }) {
 }
 
 function LandingScreen({ setScreen }) {
-  const agentCards = [
+  const courses = [
     {
-      title: "Агент маршрута развития",
-      label: "Карьерная траектория",
-      text: "Строит путь от текущей роли к целевой позиции с учетом компетенций, курсов, источников и ИПР.",
-      action: "Сформировать маршрут",
-      screen: "route",
-      accent: "blue"
+      title: "Архитектура облачных решений",
+      meta: "Обязательный · до 30 июня",
+      progress: 65,
+      type: "courseBlue"
     },
     {
-      title: "Агент корпоративного знания",
-      label: "ИИ-поиск",
-      text: "Отвечает на вопросы по курсам, регламентам, матрицам компетенций и внутренним материалам.",
-      action: "Задать вопрос",
-      screen: "knowledge",
-      accent: "orange"
+      title: "ИБ для ИТ-специалиста",
+      meta: "Обязательный · до 15 июля",
+      progress: 20,
+      type: "courseOrange"
     },
     {
-      title: "Агент руководителя",
-      label: "Согласование",
-      text: "Помогает руководителю принять решение по обучению с учетом загрузки, цели развития и пользы для команды.",
-      action: "Открыть согласование",
-      screen: "manager",
-      accent: "dark"
+      title: "DevOps-практики Газпром нефти",
+      meta: "Рекомендован · ЦК DevOps",
+      progress: 0,
+      type: "courseGreen"
+    }
+  ];
+
+  const materials = [
+    {
+      status: "Актуально",
+      title: "Руководство по доступам в продуктовую среду",
+      meta: "Обновлено 3 дня назад · владелец: М. Петров"
+    },
+    {
+      status: "На ревью",
+      title: "Архитектура микросервисов v2.4",
+      meta: "На проверке · ЦК DevOps"
+    },
+    {
+      status: "Устарело",
+      title: "Регламент работы с инцидентами 2023",
+      meta: "Задача на обновление · срок: 10 июня"
+    },
+    {
+      status: "Актуально",
+      title: "FAQ: настройка CI/CD-пайплайнов",
+      meta: "Обновлено вчера · 128 просмотров"
     }
   ];
 
   return (
-    <main className="page landingDashboard">
-      <section className="gnHero">
-        <div className="gnHeroContent">
-          <div className="gnKicker">Газпром нефть · AI T&amp;D платформа</div>
+    <main className="page employeeDashboard">
+      <section className="employeeHero">
+        <div className="employeeHeroMain">
+          <div className="employeeGreeting">
+            <div>
+              <span className="sectionKicker">Рабочий стол</span>
+              <h1>Добрый день, Александр</h1>
+              <p>
+                День 14 из 90 · Middle системный аналитик · ИТ-кластер, Тюмень
+              </p>
+            </div>
 
-          <h1>Единая экосистема AI-агентов для обучения и развития</h1>
+            <div className="employeeBadges">
+              <span>Доступы</span>
+              <span>Знакомство</span>
+              <span className="active">Архитектура</span>
+              <span>Регламенты</span>
+            </div>
+          </div>
 
-          <p>
-            Платформа помогает сотруднику строить карьерный маршрут,
-            находить релевантные курсы и источники, а руководителю — быстро
-            согласовывать обучение в управляемом контуре.
-          </p>
-
-          <div className="gnHeroActions">
+          <div className="heroActionsRow">
             <button className="gnPrimaryButton" onClick={() => setScreen("route")}>
-              Сформировать маршрут
+              Построить траекторию
             </button>
 
             <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
-              Спросить AI-агента
+              Спросить ИИ-помощника
             </button>
           </div>
         </div>
 
-        <div className="gnHeroStatus">
-          <div className="statusHeader">
-            <span>Статус экосистемы</span>
-            <strong>Демо-контур активен</strong>
+        <div className="employeeAssistantMini">
+          <div className="assistantMiniHeader">
+            <span>ИИ</span>
+            <strong>Помощник развития</strong>
           </div>
 
-          <div className="statusList">
-            <div>
-              <span className="statusDot blue" />
-              Route Agent подключен
-            </div>
-
-            <div>
-              <span className="statusDot orange" />
-              Knowledge Agent подключен
-            </div>
-
-            <div>
-              <span className="statusDot dark" />
-              Manager Agent подключен
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="gnMetrics">
-        <div className="gnMetricCard">
-          <span>AI-агентов</span>
-          <strong>3</strong>
-          <p>маршрут, знания, руководитель</p>
-        </div>
-
-        <div className="gnMetricCard">
-          <span>Сценариев</span>
-          <strong>4</strong>
-          <p>маршрут, поиск, курсы, согласование</p>
-        </div>
-
-        <div className="gnMetricCard">
-          <span>Источников</span>
-          <strong>RAG</strong>
-          <p>курсы, роли, ИПР, регламенты</p>
-        </div>
-
-        <div className="gnMetricCard">
-          <span>Режим</span>
-          <strong>Live</strong>
-          <p>backend + fallback demo-mode</p>
-        </div>
-      </section>
-
-      <section className="gnSectionHeader">
-        <div>
-          <h2>Рабочие AI-агенты</h2>
           <p>
-            Каждый агент закрывает отдельный этап T&amp;D-процесса, но работает
-            в единой логике: запрос → источники → рекомендация → действие.
+            Нашёл 3 материала по архитектуре и доступам. Можно обновить
+            траекторию развития или задать вопрос по базе знаний.
           </p>
-        </div>
-      </section>
-
-      <section className="gnAgentGrid">
-        {agentCards.map((agent) => (
-          <button
-            className={`gnAgentCard ${agent.accent}`}
-            key={agent.title}
-            onClick={() => setScreen(agent.screen)}
-          >
-            <div className="agentLabel">{agent.label}</div>
-            <h3>{agent.title}</h3>
-            <p>{agent.text}</p>
-            <span>{agent.action} →</span>
-          </button>
-        ))}
-      </section>
-
-      <section className="gnWorkFlow">
-        <div className="gnFlowCard">
-          <h3>Как работает AI-слой</h3>
-
-          <div className="flowSteps">
-            <div>
-              <strong>01</strong>
-              <span>Пользователь задает запрос</span>
-            </div>
-
-            <div>
-              <strong>02</strong>
-              <span>Агент ищет источники и контекст</span>
-            </div>
-
-            <div>
-              <strong>03</strong>
-              <span>Система собирает маршрут или ответ</span>
-            </div>
-
-            <div>
-              <strong>04</strong>
-              <span>Руководитель принимает решение</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="gnQuickCard">
-          <h3>Быстрые действия</h3>
-
-          <button onClick={() => setScreen("route")}>
-            Построить маршрут Middle → Senior
-          </button>
 
           <button onClick={() => setScreen("knowledge")}>
-            Найти курсы по системному дизайну
+            Открыть базу знаний
           </button>
+        </div>
+      </section>
 
-          <button onClick={() => setScreen("manager")}>
-            Перейти к согласованию руководителем
+      <section className="employeeStats">
+        <div className="employeeStatCard">
+          <span>Курсов назначено</span>
+          <strong>12</strong>
+          <p>3 новых этой неделе</p>
+        </div>
+
+        <div className="employeeStatCard">
+          <span>Статей прочитано</span>
+          <strong>34</strong>
+          <p>из базы знаний</p>
+        </div>
+
+        <div className="employeeStatCard">
+          <span>Вопросов решено</span>
+          <strong>8</strong>
+          <p>через ИИ-помощника</p>
+        </div>
+
+        <div className="employeeStatCard">
+          <span>Развитие</span>
+          <strong>47%</strong>
+          <p>маршрут 30/60/90 дней</p>
+        </div>
+      </section>
+
+      <section className="dashboardGrid">
+        <div className="dashboardCard coursesPanel">
+          <div className="cardHeaderLine">
+            <h2>Мои курсы</h2>
+            <button onClick={() => setScreen("route")}>Все курсы →</button>
+          </div>
+
+          <div className="courseRows">
+            {courses.map((course) => (
+              <div className="courseRow" key={course.title}>
+                <div className={`courseIcon ${course.type}`} />
+                <div className="courseBody">
+                  <div className="courseTop">
+                    <strong>{course.title}</strong>
+                    {course.progress > 0 ? <span>{course.progress}%</span> : <span>Новый</span>}
+                  </div>
+
+                  <p>{course.meta}</p>
+
+                  <div className="courseProgressTrack">
+                    <div style={{ width: `${course.progress || 8}%` }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dashboardCard trajectoryPanel">
+          <div className="cardHeaderLine">
+            <h2>Моя траектория</h2>
+            <button onClick={() => setScreen("route")}>Открыть →</button>
+          </div>
+
+          <div className="trajectoryRoles">
+            <div>
+              <span>Текущая роль</span>
+              <strong>Middle системный аналитик</strong>
+            </div>
+
+            <div>
+              <span>Целевая роль</span>
+              <strong>Senior системный аналитик</strong>
+            </div>
+          </div>
+
+          <div className="trajectoryProgress">
+            <div>
+              <span>Компетенции</span>
+              <strong>61%</strong>
+            </div>
+
+            <div className="wideProgress">
+              <div />
+            </div>
+          </div>
+
+          <button className="panelAction" onClick={() => setScreen("route")}>
+            Обновить маршрут развития
+          </button>
+        </div>
+
+        <div className="dashboardCard knowledgePanel">
+          <div className="cardHeaderLine">
+            <h2>База знаний · последние материалы</h2>
+            <button onClick={() => setScreen("knowledge")}>Открыть базу →</button>
+          </div>
+
+          <div className="materialGrid">
+            {materials.map((item) => (
+              <div className="materialItem" key={item.title}>
+                <span className={`materialStatus ${item.status === "Устарело" ? "warning" : ""}`}>
+                  {item.status}
+                </span>
+
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.meta}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dashboardCard managerPanel">
+          <div className="cardHeaderLine">
+            <h2>Помощник руководителя</h2>
+            <button onClick={() => setScreen("manager")}>Перейти →</button>
+          </div>
+
+          <p>
+            Маршрут сотрудника готов к согласованию. Система рекомендует начать
+            обучение через 3 недели с учетом загрузки команды.
+          </p>
+
+          <div className="managerDecisionPreview">
+            <span>Загрузка</span>
+            <strong>Высокая ближайшие 2 недели</strong>
+          </div>
+
+          <button className="panelAction" onClick={() => setScreen("manager")}>
+            Открыть согласование
           </button>
         </div>
       </section>
@@ -892,7 +945,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <h3>Что показывает этот экран</h3>
           <ul className="plainList">
             <li>Руководитель остается в контуре принятия решений.</li>
-            <li>AI не согласует обучение автоматически.</li>
+            <li>ИИ не согласует обучение автоматически.</li>
             <li>Система дает рекомендацию с учетом загрузки и целевой роли.</li>
           </ul>
         </div>
@@ -912,7 +965,7 @@ function LoadingPipeline() {
 
   return (
     <section className="card loadingCard">
-      <h3>AI-пайплайн</h3>
+      <h3>Live backend</h3>
       <div className="pipelineList">
         {steps.map((step) => (
           <div className="pipelineItem" key={step}>
@@ -928,7 +981,7 @@ function LoadingPipeline() {
 function PipelineBlock({ pipeline = [] }) {
   return (
     <div className="card largeCard">
-      <h3>AI-пайплайн</h3>
+      <h3>Live backend</h3>
       <div className="pipelineList">
         {pipeline.map((item, index) => (
           <div className="pipelineItem" key={`${item.step || "step"}-${index}`}>
