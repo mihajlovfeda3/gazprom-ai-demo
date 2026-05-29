@@ -283,7 +283,7 @@ function AppShell({
   { id: "landing", label: "Рабочий стол", short: "Г" },
   { id: "route", label: "Подбор материалов", short: "М" },
   { id: "knowledge", label: "База знаний", short: "Б" },
-  { id: "manager", label: "Проверка подборки", short: "Р" }
+  { id: "manager", label: "Руководитель", short: "Р" }
 ];
 
   function openScreen(screenId) {
@@ -370,7 +370,7 @@ function AppShell({
             <div className="drawerHeader">
               <div>
                 <span>Газпром нефть</span>
-                <h2>ИИ T&amp;D платформа</h2>
+                <h2>Рабочий кабинет</h2>
               </div>
 
               <button onClick={() => setMenuOpen(false)}>×</button>
@@ -390,7 +390,7 @@ function AppShell({
             </nav>
 
             <div className="drawerHint">
-              Единая экосистема ИИ-помощников для поиска проверенных материалов, источников и ответственных.
+              Рабочий контур для поиска проверенных материалов, источников и ответственных.
             </div>
           </aside>
         </>
@@ -402,13 +402,10 @@ function AppShell({
             className="topBrandBlock"
             onClick={() => openScreen("landing")}
             type="button"
+            aria-label="Рабочий стол"
           >
-            <span className="brandSymbol">
+            <span className="brandSymbol" aria-hidden="true">
               <span />
-            </span>
-            <span className="brandText">
-              <strong>Газпром нефть</strong>
-              <span>ИИ T&amp;D платформа</span>
             </span>
           </button>
 
@@ -431,10 +428,8 @@ function AppShell({
   </button>
 </form>
 
-          <div className="topActions cleanTopActions">
-            <button className="topKnowledgeButton" onClick={() => openScreen("knowledge")}>
-              ИИ-поиск
-            </button>
+          <div className="topActions cleanTopActions" aria-label="Контекст">
+            <span className="workContext">ИТ-кластер · Тюмень</span>
           </div>
         </header>
 
@@ -444,20 +439,14 @@ function AppShell({
       </main>
 
       <aside className="rightPanel cleanRightPanel">
-        <div className="assistantCard cleanAssistantCard">
-          <div className="assistantTitle">
-            <span>ИИ</span>
-            <h3>Ассистент развития</h3>
-          </div>
-
+        <div className="backendStatusCard backendStatusCompact">
+          <span>Статус подключения</span>
+          <strong>{mode === "live backend" ? "Контур подключен" : "Демо-контур"}</strong>
           <p>
-            Помогает найти проверенные материалы, источники и ответственных
-            под рабочую задачу.
+            {mode === "live backend"
+              ? "Данные поступают из backend."
+              : "Используются резервные demo-данные."}
           </p>
-
-          <button className="assistantAsk" onClick={() => openScreen("knowledge")} type="button">
-            Задать вопрос
-          </button>
         </div>
 
         <div className="panelBlock cleanPanelBlock">
@@ -472,18 +461,8 @@ function AppShell({
           </button>
 
           <button onClick={() => openScreen("manager")}>
-            Проверка подборки
+            Проверка руководителем
           </button>
-        </div>
-
-        <div className="backendStatusCard">
-          <span>Статус подключения</span>
-          <strong>{mode === "live backend" ? "Рабочий контур" : "Демо-режим"}</strong>
-          <p>
-            {mode === "live backend"
-              ? "Данные поступают из backend."
-              : "Используются резервные demo-данные."}
-          </p>
         </div>
       </aside>
     </div>
@@ -599,21 +578,21 @@ function formatDisplayText(value) {
 function LandingScreen({ setScreen }) {
   const courses = [
     {
-      title: "Архитектура облачных решений",
-      meta: "Обязательный · до 30 июня",
+      title: "Проектирование интеграций и API",
+      meta: "Подборка в работе · владелец: ЦК системного анализа",
       progress: 65,
       type: "courseBlue"
     },
     {
-      title: "ИБ для ИТ-специалиста",
-      meta: "Обязательный · до 15 июля",
-      progress: 20,
+      title: "Шаблон описания интеграционного решения",
+      meta: "Новый материал · архитектурный офис",
+      progress: 0,
       type: "courseOrange"
     },
     {
-      title: "DevOps-практики Газпром нефти",
-      meta: "Рекомендован · ЦК DevOps",
-      progress: 0,
+      title: "Архитектурное мышление для аналитиков",
+      meta: "Рекомендовано · ЦК архитектуры",
+      progress: 35,
       type: "courseGreen"
     }
   ];
@@ -650,7 +629,7 @@ function LandingScreen({ setScreen }) {
               <span className="sectionKicker">Рабочий стол</span>
               <h1>Добрый день, Александр</h1>
               <p>
-                ИТ-кластер, Тюмень · рабочие задачи, материалы и источники в одном контуре
+                ИТ-кластер · Тюмень · текущий фокус: подбор материалов под рабочую задачу
               </p>
             </div>
 
@@ -668,49 +647,27 @@ function LandingScreen({ setScreen }) {
             </button>
 
             <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
-              Спросить ИИ-помощника
+              Открыть базу знаний
             </button>
           </div>
-        </div>
-
-        <div className="employeeAssistantMini">
-          <div className="assistantMiniHeader">
-            <span>ИИ</span>
-            <strong>Помощник развития</strong>
-          </div>
-
-          <p>
-            Нашёл 3 материала по архитектуре и доступам. Можно собрать
-            подборку под задачу или задать вопрос по базе знаний.
-          </p>
-
-          <button onClick={() => setScreen("knowledge")}>
-            Открыть базу знаний
-          </button>
         </div>
       </section>
 
       <section className="employeeStats">
         <div className="employeeStatCard">
-          <span>Материалов найдено</span>
+          <span>Материалы к изучению</span>
           <strong>12</strong>
-          <p>3 новых этой неделе</p>
+          <p>3 новых на этой неделе</p>
         </div>
 
         <div className="employeeStatCard">
-          <span>Статей прочитано</span>
-          <strong>34</strong>
-          <p>из базы знаний</p>
+          <span>Подборки в работе</span>
+          <strong>2</strong>
+          <p>ожидают уточнения источников</p>
         </div>
 
         <div className="employeeStatCard">
-          <span>Вопросов решено</span>
-          <strong>8</strong>
-          <p>через ИИ-помощника</p>
-        </div>
-
-        <div className="employeeStatCard">
-          <span>Подборка</span>
+          <span>Прогресс по текущей задаче</span>
           <strong>47%</strong>
           <p>готовность к проверке</p>
         </div>
@@ -719,7 +676,7 @@ function LandingScreen({ setScreen }) {
       <section className="dashboardGrid">
         <div className="dashboardCard coursesPanel">
           <div className="cardHeaderLine">
-            <h2>Мои материалы</h2>
+            <h2>Текущие материалы</h2>
             <button onClick={() => setScreen("route")}>Все материалы →</button>
           </div>
 
@@ -746,7 +703,7 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard trajectoryPanel">
           <div className="cardHeaderLine">
-            <h2>Подбор материалов</h2>
+            <h2>Подборка в работе</h2>
             <button onClick={() => setScreen("route")}>Открыть →</button>
           </div>
 
@@ -765,7 +722,7 @@ function LandingScreen({ setScreen }) {
           <div className="trajectoryProgress">
             <div>
               <span>Темы запроса</span>
-              <strong>61%</strong>
+              <strong>4 темы</strong>
             </div>
 
             <div className="wideProgress">
@@ -780,7 +737,7 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard knowledgePanel">
           <div className="cardHeaderLine">
-            <h2>База знаний · последние материалы</h2>
+            <h2>Последние материалы базы знаний</h2>
             <button onClick={() => setScreen("knowledge")}>Открыть базу →</button>
           </div>
 
@@ -802,7 +759,7 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard managerPanel">
           <div className="cardHeaderLine">
-            <h2>Проверка подборки</h2>
+            <h2>Проверка руководителем</h2>
             <button onClick={() => setScreen("manager")}>Перейти →</button>
           </div>
 
