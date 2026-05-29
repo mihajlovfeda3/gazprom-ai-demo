@@ -13,6 +13,7 @@ function App() {
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
   const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие курсы помогут прокачать системный дизайн?");
+  const [globalSearch, setGlobalSearch] = useState("");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
@@ -165,7 +166,14 @@ function App() {
   }
 
   return (
-  <AppShell screen={screen} setScreen={setScreen} mode={mode}>
+  <AppShell
+  screen={screen}
+  setScreen={setScreen}
+  mode={mode}
+  globalSearch={globalSearch}
+  setGlobalSearch={setGlobalSearch}
+  onGlobalSearch={handleGlobalSearch}
+>
     {screen === "landing" && <LandingScreen setScreen={setScreen} />}
 
     {screen === "route" && (
@@ -197,75 +205,139 @@ function App() {
   </AppShell>
 );
 }
+function handleGlobalSearch(query = globalSearch) {
+  const finalQuery = query.trim();
 
-function AppShell({ screen, setScreen, mode, children }) {
+  if (!finalQuery) {
+    return;
+  }
+
+  setKnowledgeQuestion(finalQuery);
+  setScreen("knowledge");
+  fetchKnowledgeAgent(finalQuery);
+}
+
+function AppShell({
+  screen,
+  setScreen,
+  mode,
+  children,
+  globalSearch,
+  setGlobalSearch,
+  onGlobalSearch
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const menuItems = [
-    { id: "landing", label: "Главная", icon: "⌂" },
-    { id: "route", label: "Моя траектория", icon: "↗" },
-    { id: "knowledge", label: "Поиск по базе", icon: "⌕" },
-    { id: "manager", label: "Руководитель", icon: "✓" }
+    { id: "landing", label: "Главная", short: "Г" },
+    { id: "route", label: "Траектория", short: "Т" },
+    { id: "knowledge", label: "ИИ-поиск", short: "П" },
+    { id: "manager", label: "Руководитель", short: "Р" }
   ];
 
+  function openScreen(screenId) {
+    setScreen(screenId);
+    setMenuOpen(false);
+  }
+
   return (
-    <div className="productApp">
-      <aside className="blueRail">
-        <div className="railLogo">ГН</div>
-        <div className="railIcons">
-          <button>⌂</button>
-          <button>▤</button>
-          <button>☞</button>
-          <button>👥</button>
-          <button>☷</button>
-          <button>▣</button>
-        </div>
-        <div className="railBottom">
-          <button>🔔</button>
-          <button>⚙</button>
-        </div>
-      </aside>
+    <div className="productApp productAppCompact">
+      <aside className="blueRail cleanRail">
+        <button
+          className="railMenuButton"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Открыть меню"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
 
-      <aside className="leftMenu">
-        <h2>Рабочий стол</h2>
+        <div className="railBrandMark">ИИ</div>
 
-        <div className="menuGroupTitle">Мой профиль</div>
-        <nav className="sideNav">
+        <div className="railIcons cleanRailIcons">
           {menuItems.map((item) => (
             <button
               key={item.id}
-              className={screen === item.id ? "sideNavItem active" : "sideNavItem"}
-              onClick={() => setScreen(item.id)}
+              className={screen === item.id ? "railIconButton active" : "railIconButton"}
+              onClick={() => openScreen(item.id)}
+              title={item.label}
             >
-              <span>{item.icon}</span>
-              {item.label}
+              {item.short}
             </button>
           ))}
-        </nav>
+        </div>
 
-        <div className="menuGroupTitle">Знания</div>
-        <div className="smallMenuItem">Центры компетенций</div>
-        <div className="smallMenuItem">Избранное</div>
-
-        <div className="menuGroupTitle">Онбординг</div>
-        <div className="progressMini">
-          <div className="progressLabel">
-            <span>Прогресс</span>
-            <strong>47%</strong>
-          </div>
-          <div className="progressTrack">
-            <div className="progressFill" />
-          </div>
+        <div className="railBottom">
+          <button
+            className="railIconButton"
+            onClick={() => openScreen("knowledge")}
+            title="Задать вопрос"
+          >
+            ?
+          </button>
         </div>
       </aside>
 
-      <main className="mainWorkspace">
-        <header className="topBar">
-          <div className="searchPill">
-            Спросите что угодно: «как получить доступ к среде?»
-          </div>
+      {menuOpen && (
+        <>
+          <div className="drawerBackdrop" onClick={() => setMenuOpen(false)} />
 
-          <div className="topActions">
-            <span className="aiActive">✦ ИИ-поиск активен</span>
-            <span className="userCircle">AC</span>
+          <aside className="menuDrawer">
+            <div className="drawerHeader">
+              <div>
+                <span>Газпром нефть</span>
+                <h2>ИИ T&amp;D платформа</h2>
+              </div>
+
+              <button onClick={() => setMenuOpen(false)}>×</button>
+            </div>
+
+            <nav className="drawerNav">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
+                  onClick={() => openScreen(item.id)}
+                >
+                  <span>{item.short}</span>
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+
+            <div className="drawerHint">
+              Единая экосистема ИИ-агентов для обучения, развития и согласования маршрутов сотрудников.
+            </div>
+          </aside>
+        </>
+      )}
+
+      <main className="mainWorkspace">
+        <header className="topBar cleanTopBar">
+          <form
+            className="searchPill activeSearch"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onGlobalSearch(globalSearch);
+            }}
+          >
+            <input
+              className="globalSearchInput"
+              value={globalSearch}
+              onChange={(event) => setGlobalSearch(event.target.value)}
+              placeholder="Спросите ИИ-агента: «как перейти в Senior?»"
+            />
+
+            <button className="globalSearchButton" type="submit">
+              Найти
+            </button>
+          </form>
+
+          <div className="topActions cleanTopActions">
+            <button className="topKnowledgeButton" onClick={() => openScreen("knowledge")}>
+              ИИ-поиск
+            </button>
           </div>
         </header>
 
@@ -274,70 +346,53 @@ function AppShell({ screen, setScreen, mode, children }) {
         </div>
       </main>
 
-      <aside className="rightPanel">
-        <div className="assistantCard">
-          <h3>✦ ИИ-ассистент</h3>
+      <aside className="rightPanel cleanRightPanel">
+        <div className="assistantCard cleanAssistantCard">
+          <div className="assistantTitle">
+            <span>ИИ</span>
+            <h3>Ассистент развития</h3>
+          </div>
+
           <p>
-            Нашёл материалы по маршруту, курсам и источникам. Можно задать
-            свободный вопрос агенту знаний.
+            Помогает найти курсы, источники, карьерные требования и подготовить
+            маршрут развития сотрудника.
           </p>
 
-          <button className="assistantAsk" onClick={() => setScreen("knowledge")}>
-            Задать вопрос →
+          <button className="assistantAsk" onClick={() => openScreen("knowledge")}>
+            Задать вопрос
           </button>
         </div>
 
-        <div className="panelBlock">
-          <h3>Эксперты по теме</h3>
+        <div className="panelBlock cleanPanelBlock">
+          <h3>Активные сценарии</h3>
 
-          <div className="expertItem">
-            <span>МП</span>
-            <div>
-              <strong>Михаил Петров</strong>
-              <p>Облачные платформы</p>
-            </div>
-          </div>
+          <button onClick={() => openScreen("route")}>
+            Сформировать маршрут
+          </button>
 
-          <div className="expertItem">
-            <span>ЕК</span>
-            <div>
-              <strong>Елена Кирова</strong>
-              <p>DevOps / CI/CD</p>
-            </div>
-          </div>
+          <button onClick={() => openScreen("knowledge")}>
+            Найти знания и курсы
+          </button>
 
-          <div className="expertItem">
-            <span>ДН</span>
-            <div>
-              <strong>Дмитрий Назаров</strong>
-              <p>Архитектура ИТ</p>
-            </div>
-          </div>
+          <button onClick={() => openScreen("manager")}>
+            Согласование руководителя
+          </button>
         </div>
 
-        <div className="panelBlock">
-          <h3>Уведомления</h3>
-
-          <div className="noticeItem">
-            Агент качества нашёл устаревший регламент.
-          </div>
-
-          <div className="noticeItem">
-            Курс добавлен в вашу траекторию.
-          </div>
-
-          <div className="noticeItem">
-            Пункт знакомства с командой выполнен.
-          </div>
-        </div>
-
-        <div className="backendMode">
-          {mode === "live backend" ? "Live backend" : "Demo mode"}
+        <div className="backendStatusCard">
+          <span>Статус подключения</span>
+          <strong>{mode === "live backend" ? "Рабочий контур" : "Демо-режим"}</strong>
+          <p>
+            {mode === "live backend"
+              ? "Данные поступают из backend."
+              : "Используются резервные demo-данные."}
+          </p>
         </div>
       </aside>
     </div>
   );
 }
+
 
 function Header({ screen, setScreen, mode }) {
   return (
