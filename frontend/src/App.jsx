@@ -13,6 +13,7 @@ function App() {
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
   const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие материалы помогут разобраться с проектированием API?");
+  const [materialTask, setMaterialTask] = useState("Какие материалы помогут разобраться с проектированием API?");
   const [globalSearch, setGlobalSearch] = useState("");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
@@ -20,27 +21,53 @@ function App() {
   const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
   const [mode, setMode] = useState("demo");
 
-  async function fetchRouteAgent() {
+  async function fetchRouteAgent(taskText = materialTask) {
     setRouteLoading(true);
 
+    const finalTask =
+      taskText && taskText.trim().length > 0
+        ? taskText.trim()
+        : "Какие материалы помогут разобраться с проектированием API?";
+
+    const newPayload = {
+      employee_id: "emp_001",
+      task: finalTask,
+      question: finalTask,
+      current_role: "Сотрудник ИТ-кластера",
+      target_role: "Решение рабочей задачи"
+    };
+
+    const legacyPayload = {
+      current_role: "Middle системный аналитик",
+      target_role: "Senior системный аналитик",
+      employee_id: "emp_001"
+    };
+
     try {
-      const response = await fetch(`${API_URL}/api/route-agent`, {
+      let response = await fetch(`${API_URL}/api/route-agent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          current_role: "Middle системный аналитик",
-          target_role: "Senior системный аналитик",
-          employee_id: "emp_001"
-        })
+        body: JSON.stringify(newPayload)
       });
+
+      if (!response.ok) {
+        response = await fetch(`${API_URL}/api/route-agent`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(legacyPayload)
+        });
+      }
 
       if (!response.ok) {
         throw new Error("Backend error");
       }
 
       const data = await response.json();
+      console.log("MATERIAL SELECTION DATA:", data);
       setRouteResult(data);
       setMode("live backend");
     } catch (error) {
@@ -194,6 +221,8 @@ function App() {
         routeLoading={routeLoading}
         fetchRouteAgent={fetchRouteAgent}
         sendToManager={sendToManager}
+        materialTask={materialTask}
+        setMaterialTask={setMaterialTask}
       />
     )}
 
@@ -689,7 +718,26 @@ function AgentCard({ title, text, button, onClick }) {
   );
 }
 
-function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToManager }) {
+function RouteAgentScreen({
+  routeResult,
+  routeLoading,
+  fetchRouteAgent,
+  sendToManager,
+  materialTask,
+  setMaterialTask
+}) {
+  const quickTasks = [
+    "Какие материалы помогут разобраться с проектированием API?",
+    "Что изучить перед задачей по системному дизайну?",
+    "Где найти актуальные материалы по интеграциям?",
+    "Какие внутренние материалы есть по архитектурному мышлению?"
+  ];
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    fetchRouteAgent(materialTask);
+  }
+
   return (
     <main className="page">
       <section className="screenHeader">
@@ -703,29 +751,34 @@ function RouteAgentScreen({ routeResult, routeLoading, fetchRouteAgent, sendToMa
         </div>
       </section>
 
-      <section className="formCard card">
-        <div className="fieldGrid">
-          <div className="field">
-            <label>Запрос</label>
-            <div className="fakeInput">Рабочая задача → Темы запроса
-Рекомендованные курсы → Рекомендованные материалы
-Черновик ИПР → Черновик подборки для развития
-Источники → Использованные источники
-Следующий шаг → Проверка подборки</div>
-          </div>
-          <div className="field">
-            <label>Фокус результата</label>
-            <div className="fakeInput">ИИ не оценивает сотрудника
-ИИ не назначает обучение автоматически
-ИИ показывает источники и ответственных
-Руководитель проверяет подборку</div>
+      <form className="formCard card materialTaskForm" onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Опишите рабочую задачу или цель развития</label>
+          <textarea
+            className="questionInput"
+            value={materialTask}
+            onChange={(event) => setMaterialTask(event.target.value)}
+            placeholder="Например: нужно разобраться, как описывать API и интеграции в проекте"
+          />
+
+          <div className="exampleGrid">
+            {quickTasks.map((task) => (
+              <button
+                className="exampleButton"
+                key={task}
+                onClick={() => setMaterialTask(task)}
+                type="button"
+              >
+                {task}
+              </button>
+            ))}
           </div>
         </div>
 
-        <button className="primaryButton" onClick={fetchRouteAgent}>
+        <button className="primaryButton" type="submit">
           {routeLoading ? "Ищем материалы..." : "Найти материалы под задачу"}
         </button>
-      </section>
+      </form>
 
       {routeLoading && <LoadingPipeline />}
 

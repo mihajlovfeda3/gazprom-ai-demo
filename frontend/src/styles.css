@@ -646,6 +646,10 @@ h3 {
   align-items: stretch;
 }
 
+.materialTaskForm {
+  align-items: stretch;
+}
+
 .questionInput {
   width: 100%;
   min-height: 110px;
