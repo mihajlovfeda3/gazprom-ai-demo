@@ -1183,9 +1183,9 @@ function LoadingLabel({ text }) {
     <span className="loadingLabel">
       {text}
       <span className="loadingDots" aria-hidden="true">
-        <span />
-        <span />
-        <span />
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
       </span>
     </span>
   );
