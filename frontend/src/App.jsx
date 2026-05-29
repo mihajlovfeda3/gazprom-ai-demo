@@ -1076,7 +1076,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
             </button>
 
             <button
-              className="dangerButton"
+              className="secondaryButton ownerButton"
               onClick={() => updateManagerStatus("Отправлено владельцу направления")}
             >
               Отправить владельцу направления
@@ -1085,12 +1085,12 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
         </div>
 
         <div className="card">
-          <h3>Роль руководителя в процессе</h3>
+          <h3>Что проверяет руководитель</h3>
           <ul className="plainList">
-            <li>Руководитель остается в контуре принятия решений</li>
-            <li>ИИ не назначает обучение автоматически</li>
+            <li>Подборка соответствует рабочей задаче сотрудника</li>
+            <li>Источники и ответственные указаны корректно</li>
             <li>Проверяются источники, ответственные и актуальность материалов</li>
-            <li>Система помогает согласовать время на изучение с учетом загрузки</li>
+            <li>Время на изучение согласовано с учетом загрузки</li>
           </ul>
         </div>
       </section>

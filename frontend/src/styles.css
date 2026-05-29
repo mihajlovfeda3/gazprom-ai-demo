@@ -4524,6 +4524,18 @@ h3,
   font-weight: 600;
 }
 
+.buttonRow .ownerButton {
+  color: var(--gn-accent-hover);
+  border-color: #efd1bc;
+  background: #fff8f3;
+}
+
+.buttonRow .ownerButton:hover {
+  color: #ffffff;
+  border-color: var(--gn-accent-hover);
+  background: var(--gn-accent-hover);
+}
+
 .plainList {
   padding-left: 18px;
 }
