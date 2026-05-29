@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rag import get_rag_mode, search_knowledge
+from llm import generate_knowledge_answer
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -144,6 +145,47 @@ def get_skill_title(skill: str) -> str:
 
     return titles.get(skill, skill)
 
+def get_course_responsible(course: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Возвращает ответственного за курс для демо-карточки.
+
+    В production это будет владелец курса / методолог / L&D-координатор
+    из LMS, карьерного портала или системы заявок на внешнее обучение.
+    """
+
+    if course.get("responsible_label"):
+        return {
+            "responsible_name": course.get("responsible_name", ""),
+            "responsible_role": course.get("responsible_role", ""),
+            "responsible_unit": course.get("responsible_unit", ""),
+            "responsible_label": course.get("responsible_label", ""),
+        }
+
+    course_type = course.get("course_type", "internal")
+    source = course.get("source", "")
+
+    if course_type == "external":
+        return {
+            "responsible_name": "Елена Морозова",
+            "responsible_role": "L&D-координатор внешнего обучения",
+            "responsible_unit": "Корпоративный университет",
+            "responsible_label": "Елена Морозова — L&D-координатор внешнего обучения",
+        }
+
+    if source == "Карьерный портал":
+        return {
+            "responsible_name": "Алексей Романов",
+            "responsible_role": "карьерный консультант ИТ-кластера",
+            "responsible_unit": "Карьерный портал",
+            "responsible_label": "Алексей Романов — карьерный консультант ИТ-кластера",
+        }
+
+    return {
+        "responsible_name": "Ирина Соколова",
+        "responsible_role": "методолог корпоративного обучения",
+        "responsible_unit": "Портал знаний",
+        "responsible_label": "Ирина Соколова — методолог корпоративного обучения",
+    }
 
 def format_price(price_rub: Optional[int]) -> str:
     """
@@ -166,35 +208,89 @@ def format_course_type(course_type: str) -> str:
     return labels.get(course_type, course_type)
 
 
+def get_course_responsible(course: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Возвращает ответственного за курс для демо.
+
+    В production это будет владелец курса / методолог / L&D-координатор
+    из LMS, карьерного портала или системы заявок на внешнее обучение.
+    """
+
+    if course.get("responsible_label"):
+        return {
+            "responsible_name": course.get("responsible_name", ""),
+            "responsible_role": course.get("responsible_role", ""),
+            "responsible_unit": course.get("responsible_unit", ""),
+            "responsible_label": course.get("responsible_label", ""),
+        }
+
+    course_type = course.get("course_type", "internal")
+    source = course.get("source", "")
+
+    if course_type == "external":
+        return {
+            "responsible_name": "Елена Морозова",
+            "responsible_role": "L&D-координатор внешнего обучения",
+            "responsible_unit": "Корпоративный университет",
+            "responsible_label": "Елена Морозова — L&D-координатор внешнего обучения",
+        }
+
+    if source == "Карьерный портал":
+        return {
+            "responsible_name": "Алексей Романов",
+            "responsible_role": "карьерный консультант ИТ-кластера",
+            "responsible_unit": "Карьерный портал",
+            "responsible_label": "Алексей Романов — карьерный консультант ИТ-кластера",
+        }
+
+    return {
+        "responsible_name": "Ирина Соколова",
+        "responsible_role": "методолог корпоративного обучения",
+        "responsible_unit": "Портал знаний",
+        "responsible_label": "Ирина Соколова — методолог корпоративного обучения",
+    }
+
+
 def build_course_payload(
     course: Dict[str, Any],
     matched_skills: Optional[List[str]] = None,
     score: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
-    Единый формат курса для frontend.
-    Важно: возвращаем плоский объект с полями, а не raw-объект.
+    Собирает единую карточку курса для route-agent и knowledge-agent.
     """
-    course_type = course.get("course_type", "internal")
-    requires_approval = bool(course.get("requires_approval", False))
-    price_rub = course.get("price_rub", 0)
 
-    payload: Dict[str, Any] = {
+    price_rub = course.get("price_rub", 0)
+    requires_approval = course.get("requires_approval", False)
+    course_type = course.get("course_type", "internal")
+    responsible = get_course_responsible(course)
+
+    payload = {
         "id": course.get("id"),
         "title": course.get("title"),
         "skills": course.get("skills", []),
         "level": course.get("level"),
         "duration_hours": course.get("duration_hours"),
-        "format": course.get("format", "online"),
-        "source": course.get("source", "Демо-база"),
-        "provider": course.get("provider", course.get("source", "Демо-база")),
+        "format": course.get("format"),
+        "source": course.get("source"),
+        "provider": course.get("provider", "Демо-база"),
         "url": course.get("url", "#"),
         "course_type": course_type,
-        "course_type_label": format_course_type(course_type),
+        "course_type_label": (
+            "Внешнее обучение" if course_type == "external" else "Внутренний курс"
+        ),
         "requires_approval": requires_approval,
-        "approval_label": "Требует согласования" if requires_approval else "Без согласования",
+        "approval_label": (
+            "Требует согласования" if requires_approval else "Без согласования"
+        ),
         "price_rub": price_rub,
-        "price_label": format_price(price_rub),
+        "price_label": (
+            "Бесплатно" if not price_rub else f"{price_rub:,} ₽".replace(",", " ")
+        ),
+        "responsible_name": responsible["responsible_name"],
+        "responsible_role": responsible["responsible_role"],
+        "responsible_unit": responsible["responsible_unit"],
+        "responsible_label": responsible["responsible_label"],
         "description": course.get("description", ""),
     }
 
@@ -486,6 +582,48 @@ def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
     courses = load_json("courses.json")
 
     question = request.question.strip()
+    lower_question = question.lower()
+
+    allowed_topics = [
+        "курс",
+        "обуч",
+        "ипр",
+        "развит",
+        "компетен",
+        "навык",
+        "skill",
+        "роль",
+        "senior",
+        "middle",
+        "junior",
+        "системн",
+        "архитект",
+        "api",
+        "интеграц",
+        "согласован",
+        "руководител",
+        "карьер",
+        "трек",
+        "онбординг",
+        "адаптац",
+    ]
+
+    if not any(topic in lower_question for topic in allowed_topics):
+        return {
+            "status": "success",
+            "agent": "Агент корпоративного знания",
+            "question": question,
+            "pipeline": get_pipeline(include_high_stakes=False),
+            "answer": (
+                "Я могу помочь с вопросами по обучению, ИПР, карьерным трекам, "
+                "компетенциям, курсам и согласованию развития. Попробуйте задать вопрос "
+                "про нужную роль, навык или направление обучения."
+            ),
+            "answer_mode": "guardrail",
+            "llm_model": None,
+            "related_courses": [],
+            "sources": [],
+        }
     expanded_query = expand_knowledge_query(question)
 
     wants_external = "внеш" in question.lower()
@@ -498,6 +636,7 @@ def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
         price_rub = course.get("price_rub", 0)
         requires_approval = course.get("requires_approval", False)
         course_type = course.get("course_type", "internal")
+        responsible = get_course_responsible(course)
 
         return {
             "id": course.get("id"),
@@ -507,6 +646,10 @@ def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
             "duration_hours": course.get("duration_hours"),
             "format": course.get("format"),
             "source": course.get("source"),
+            "responsible_name": responsible["responsible_name"],
+            "responsible_role": responsible["responsible_role"],
+            "responsible_unit": responsible["responsible_unit"],
+            "responsible_label": responsible["responsible_label"],
             "provider": course.get("provider", "Демо-база"),
             "url": course.get("url", "#"),
             "course_type": course_type,
@@ -607,13 +750,20 @@ def knowledge_agent(request: KnowledgeAgentRequest) -> Dict[str, Any]:
             f"По запросу «{question}» в демо-базе не найдено точного курса. "
             f"В production-версии агент расширит поиск по корпоративному RAG и внешним провайдерам."
         )
-
+    llm_result = generate_knowledge_answer(
+        question=question,
+        related_courses=related_courses,
+        sources=sources,
+        fallback_answer=answer,
+    )
     return {
         "status": "success",
         "agent": "Агент корпоративного знания",
         "question": question,
         "pipeline": get_pipeline(include_high_stakes=False),
-        "answer": answer,
+        "answer": llm_result["answer"],
+        "answer_mode": llm_result["answer_mode"],
+        "llm_model": llm_result["llm_model"],
         "related_courses": related_courses,
         "sources": sources,
     }
