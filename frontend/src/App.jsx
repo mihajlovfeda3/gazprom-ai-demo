@@ -188,9 +188,10 @@ function App() {
     setScreen("manager");
   }
 
-  function updateManagerStatus(status) {
+function updateManagerStatus(status) {
     setManagerStatus(status);
   }
+
   function handleGlobalSearch(query = globalSearch) {
   const finalQuery = query.trim();
 
@@ -478,6 +479,45 @@ function Header({ screen, setScreen, mode }) {
   );
 }
 
+function normalizeSelectionData(data = {}) {
+  return {
+    topics: data.detected_topics || data.topics || data.skill_gap || [],
+    materials:
+      data.recommended_materials ||
+      data.materials ||
+      data.recommended_courses ||
+      [],
+    draft: data.draft_selection || data.selection_draft || data.ipr_draft || [],
+    sources: data.sources || [],
+    summary: data.summary || "",
+    pipeline: data.pipeline || []
+  };
+}
+
+function getTopicTitle(topic) {
+  if (typeof topic === "string") {
+    return topic;
+  }
+
+  if (!topic || typeof topic !== "object") {
+    return "Тема запроса";
+  }
+
+  return topic.title || topic.name || topic.skill || "Тема запроса";
+}
+
+function formatScore(score) {
+  if (typeof score !== "number") {
+    return null;
+  }
+
+  if (score <= 1) {
+    return `${Math.round(score * 100)}%`;
+  }
+
+  return score.toFixed(2);
+}
+
 function LandingScreen({ setScreen }) {
   const courses = [
     {
@@ -732,6 +772,7 @@ function RouteAgentScreen({
     "Где найти актуальные материалы по интеграциям?",
     "Какие внутренние материалы есть по архитектурному мышлению?"
   ];
+  const selection = normalizeSelectionData(routeResult || {});
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -784,30 +825,37 @@ function RouteAgentScreen({
 
       {routeResult && !routeLoading && (
         <section className="resultGrid">
-          <PipelineBlock pipeline={routeResult.pipeline} />
+          <PipelineBlock pipeline={selection.pipeline} />
 
           <div className="card">
             <h3>Темы запроса</h3>
-            <TagList items={routeResult.skill_gap} />
+            <TagList items={selection.topics} />
           </div>
 
           <div className="card largeCard">
             <h3>Рекомендованные материалы</h3>
-            <CourseList courses={routeResult.recommended_courses} />
+            <MaterialList materials={selection.materials} />
           </div>
 
           <div className="card largeCard">
             <h3>Черновик подборки для развития</h3>
-            <NumberedList items={routeResult.ipr_draft} />
+            <NumberedList items={selection.draft} />
           </div>
 
           <div className="card">
             <h3>Использованные источники</h3>
-            <SourceList sources={routeResult.sources} />
+            <SourceList sources={selection.sources} />
           </div>
 
+          {selection.summary && (
+            <div className="card">
+              <h3>Пояснение</h3>
+              <p className="answerText">{selection.summary}</p>
+            </div>
+          )}
+
           <div className="card actionCard">
-            <h3>Следующий шаг</h3>
+            <h3>Проверка подборки</h3>
             <p>
   После проверки подборку можно отправить руководителю для согласования времени на изучение.
 </p>
@@ -886,7 +934,12 @@ function KnowledgeAgentScreen({
           <PipelineBlock pipeline={knowledgeResult.pipeline} />
 
           <div className="card largeCard">
-            <h3>Ответ агента</h3>
+            <div className="sectionTitleRow">
+              <h3>Ответ ИИ-помощника</h3>
+              {knowledgeResult.answer_mode === "llm" && (
+                <span className="softBadge">Ответ сформирован ИИ</span>
+              )}
+            </div>
             <p className="answerText">
               {typeof knowledgeResult.answer === "string"
                 ? knowledgeResult.answer
@@ -895,12 +948,12 @@ function KnowledgeAgentScreen({
           </div>
 
           <div className="card largeCard">
-            <h3>Релевантные курсы</h3>
+            <h3>Рекомендованные материалы</h3>
             <CourseList courses={knowledgeResult.related_courses} />
           </div>
 
           <div className="card">
-            <h3>Источники</h3>
+            <h3>Использованные источники</h3>
             <SourceList sources={knowledgeResult.sources} />
           </div>
         </section>
@@ -1021,15 +1074,15 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 function LoadingPipeline() {
   const steps = [
     "Запрос обработан",
+    "Темы определены",
     "Источники найдены",
     "Материалы отобраны",
-    "Рекомендация сформирована",
-    "Проверка результата пройдена"
+    "Подборка сформирована"
   ];
 
   return (
     <section className="card loadingCard">
-      <h3>Как формируется рекомендация</h3>
+      <h3>Как формируется подборка</h3>
       <div className="pipelineList">
         {steps.map((step) => (
           <div className="pipelineItem" key={step}>
@@ -1045,18 +1098,25 @@ function LoadingPipeline() {
 function PipelineBlock({ pipeline = [] }) {
   return (
     <div className="card largeCard">
-      <h3>Как сформирована рекомендация</h3>
+      <h3>Как сформирована подборка</h3>
       <div className="pipelineList">
-        {pipeline.map((item, index) => (
-          <div className="pipelineItem" key={`${item.step || "step"}-${index}`}>
+        {pipeline.map((item, index) => {
+          const pipelineItem =
+            typeof item === "object" && item !== null
+              ? item
+              : { step: String(item) };
+
+          return (
+          <div className="pipelineItem" key={`${pipelineItem.step || "step"}-${index}`}>
             <span className="check">✓</span>
             <div>
-              <strong>{item.step || "Этап выполнен"}</strong>
-              <p>{item.model || ""}</p>
-              {item.description && <p>{item.description}</p>}
+              <strong>{pipelineItem.step || "Этап выполнен"}</strong>
+              <p>{pipelineItem.model || ""}</p>
+              {pipelineItem.description && <p>{pipelineItem.description}</p>}
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   );
@@ -1065,22 +1125,71 @@ function PipelineBlock({ pipeline = [] }) {
 function TagList({ items = [] }) {
   return (
     <div className="tagList">
-      {items.map((item, index) => {
-        if (typeof item === "string") {
-          return (
-            <span className="tag" key={item}>
-              {item}
-            </span>
-          );
-        }
+      {items.map((item, index) => (
+        <span className="tag" key={getTopicTitle(item) || index}>
+          {getTopicTitle(item)}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function CourseList({ courses = [] }) {
+  return <MaterialList materials={courses} />;
+}
+
+function MaterialList({ materials = [] }) {
+  return (
+    <div className="materialList courseList">
+      {materials.map((item, index) => {
+        const material =
+          typeof item === "object" && item !== null
+            ? item
+            : { title: String(item) };
+        const materialType =
+          material.course_type_label ||
+          material.material_type ||
+          material.course_type ||
+          "Материал";
+        const provider = material.provider || material.source;
+        const responsible = material.responsible_label || material.responsible;
+        const approval =
+          material.approval_label ||
+          (typeof material.requires_approval === "boolean"
+            ? material.requires_approval
+              ? "Требует согласования"
+              : "Не требует согласования"
+            : "");
+        const score = formatScore(material.score);
 
         return (
-          <div className="skillItem" key={item.skill || item.title || index}>
-            <strong>{item.title || item.skill || "Компетенция"}</strong>
-            <span>
-              {item.current_level ?? "—"} → {item.target_level ?? "—"}
-            </span>
-            <span>Разрыв: {item.gap ?? "—"}</span>
+          <div className="materialItemCard courseItem" key={material.id || material.title || index}>
+            <div className="materialCardHeader">
+              <div>
+                <strong>{material.title || "Материал"}</strong>
+                <span>{materialType}</span>
+              </div>
+
+              {material.duration_hours && (
+                <span className="hours">{material.duration_hours} ч</span>
+              )}
+            </div>
+
+            {material.description && <p>{material.description}</p>}
+            {material.reason && <p>{material.reason}</p>}
+
+            <div className="materialMeta courseMeta">
+              {provider && <span>{provider}</span>}
+              {responsible && <span>Ответственный: {responsible}</span>}
+              {approval && <span>{approval}</span>}
+              {score && <span>Совпадение: {score}</span>}
+            </div>
+
+            {material.url && (
+              <a className="openMaterialButton" href={material.url} target="_blank" rel="noreferrer">
+                Открыть материал
+              </a>
+            )}
           </div>
         );
       })}
@@ -1088,67 +1197,17 @@ function TagList({ items = [] }) {
   );
 }
 
-function CourseList({ courses = [] }) {
-  return (
-    <div className="courseList">
-      {courses.map((course, index) => (
-        <div className="courseItem" key={course.id || course.title || index}>
-          <div>
-            <strong>
-              {course.url ? (
-                <a href={course.url} target="_blank" rel="noreferrer">
-                  {course.title || "Курс"}
-                </a>
-              ) : (
-                course.title || "Курс"
-              )}
-            </strong>
-
-            {course.reason && <p>{course.reason}</p>}
-            {course.description && <p>{course.description}</p>}
-
-            <div className="courseMeta">
-              {(course.provider || course.source) && (
-                <span>{course.provider || course.source}</span>
-              )}
-
-              {course.course_type && (
-                <span>
-                  {course.course_type === "external"
-                    ? "Внешний курс"
-                    : "Внутренний курс"}
-                </span>
-              )}
-
-              {typeof course.requires_approval === "boolean" && (
-                <span>
-                  {course.requires_approval
-                    ? "Требует согласования"
-                    : "Не требует согласования"}
-                </span>
-              )}
-
-              {course.price_rub !== undefined && course.price_rub !== null && (
-                <span>{course.price_rub} ₽</span>
-              )}
-            </div>
-          </div>
-
-          {course.duration_hours && (
-            <span className="hours">{course.duration_hours} ч</span>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function NumberedList({ items = [] }) {
   return (
     <ol className="numberedList">
-      {items.map((item) => (
-        <li key={item}>{item}</li>
-      ))}
+      {items.map((item, index) => {
+        const text =
+          typeof item === "string"
+            ? item
+            : item?.title || item?.text || item?.description || "Пункт подборки";
+
+        return <li key={`${text}-${index}`}>{text}</li>;
+      })}
     </ol>
   );
 }
@@ -1156,19 +1215,26 @@ function NumberedList({ items = [] }) {
 function SourceList({ sources = [] }) {
   return (
     <div className="sourceList">
-      {sources.map((source, index) => (
+      {sources.map((item, index) => {
+        const source =
+          typeof item === "object" && item !== null
+            ? item
+            : { title: String(item) };
+        const score = formatScore(source.score);
+
+        return (
         <div className="sourceItem" key={`${source.title || "source"}-${index}`}>
-          <strong>{source.title || "Источник"}</strong>
+          <strong>{source.title || source.name || "Источник"}</strong>
 
           <span>
             {source.type || "Документ"}
-            {" · relevance: "}
-            {typeof source.score === "number" ? source.score.toFixed(2) : "—"}
+            {score ? ` · совпадение: ${score}` : ""}
           </span>
 
           {source.text && <p>{source.text}</p>}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
