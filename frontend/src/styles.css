@@ -7357,11 +7357,78 @@ h3,
 }
 
 .materialCardHeader .hours {
-  flex: 0 0 auto;
-  margin-left: auto;
-  align-self: flex-start;
+  position: absolute;
+  top: 18px;
+  right: 20px;
   text-align: center;
   white-space: nowrap;
+}
+
+.materialItemCard {
+  position: relative;
+  padding-right: 96px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard {
+  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-areas:
+    "label label"
+    "input button"
+    "chips chips";
+  align-items: stretch;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(96, 211, 255, 0.28), transparent 34%),
+    linear-gradient(118deg, #061c43 0%, #0a3777 46%, #1271b5 100%);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .field {
+  display: contents;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .field label {
+  grid-area: label;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard textarea.questionInput {
+  grid-area: input;
+  min-height: 64px;
+  max-height: 78px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .exampleGrid {
+  grid-area: chips;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .exampleButton {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  grid-area: button;
+  align-self: stretch;
+  min-height: 64px;
+  border-color: rgba(255, 255, 255, 0.72);
+  background: #ffffff;
+  color: #002697;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  border-color: #ffffff;
+  background: #eaf1ff;
+  color: #002697;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:disabled,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:disabled {
+  border-color: rgba(255, 255, 255, 0.56);
+  background: rgba(255, 255, 255, 0.72);
+  color: #002697;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -7415,5 +7482,24 @@ h3,
   .workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
   .workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
     width: 100%;
+    min-height: 48px;
+  }
+
+  .workspaceContent > .page:not(.employeeDashboard) .formCard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "input"
+      "button"
+      "chips";
+  }
+
+  .materialItemCard {
+    padding-right: 20px;
+  }
+
+  .materialCardHeader .hours {
+    position: static;
+    margin-left: 0;
   }
 }
