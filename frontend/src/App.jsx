@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   mockRouteResponse,
   mockKnowledgeResponse,
@@ -7,6 +7,7 @@ import {
 import "./styles.css";
 
 const API_URL = "http://127.0.0.1:8000";
+const INTRO_STORAGE_KEY = "gazprom-ai-demo-intro-seen";
 
 function App() {
   const [screen, setScreen] = useState("landing");
@@ -239,7 +240,13 @@ function AppShell({
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [actionMenuOpen, setActionMenuOpen] = useState(false);
+  const [introOpen, setIntroOpen] = useState(() => {
+    try {
+      return window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "true";
+    } catch {
+      return true;
+    }
+  });
 
   const menuItems = [
   { id: "landing", label: "Главная", icon: "⌂" },
@@ -251,8 +258,37 @@ function AppShell({
   function openScreen(screenId) {
     setScreen(screenId);
     setMenuOpen(false);
-    setActionMenuOpen(false);
   }
+
+  function closeIntro() {
+    try {
+      window.localStorage?.setItem(INTRO_STORAGE_KEY, "true");
+    } catch {
+      // Ignore storage restrictions in embedded or private browser contexts.
+    }
+
+    setIntroOpen(false);
+  }
+
+  useEffect(() => {
+    function handleEscape(event) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (introOpen) {
+        closeIntro();
+        return;
+      }
+
+      if (menuOpen) {
+        setMenuOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [introOpen, menuOpen]);
 
   return (
     <div className="gazpromShell">
@@ -330,14 +366,14 @@ function AppShell({
           <div className="drawerBackdrop" onClick={() => setMenuOpen(false)} />
 
           <aside className="menuDrawer">
-            <div className="drawerHeader">
-              <div>
-                <span>Газпром нефть</span>
-                <h2>Рабочий кабинет</h2>
-              </div>
-
-              <button onClick={() => setMenuOpen(false)}>×</button>
-            </div>
+	            <div className="drawerHeader">
+	              <div>
+	                <span>Газпром нефть</span>
+	                <h2>Рабочий кабинет ИТ-кластера</h2>
+	              </div>
+	
+	              <button aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}>×</button>
+	            </div>
 
             <nav className="drawerNav">
               {menuItems.map((item) => (
@@ -352,10 +388,15 @@ function AppShell({
               ))}
             </nav>
 
-            <div className="drawerHint">
-              Рабочий контур для поиска проверенных материалов, источников и ответственных.
-            </div>
-          </aside>
+	            <div className="drawerHint">
+	              <div>
+	                <strong>Агент материалов</strong>
+	                <span>Активен сейчас</span>
+	              </div>
+	              <p>12 источников подобрано</p>
+	              <p>2 требуют уточнения</p>
+	            </div>
+	          </aside>
         </>
       )}
 
@@ -391,43 +432,100 @@ function AppShell({
   </button>
 </form>
 
-          <div className="topActions cleanTopActions" aria-label="Контекст">
-            <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
-            <div className="topStatusMenu">
-              <button
-                className="demoContourBadge"
-                type="button"
-                onClick={() => setActionMenuOpen((isOpen) => !isOpen)}
-              >
-                Демо-контур
-                <span>⌄</span>
-              </button>
-
-              {actionMenuOpen && (
-                <div className="topActionDropdown">
-                  <button type="button" onClick={() => openScreen("route")}>
-                    Найти материалы
-                  </button>
-                  <button type="button" onClick={() => openScreen("knowledge")}>
-                    База знаний
-                  </button>
-                  <button type="button" onClick={() => openScreen("manager")}>
-                    Проверка
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+	          <div className="topActions cleanTopActions" aria-label="Контекст">
+	            <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
+	            <span className="demoContourBadge">
+	              <span className="statusDot" />
+	              Демо-контур
+	            </span>
+	
+	            <div className="agentProfileWrap">
+	              <button
+	                className="agentProfileTrigger"
+	                type="button"
+	                aria-label="Профиль агента подбора материалов"
+	              >
+	                <span className="agentAvatar">ИИ</span>
+	                <span className="agentStatusDot" />
+	              </button>
+	
+	              <div className="agentProfilePopover" role="dialog" aria-label="Профиль агента">
+	                <div className="agentPopoverHeader">
+	                  <span className="agentAvatar large">ИИ</span>
+	                  <div>
+	                    <strong>Агент подбора материалов</strong>
+	                    <p>Активен · обновил подборку 3 мин назад</p>
+	                  </div>
+	                </div>
+	
+	                <p className="agentPopoverText">
+	                  Помогает находить релевантные источники под текущий курс и готовит подборку к проверке.
+	                </p>
+	
+	                <div className="agentContextBlock">
+	                  <span>Курс</span>
+	                  <strong>Интеграционная архитектура и API</strong>
+	                </div>
+	
+	                <div className="agentContextBlock">
+	                  <span>Сейчас выполняет</span>
+	                  <strong>Проверяет релевантность источников и готовность подборки</strong>
+	                </div>
+	
+	                <div className="agentMetrics">
+	                  <div><span>Материалов</span><strong>12</strong></div>
+	                  <div><span>Уточнить</span><strong>2</strong></div>
+	                  <div><span>Готовность</span><strong>47%</strong></div>
+	                </div>
+	
+	                <button type="button" onClick={() => openScreen("route")}>
+	                  Открыть подборку
+	                </button>
+	              </div>
+	            </div>
+	          </div>
         </header>
 
         <div className="workspaceContent">
           {children}
         </div>
-      </main>
-
-    </div>
-    </div>
-  );
+	      </main>
+	
+	      {introOpen && (
+	        <div className="introOverlay" role="presentation" onClick={closeIntro}>
+	          <section
+	            className="introCard"
+	            role="dialog"
+	            aria-modal="true"
+	            aria-labelledby="introTitle"
+	            onClick={(event) => event.stopPropagation()}
+	          >
+	            <button className="introClose" type="button" aria-label="Закрыть окно" onClick={closeIntro}>
+	              ×
+	            </button>
+	
+	            <span className="introBadge">Демо-контур</span>
+	            <h2 id="introTitle">О демонстрационном продукте</h2>
+	            <p>Это демонстрационный продукт для кейса Газпром нефти.</p>
+	            <p>
+	              Он показывает, как ИИ-агент может помогать сотруднику ИТ-кластера быстрее находить и собирать материалы под текущую рабочую задачу.
+	            </p>
+	            <p>
+	              В этом сценарии сотрудник проходит курс по интеграционной архитектуре и API. Система подбирает релевантные источники из базы знаний, показывает прогресс подготовки материалов и помогает передать подборку на проверку руководителю.
+	            </p>
+	            <p>
+	              Интерфейс работает в демо-контуре и предназначен для демонстрации логики продукта, пользовательского сценария и ценности ИИ-помощника.
+	            </p>
+	
+	            <button className="introPrimary" type="button" onClick={closeIntro}>
+	              Понятно, перейти в кабинет
+	            </button>
+	          </section>
+	        </div>
+	      )}
+	    </div>
+	    </div>
+	  );
 }
 
 
@@ -689,9 +787,12 @@ function LandingScreen({ setScreen }) {
 
           </div>
 
-          <div className="heroStatusLine">
-            Последний запрос: проектирование API и интеграций
-          </div>
+          <button className="heroStatusLine" type="button" onClick={() => setScreen("route")}>
+            <span>Текущий курс: Интеграционная архитектура и API</span>
+            <span className="heroStatusDivider" />
+            <strong>Продолжить</strong>
+            <span className="heroStatusArrow">→</span>
+          </button>
         </div>
       </section>
 
