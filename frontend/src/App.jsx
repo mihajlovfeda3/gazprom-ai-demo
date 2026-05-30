@@ -248,17 +248,19 @@ function AppShell({
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [actionMenuOpen, setActionMenuOpen] = useState(false);
 
   const menuItems = [
-  { id: "landing", label: "Рабочий стол", short: "Г" },
-  { id: "route", label: "Подбор материалов", short: "М" },
-  { id: "knowledge", label: "База знаний", short: "Б" },
-  { id: "manager", label: "Руководитель", short: "Р" }
+  { id: "landing", label: "Главная", icon: "⌂" },
+  { id: "knowledge", label: "Материалы", icon: "▤" },
+  { id: "route", label: "Подборки", icon: "◫" },
+  { id: "manager", label: "Проверка", icon: "✓" }
 ];
 
   function openScreen(screenId) {
     setScreen(screenId);
     setMenuOpen(false);
+    setActionMenuOpen(false);
   }
 
   return (
@@ -275,13 +277,12 @@ function AppShell({
           <span />
         </button>
 
-        <button
+        <div
           className="railBrandMark"
-          onClick={() => openScreen("landing")}
           aria-label="Газпром нефть"
         >
           ГН
-        </button>
+        </div>
 
         <div className="internProfileWrap">
   <button
@@ -310,15 +311,16 @@ function AppShell({
 
         <div className="railIcons cleanRailIcons">
           {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={screen === item.id ? "railIconButton active" : "railIconButton"}
-              onClick={() => openScreen(item.id)}
-              title={item.label}
-            >
-              {item.short}
-            </button>
-          ))}
+	            <button
+	              key={item.id}
+	              className={screen === item.id ? "railIconButton active" : "railIconButton"}
+	              onClick={() => openScreen(item.id)}
+	              title={item.label}
+	            >
+	              <span className="railIconGlyph">{item.icon}</span>
+	              <span className="railIconLabel">{item.label}</span>
+	            </button>
+	          ))}
         </div>
 
         <div className="railBottom">
@@ -353,9 +355,9 @@ function AppShell({
                   className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
                   onClick={() => openScreen(item.id)}
                 >
-                  <span>{item.short}</span>
-                  {item.label}
-                </button>
+	                  <span>{item.icon}</span>
+	                  {item.label}
+	                </button>
               ))}
             </nav>
 
@@ -368,18 +370,16 @@ function AppShell({
 
       <main className="mainWorkspace">
         <header className="topBar cleanTopBar">
-          <button
+          <div
             className="topBrandBlock"
-            onClick={() => openScreen("landing")}
-            type="button"
-            aria-label="Рабочий стол"
+            aria-label="Газпром"
           >
             <img
               className="brandLogoImage"
               src="/gazprom-emblem.jpg"
               alt="Газпром"
             />
-          </button>
+          </div>
 
           <form
   className="searchPill activeSearch"
@@ -402,6 +402,30 @@ function AppShell({
 
           <div className="topActions cleanTopActions" aria-label="Контекст">
             <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
+            <div className="topStatusMenu">
+              <button
+                className="demoContourBadge"
+                type="button"
+                onClick={() => setActionMenuOpen((isOpen) => !isOpen)}
+              >
+                Демо-контур
+                <span>⌄</span>
+              </button>
+
+              {actionMenuOpen && (
+                <div className="topActionDropdown">
+                  <button type="button" onClick={() => openScreen("route")}>
+                    Найти материалы
+                  </button>
+                  <button type="button" onClick={() => openScreen("knowledge")}>
+                    База знаний
+                  </button>
+                  <button type="button" onClick={() => openScreen("manager")}>
+                    Проверка
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -410,33 +434,6 @@ function AppShell({
         </div>
       </main>
 
-      <aside className="rightPanel cleanRightPanel">
-        <div className="backendStatusCard backendStatusCompact">
-          <span>Статус подключения</span>
-          <strong>{mode === "live backend" ? "Контур подключен" : "Демо-контур"}</strong>
-          <p>
-            {mode === "live backend"
-              ? "Данные поступают из backend."
-              : "Используются резервные demo-данные."}
-          </p>
-        </div>
-
-        <div className="panelBlock cleanPanelBlock">
-          <h3>Быстрые действия</h3>
-
-          <button onClick={() => openScreen("route")}>
-            Найти материалы под задачу
-          </button>
-
-          <button onClick={() => openScreen("knowledge")}>
-            Найти знания и материалы
-          </button>
-
-          <button onClick={() => openScreen("manager")}>
-            Проверка руководителем
-          </button>
-        </div>
-      </aside>
     </div>
     </div>
   );

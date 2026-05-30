@@ -5892,3 +5892,216 @@ h3,
     transform: translateX(55%) rotate(-12deg);
   }
 }
+
+/* Main screen final UI fixes. */
+.productAppCompact {
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.cleanRail {
+  width: 92px;
+}
+
+.railBrandMark,
+.topBrandBlock {
+  cursor: default;
+  pointer-events: none;
+}
+
+.topBrandBlock:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.cleanRailIcons {
+  width: 100%;
+  gap: 8px;
+}
+
+.cleanRail .railIconButton,
+.cleanRail .railIcons button,
+.cleanRail .railBottom button {
+  width: 78px;
+  min-height: 54px;
+  height: auto;
+  padding: 7px 5px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.railIconGlyph {
+  color: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.railIconLabel {
+  max-width: 70px;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.globalSearchButton {
+  border: 1px solid #c9d8ea;
+  background: #eef4ff;
+  color: var(--gn-blue);
+  box-shadow: none;
+}
+
+.globalSearchButton:hover {
+  background: #e3edfb;
+  color: var(--gn-blue);
+}
+
+.cleanTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topStatusMenu {
+  position: relative;
+}
+
+.demoContourBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d7e2ee;
+  border-radius: 999px;
+  background: #f7fbff;
+  color: var(--gn-blue);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.demoContourBadge:hover {
+  background: #eef6ff;
+}
+
+.topActionDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 70;
+  width: 210px;
+  padding: 8px;
+  border: 1px solid #dce6f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(11, 31, 58, 0.14);
+}
+
+.topActionDropdown button {
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gn-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topActionDropdown button:hover {
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+}
+
+.rightPanel,
+.rightPanel.cleanRightPanel {
+  display: none;
+}
+
+.employeeHeroMain::after {
+  left: -60%;
+  width: 92%;
+  opacity: 0.56;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.16) 22%,
+      rgba(255, 255, 255, 0.56) 49%,
+      rgba(112, 183, 255, 0.24) 61%,
+      rgba(255, 255, 255, 0.12) 78%,
+      transparent 100%
+    );
+  filter: blur(1.5px) drop-shadow(0 0 18px rgba(255, 255, 255, 0.38));
+  mix-blend-mode: screen;
+  animation-duration: 8s;
+}
+
+.trajectoryPanel .cardHeaderLine h2 {
+  max-width: none;
+  font-size: 24px;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+.employeeStatCard span,
+.employeeStatCard p,
+.courseBody p,
+.selectionSummary span,
+.trajectoryProgress span,
+.materialItem p,
+.managerPanel p,
+.managerDecisionPreview span {
+  font-weight: 400;
+}
+
+.cardHeaderLine h2 {
+  font-weight: 400;
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-58%) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateX(18%) rotate(-12deg);
+  }
+
+  100% {
+    transform: translateX(78%) rotate(-12deg);
+  }
+}
+
+@media (max-width: 1180px) {
+  .productAppCompact {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+
+  .cleanRail {
+    width: 78px;
+  }
+
+  .cleanRail .railIconButton,
+  .cleanRail .railIcons button,
+  .cleanRail .railBottom button {
+    width: 66px;
+  }
+
+  .railIconLabel {
+    max-width: 58px;
+    font-size: 9px;
+  }
+}
