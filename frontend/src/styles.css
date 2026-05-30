@@ -5764,3 +5764,102 @@ h3,
     width: fit-content;
   }
 }
+
+/* Microfix: hero status and current materials alignment. */
+.employeeHeroMain {
+  align-items: center;
+  text-align: center;
+}
+
+.employeeGreeting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.employeeGreeting > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heroStatusLine {
+  width: fit-content;
+  max-width: min(760px, calc(100% - 48px));
+  margin: 22px auto 0;
+  border-radius: 999px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.employeeHeroMain::after {
+  z-index: 1;
+  opacity: 0.22;
+  animation-duration: 16s;
+}
+
+.employeeGreeting,
+.heroStatusLine {
+  z-index: 2;
+}
+
+.coursesPanel .courseRow {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 72px;
+  align-items: center;
+  column-gap: 18px;
+  text-align: left;
+}
+
+.courseBody {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.courseTop {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.courseTop strong,
+.courseBody p {
+  text-align: left;
+}
+
+.courseProgressTrack {
+  align-self: flex-start;
+  width: min(380px, 100%);
+  margin-top: 12px;
+}
+
+.courseRowValue {
+  justify-self: end;
+  min-width: 72px;
+  color: var(--gn-blue);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .heroStatusLine {
+    white-space: normal;
+  }
+
+  .coursesPanel .courseRow {
+    grid-template-columns: 52px minmax(0, 1fr) 62px;
+    column-gap: 12px;
+  }
+
+  .courseRowValue {
+    min-width: 62px;
+  }
+}

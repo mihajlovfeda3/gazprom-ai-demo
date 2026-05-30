@@ -702,7 +702,7 @@ function LandingScreen({ setScreen }) {
           </div>
 
           <div className="heroStatusLine">
-            Последний запрос: проектирование API и интеграций · 12 материалов · 2 требуют уточнения · готово к проверке
+            Последний запрос: проектирование API и интеграций
           </div>
         </div>
       </section>
@@ -743,7 +743,6 @@ function LandingScreen({ setScreen }) {
                 <div className="courseBody">
                   <div className="courseTop">
                     <strong>{course.title}</strong>
-                    {course.progress > 0 ? <span>{course.progress}%</span> : <span>Новый</span>}
                   </div>
 
                   <p>{course.meta}</p>
@@ -752,6 +751,9 @@ function LandingScreen({ setScreen }) {
                     <div style={{ width: `${course.progress || 8}%` }} />
                   </div>
                 </div>
+                <span className="courseRowValue">
+                  {course.progress > 0 ? `${course.progress}%` : "Новый"}
+                </span>
               </div>
             ))}
           </div>
