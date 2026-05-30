@@ -374,9 +374,11 @@ function AppShell({
             type="button"
             aria-label="Рабочий стол"
           >
-            <span className="brandSymbol" aria-hidden="true">
-              <span />
-            </span>
+            <img
+              className="brandLogoImage"
+              src="/gazprom-emblem.jpg"
+              alt="Газпром"
+            />
           </button>
 
           <form
@@ -598,12 +600,6 @@ function LandingScreen({ setScreen }) {
               </p>
             </div>
 
-            <div className="employeeBadges">
-              <span>Доступы</span>
-              <span>Знакомство</span>
-              <span className="active">Архитектура</span>
-              <span>Регламенты</span>
-            </div>
           </div>
 
           <div className="heroActionsRow">
@@ -642,7 +638,7 @@ function LandingScreen({ setScreen }) {
         <div className="dashboardCard coursesPanel">
           <div className="cardHeaderLine">
             <h2>Текущие материалы</h2>
-            <button onClick={() => setScreen("route")}>Все материалы →</button>
+            <button onClick={() => setScreen("route")}>Все материалы</button>
           </div>
 
           <div className="courseRows">
@@ -669,7 +665,7 @@ function LandingScreen({ setScreen }) {
         <div className="dashboardCard trajectoryPanel">
           <div className="cardHeaderLine">
             <h2>Подборка в работе</h2>
-            <button onClick={() => setScreen("route")}>Открыть →</button>
+            <button onClick={() => setScreen("route")}>Открыть</button>
           </div>
 
           <div className="trajectoryRoles">
@@ -703,7 +699,7 @@ function LandingScreen({ setScreen }) {
         <div className="dashboardCard knowledgePanel">
           <div className="cardHeaderLine">
             <h2>Последние материалы базы знаний</h2>
-            <button onClick={() => setScreen("knowledge")}>Открыть базу →</button>
+            <button onClick={() => setScreen("knowledge")}>Открыть базу</button>
           </div>
 
           <div className="materialGrid">
@@ -725,7 +721,7 @@ function LandingScreen({ setScreen }) {
         <div className="dashboardCard managerPanel">
           <div className="cardHeaderLine">
             <h2>Проверка руководителем</h2>
-            <button onClick={() => setScreen("manager")}>Перейти →</button>
+            <button onClick={() => setScreen("manager")}>Перейти</button>
           </div>
 
           <p>

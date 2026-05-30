@@ -3838,9 +3838,9 @@ body,
 }
 
 .topBrandBlock {
-  min-width: 42px;
-  width: 42px;
-  height: 42px;
+  min-width: 54px;
+  width: 54px;
+  height: 54px;
   justify-content: center;
 }
 
@@ -3868,6 +3868,15 @@ body,
 .brandText,
 .topKnowledgeButton {
   display: none;
+}
+
+.brandLogoImage {
+  width: 46px;
+  height: 46px;
+  display: block;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #ffffff;
 }
 
 .workContext {
@@ -4611,4 +4620,676 @@ h3,
   .buttonRow .dangerButton {
     width: 100%;
   }
+}
+
+/* Gazprom-inspired home screen: airy corporate page, slim navigation. */
+:root {
+  --gn-ref-blue: #0072bc;
+  --gn-ref-blue-dark: #00508f;
+  --gn-ref-cyan: #00a3d9;
+  --gn-ref-orange: #f58220;
+  --gn-ref-page: #f1f5f8;
+}
+
+.productAppCompact {
+  grid-template-columns: 48px minmax(0, 1fr) 260px;
+}
+
+.cleanRail {
+  width: 48px;
+  padding: 12px 0;
+  background: #ffffff !important;
+  border-right: 1px solid #d8e2eb;
+  color: var(--gn-ref-blue);
+}
+
+.railMenuButton {
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border: 1px solid #d8e2eb;
+  background: #ffffff;
+}
+
+.railMenuButton span {
+  width: 14px;
+  background: var(--gn-ref-blue);
+}
+
+.internProfileWrap {
+  display: none;
+}
+
+.cleanRailIcons {
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.railIconButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  color: #70869a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.railIconButton:hover,
+.railIconButton.active {
+  background: #eaf5fb;
+  color: var(--gn-ref-blue);
+}
+
+.railIconButton.active {
+  box-shadow: inset 3px 0 0 var(--gn-ref-orange);
+}
+
+.railBottom {
+  gap: 8px;
+}
+
+.topBar.cleanTopBar {
+  height: 72px;
+  padding: 0 28px;
+  border-bottom: 1px solid #dfe7ee;
+}
+
+.topBrandBlock {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+}
+
+.brandLogoImage {
+  width: 52px;
+  height: 52px;
+  border-radius: 0;
+}
+
+.workspaceContent {
+  padding: 0;
+  background: #ffffff;
+}
+
+.workspaceContent .page.employeeDashboard {
+  max-width: none;
+  gap: 0;
+}
+
+.employeeHero {
+  display: block;
+}
+
+.employeeHeroMain {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 42px 56px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    linear-gradient(90deg, rgba(0, 34, 79, 0.88) 0%, rgba(0, 80, 143, 0.76) 45%, rgba(0, 114, 188, 0.38) 100%),
+    linear-gradient(165deg, #12283e 0%, #345b73 35%, #e7964c 36%, #194a70 45%, #0d78aa 100%);
+  color: #ffffff;
+}
+
+.employeeHeroMain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.18) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 120px);
+  pointer-events: none;
+}
+
+.employeeGreeting {
+  align-items: end;
+}
+
+.employeeGreeting h1 {
+  max-width: 720px;
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1.12;
+}
+
+.employeeGreeting p {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 16px;
+}
+
+.sectionKicker {
+  background: rgba(0, 163, 217, 0.88);
+  color: #ffffff;
+  border-radius: 0;
+  letter-spacing: 0;
+}
+
+.employeeBadges {
+  max-width: 420px;
+}
+
+.employeeBadges span {
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+.employeeBadges span.active {
+  background: var(--gn-ref-orange);
+  border-color: var(--gn-ref-orange);
+  color: #ffffff;
+}
+
+.heroActionsRow .gnPrimaryButton {
+  background: var(--gn-ref-orange);
+  color: #ffffff !important;
+}
+
+.heroActionsRow .gnPrimaryButton:hover {
+  background: #d96f18;
+}
+
+.heroActionsRow .gnSecondaryButton {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--gn-ref-blue-dark);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.employeeStats,
+.dashboardGrid {
+  width: min(1120px, calc(100% - 64px));
+  margin: 0 auto;
+}
+
+.employeeStats {
+  padding: 42px 0 18px;
+  gap: 0;
+  border-bottom: 1px solid #e2e8ef;
+}
+
+.employeeStatCard {
+  padding: 0 28px 18px;
+  border: 0;
+  border-left: 1px solid #e2e8ef;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.employeeStatCard:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.employeeStatCard span {
+  color: #657989;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.employeeStatCard strong {
+  margin: 10px 0 4px;
+  color: var(--gn-ref-blue-dark);
+  font-size: 34px;
+}
+
+.dashboardGrid {
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 26px;
+  padding: 34px 0 64px;
+  background: #ffffff;
+}
+
+.dashboardCard {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.cardHeaderLine {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8ef;
+}
+
+.cardHeaderLine h2 {
+  color: #67727c;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.cardHeaderLine button {
+  color: var(--gn-ref-blue);
+  font-weight: 500;
+}
+
+.courseRows {
+  gap: 0;
+}
+
+.courseRow,
+.materialItem,
+.trajectoryRoles div,
+.managerDecisionPreview {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid #e6edf3;
+  background: #ffffff;
+}
+
+.courseRow {
+  padding: 16px 0;
+}
+
+.courseIcon {
+  border-radius: 0;
+}
+
+.courseIcon.courseBlue {
+  background: var(--gn-ref-blue);
+}
+
+.courseIcon.courseOrange {
+  background: var(--gn-ref-orange);
+}
+
+.courseIcon.courseGreen {
+  background: var(--gn-ref-cyan);
+}
+
+.courseTop strong,
+.materialItem strong,
+.trajectoryRoles strong,
+.managerDecisionPreview strong {
+  color: #293847;
+  font-weight: 600;
+}
+
+.courseTop span,
+.materialStatus,
+.trajectoryProgress strong {
+  color: var(--gn-ref-blue);
+}
+
+.courseProgressTrack,
+.wideProgress {
+  height: 4px;
+  background: #e8eef3;
+}
+
+.courseProgressTrack div,
+.wideProgress div {
+  background: var(--gn-ref-blue);
+}
+
+.materialGrid {
+  gap: 0;
+}
+
+.materialItem {
+  padding: 16px 0;
+}
+
+.materialStatus {
+  border-radius: 0;
+  background: #e8f4fb;
+  font-weight: 500;
+}
+
+.materialStatus.warning {
+  background: #fff0e4;
+  color: #a95422;
+}
+
+.trajectoryPanel,
+.managerPanel {
+  padding: 20px;
+  border: 1px solid #e2e8ef;
+  background: #f7fafc;
+}
+
+.trajectoryRoles div,
+.managerDecisionPreview {
+  padding: 14px 0;
+  background: transparent;
+}
+
+.panelAction {
+  border-radius: 0;
+  background: var(--gn-ref-blue);
+}
+
+.panelAction:hover {
+  background: var(--gn-ref-blue-dark);
+}
+
+@media (max-width: 1180px) {
+  .productAppCompact {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .employeeHeroMain {
+    min-height: 300px;
+    padding: 28px 18px;
+  }
+
+  .employeeGreeting h1 {
+    font-size: 32px;
+  }
+
+  .employeeStats,
+  .dashboardGrid {
+    width: min(100% - 28px, 1120px);
+  }
+
+  .employeeStats {
+    gap: 18px;
+  }
+
+  .employeeStatCard {
+    padding: 0 0 18px;
+    border-left: 0;
+    border-bottom: 1px solid #e2e8ef;
+  }
+}
+
+/* Home cleanup requested during visual QA. */
+.employeeHeroMain::before {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.18) 100%);
+}
+
+.topBrandBlock {
+  border: 1px solid #d8e6f1;
+  border-radius: 18px;
+  background: #f4f9fc;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.topBrandBlock:hover {
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 80, 143, 0.12);
+  transform: translateY(-1px);
+}
+
+.brandLogoImage {
+  border-radius: 14px;
+}
+
+.railIconButton {
+  border: 1px solid #d6e3ee;
+  border-radius: 10px;
+  background: #f1f7fb;
+  color: var(--gn-ref-blue-dark);
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.railIconButton:hover,
+.railIconButton.active {
+  background: #dff1fb;
+  border-color: #b9d8ec;
+  color: var(--gn-ref-blue);
+  transform: translateY(-1px);
+}
+
+.railIconButton.active {
+  box-shadow: inset 0 -3px 0 var(--gn-ref-orange);
+}
+
+.heroActionsRow .gnPrimaryButton,
+.heroActionsRow .gnSecondaryButton,
+.cardHeaderLine button,
+.dashboardGrid .panelAction {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.heroActionsRow .gnPrimaryButton:hover,
+.heroActionsRow .gnSecondaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px rgba(0, 34, 79, 0.18);
+}
+
+.cardHeaderLine button {
+  padding: 8px 13px;
+  border: 1px solid #cfe1ee;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.cardHeaderLine button:hover {
+  background: #eaf5fb;
+  border-color: #b9d8ec;
+  transform: translateY(-2px);
+}
+
+.dashboardGrid .panelAction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 80, 143, 0.14);
+}
+
+.courseIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+}
+
+.courseIcon.courseBlue {
+  background: #dceff8;
+  border: 1px solid #c2dfed;
+}
+
+.courseIcon.courseOrange {
+  background: #fde8d7;
+  border: 1px solid #f4d0b2;
+}
+
+.courseIcon.courseGreen {
+  background: #dff3f6;
+  border: 1px solid #c5e6eb;
+}
+
+/* Screenshot QA polish: targeted home-screen fixes only. */
+.employeeHeroMain {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 44px 32px;
+}
+
+.employeeGreeting {
+  width: min(760px, 100%);
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.employeeGreeting h1,
+.employeeGreeting p {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.heroActionsRow {
+  justify-content: center;
+}
+
+.employeeHeroMain .sectionKicker {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  text-transform: none;
+}
+
+.heroActionsRow .gnPrimaryButton {
+  background: var(--gn-blue);
+  color: #ffffff !important;
+}
+
+.heroActionsRow .gnPrimaryButton:hover {
+  background: var(--gn-blue-2);
+}
+
+.heroActionsRow .gnSecondaryButton {
+  background: #ffffff;
+  border-color: var(--gn-border);
+  color: var(--gn-blue);
+}
+
+.cleanRail {
+  background: #f8fbfd !important;
+}
+
+.railIconButton {
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  color: var(--gn-blue);
+}
+
+.railIconButton:hover,
+.railIconButton.active {
+  background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
+  color: var(--gn-blue);
+}
+
+.menuDrawer {
+  left: 48px;
+  width: 260px;
+  max-width: 280px;
+  padding: 18px;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 14px 0 34px rgba(11, 31, 58, 0.14);
+}
+
+.drawerNavItem {
+  min-height: 44px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.drawerNavItem.active,
+.drawerNavItem:hover {
+  background: var(--gn-blue-soft);
+}
+
+.coursesPanel .courseRow {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.courseTop {
+  align-items: baseline;
+}
+
+.courseTop span {
+  min-width: 48px;
+  text-align: right;
+}
+
+.courseProgressTrack {
+  max-width: 420px;
+}
+
+.trajectoryPanel,
+.managerPanel {
+  padding: 18px;
+  border: 1px solid var(--gn-border);
+  border-radius: 24px;
+  background: #f8fafc;
+}
+
+.trajectoryRoles {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.trajectoryRoles div,
+.managerDecisionPreview {
+  padding: 10px 0;
+}
+
+.materialGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 22px;
+}
+
+.materialStatus {
+  border-radius: 999px;
+  padding: 5px 9px;
+}
+
+.managerDecisionPreview {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  padding: 12px;
+}
+
+.managerPanel .panelAction {
+  width: fit-content;
+  min-height: 38px;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.rightPanel.cleanRightPanel {
+  padding: 16px 12px;
+}
+
+.backendStatusCompact,
+.cleanPanelBlock {
+  padding: 12px;
+}
+
+.cleanPanelBlock button {
+  min-height: 38px;
+  border-radius: 12px;
+}
+
+@media (max-width: 760px) {
+  .menuDrawer {
+    left: 0;
+    width: min(260px, 86vw);
+  }
+
+  .materialGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cleanRail .railIconButton,
+.cleanRail .railIcons button,
+.cleanRail .railBottom button {
+  border: 1px solid var(--gn-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--gn-blue);
+}
+
+.cleanRail .railIconButton:hover,
+.cleanRail .railIconButton.active,
+.cleanRail .railIcons button:hover,
+.cleanRail .railBottom button:hover {
+  background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
+  color: var(--gn-blue);
+}
+
+.cleanRail .railIconButton.active {
+  box-shadow: inset 0 -3px 0 var(--gn-accent);
 }
