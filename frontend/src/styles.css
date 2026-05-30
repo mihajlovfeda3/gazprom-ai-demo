@@ -3780,139 +3780,145 @@ h3,
   }
 }
 
-/* Corporate visual system: first safe frontend-polish pass. */
+/* Corporate platform polish: calm enterprise visual system. */
 :root {
   --gn-blue: #002697;
-  --gn-blue-2: #0039B7;
-  --gn-blue-soft: #EAF1FF;
-  --gn-accent: #C8672A;
-  --gn-accent-hover: #A95422;
-  --gn-bg: #F4F7FA;
-  --gn-card: #FFFFFF;
-  --gn-border: #D9E2EC;
-  --gn-text: #0B1F3A;
-  --gn-muted: #66758C;
-  --gn-orange: var(--gn-accent);
-  --gn-orange-dark: var(--gn-accent-hover);
-  --gn-soft-blue: var(--gn-blue-soft);
-  --gn-soft-orange: #FFF3EA;
+  --gn-blue-2: #0039b7;
+  --gn-blue-soft: #eaf1ff;
+  --gn-accent: #c8672a;
+  --gn-accent-hover: #a95422;
+  --gn-bg: #f4f7fa;
+  --gn-card: #ffffff;
+  --gn-border: #d9e2ec;
+  --gn-text: #0b1f3a;
+  --gn-muted: #66758c;
   --gn-shadow: 0 8px 22px rgba(11, 31, 58, 0.06);
-  --gn-shadow-soft: 0 4px 12px rgba(11, 31, 58, 0.04);
 }
 
 body,
-button,
-input,
-textarea,
-select {
+.gazpromShell {
+  background: var(--gn-bg);
+  color: var(--gn-text);
   font-family: Inter, "IBM Plex Sans", Arial, Roboto, system-ui, sans-serif;
 }
 
-body {
+.productAppCompact {
+  grid-template-columns: 68px minmax(0, 1fr) 270px;
   background: var(--gn-bg);
-  color: var(--gn-text);
-  font-size: 15px;
-  font-weight: 400;
 }
 
-button {
-  font-weight: 600;
+.cleanRail {
+  background: var(--gn-blue) !important;
 }
 
-.productApp,
-.productAppCompact,
-.mainWorkspace,
-.workspaceContent {
-  background: var(--gn-bg);
-  color: var(--gn-text);
+.railMenuButton,
+.railIconButton,
+.internAvatarButton,
+.internAvatar,
+.drawerNavItem span {
+  border-radius: 8px;
 }
 
-.cleanTopBar,
-.topBar {
-  min-height: 62px;
-  height: 62px;
-  display: grid;
-  grid-template-columns: auto minmax(280px, 620px);
-  justify-content: start;
-  align-items: center;
-  gap: 16px;
+.railIconButton {
+  font-weight: 700;
+}
+
+.railIconButton.active {
+  background: #ffffff;
+  color: var(--gn-blue);
+}
+
+.topBar.cleanTopBar {
+  height: 66px;
   padding: 0 22px;
-  background: rgba(255, 255, 255, 0.96);
+  gap: 14px;
+  background: #ffffff;
   border-bottom: 1px solid var(--gn-border);
   box-shadow: none;
 }
 
 .topBrandBlock {
-  width: 38px;
-  min-width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 1px solid var(--gn-border);
-  border-radius: 8px;
-  background: #ffffff;
-  box-shadow: var(--gn-shadow-soft);
-}
-
-.brandText {
-  display: none;
+  min-width: 54px;
+  width: 54px;
+  height: 54px;
+  justify-content: center;
 }
 
 .brandSymbol {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, var(--gn-blue), var(--gn-blue-2));
-  box-shadow: none;
+  width: 34px;
+  height: 28px;
+  flex-basis: 34px;
+  border: 2px solid var(--gn-blue);
 }
 
 .brandSymbol::before {
-  background: transparent;
+  width: 13px;
+  height: 13px;
+  background: var(--gn-blue-2);
 }
 
 .brandSymbol span {
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
+  right: -4px;
+  bottom: -4px;
+  width: 20px;
+  height: 5px;
   background: var(--gn-accent);
 }
 
-.topActions,
-.cleanTopActions,
+.brandText,
 .topKnowledgeButton {
   display: none;
 }
 
-.topBar .searchPill.activeSearch,
-.searchPill.activeSearch {
-  width: min(620px, 100%);
+.brandLogoImage {
+  width: 46px;
+  height: 46px;
+  display: block;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.workContext {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--gn-border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--gn-muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.searchPill.activeSearch,
+.topBar .searchPill.activeSearch {
   height: 40px;
   min-height: 40px;
+  max-width: 680px;
   border-radius: 8px;
   padding: 0 5px 0 13px;
-  gap: 8px;
   background: #ffffff;
   border: 1px solid var(--gn-border);
   box-shadow: none;
 }
 
 .globalSearchInput {
-  min-width: 0;
-  color: var(--gn-text);
   font-size: 14px;
   font-weight: 400;
 }
 
 .globalSearchInput::placeholder {
-  color: var(--gn-muted);
+  color: #7a8794;
   font-weight: 400;
 }
 
 .globalSearchButton {
-  min-width: 62px;
+  min-width: 70px;
   min-height: 30px;
-  height: 30px;
   padding: 0 12px;
-  border: 0;
   border-radius: 7px;
   background: var(--gn-blue);
   color: #ffffff;
@@ -3925,366 +3931,3575 @@ button {
   background: var(--gn-blue-2);
 }
 
-.primaryButton,
-.gnPrimaryButton,
-.openMaterialButton,
-.assistantAsk,
-.panelAction,
-.employeeAssistantMini button,
-.cleanPanelBlock button,
-.gnQuickCard button {
-  border-radius: 8px;
-  background: var(--gn-blue);
-  border-color: var(--gn-blue);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: none;
+.workspaceContent {
+  min-height: calc(100vh - 66px);
+  padding: 24px;
+  background: var(--gn-bg);
 }
 
-.primaryButton:hover,
-.gnPrimaryButton:hover,
-.openMaterialButton:hover,
-.assistantAsk:hover,
-.panelAction:hover,
-.employeeAssistantMini button:hover,
-.cleanPanelBlock button:hover,
-.gnQuickCard button:hover {
-  background: var(--gn-blue-2);
-  border-color: var(--gn-blue-2);
-  color: #ffffff;
-  box-shadow: var(--gn-shadow-soft);
-}
-
-.secondaryButton,
-.smallButton,
-.cardHeaderLine button,
-.exampleButton {
-  border-radius: 8px;
-  color: var(--gn-blue);
-  font-weight: 600;
+.workspaceContent .page {
+  gap: 18px;
 }
 
 .card,
 .formCard,
-.largeCard,
 .dashboardCard,
 .employeeStatCard,
-.employeeAssistantMini,
 .materialItemCard,
 .sourceItem,
 .pipelineItem,
 .statusBlock,
 .infoBlock,
 .managerDecisionPreview,
-.assistantCard,
+.trajectoryRoles div,
 .panelBlock,
 .backendStatusCard,
-.gnMetricCard,
-.gnAgentCard,
-.gnFlowCard,
-.gnQuickCard,
-.gnHeroStatus,
-.cleanAssistantCard,
-.cleanPanelBlock {
-  background: var(--gn-card);
-  border-color: var(--gn-border);
+.menuDrawer {
   border-radius: 8px;
-  box-shadow: var(--gn-shadow-soft);
-}
-
-.card:hover,
-.dashboardCard:hover,
-.materialItemCard:hover,
-.gnAgentCard:hover,
-.gnQuickCard:hover {
+  border-color: var(--gn-border);
   box-shadow: var(--gn-shadow);
 }
 
-h1,
-h2,
-h3,
 .screenHeader h2,
 .cardHeaderLine h2,
-.assistantTitle h3 {
-  color: var(--gn-text);
+h2 {
+  font-size: 24px;
+  line-height: 1.2;
   font-weight: 600;
   letter-spacing: 0;
 }
 
-p,
-li,
-.card p,
-.summaryText,
-.sourceText {
-  color: var(--gn-muted);
-  font-weight: 400;
+h3,
+.card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
-.modeBadge,
-.menuGroupTitle,
-.employeeStatCard span,
-.courseTop span {
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.screenHeader p,
+.card p,
+.answerText,
+.plainList,
+.numberedList {
+  color: var(--gn-muted);
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .eyebrow,
-.sectionKicker,
-.gnKicker,
-.tag,
-.courseMeta span,
-.materialCardHeader span:not(.hours),
-.gnAgentCard.orange .agentLabel,
-.employeeBadges span.active,
-.statusDot.orange {
-  background: var(--gn-soft-orange);
-  color: var(--gn-accent-hover);
-  border-color: rgba(200, 103, 42, 0.22);
+.sectionKicker {
+  border-radius: 6px;
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
-.courseProgressTrack div,
-.wideProgress div,
-.progressFill {
-  background: var(--gn-blue);
+.employeeHero {
+  grid-template-columns: 1fr;
 }
 
-.materialItemCard,
-.gnAgentCard.orange {
-  border-left-color: var(--gn-blue);
-  border-top-color: var(--gn-blue);
-}
-
-.materialItemCard:nth-child(3n),
-.employeeStatCard:nth-child(4) {
-  border-left-color: var(--gn-accent);
-  border-top-color: var(--gn-accent);
-}
-
-.employeeBadges span.active,
-.statusDot.orange {
-  background: var(--gn-accent);
-  color: #ffffff;
-}
-
-@media (max-width: 760px) {
-  .cleanTopBar,
-  .topBar {
-    grid-template-columns: auto minmax(0, 1fr);
-    height: auto;
-    min-height: 58px;
-    padding: 9px 12px;
-    gap: 10px;
-  }
-
-  .topBar .searchPill.activeSearch,
-  .searchPill.activeSearch {
-    height: 38px;
-    min-height: 38px;
-    padding-left: 10px;
-  }
-
-  .globalSearchButton {
-    min-width: 56px;
-    padding: 0 10px;
-  }
-}
-
-/* Focused shell fix: sidebar labels and compact topbar only. */
-.productAppCompact {
-  grid-template-columns: 112px minmax(0, 1fr) 300px;
-}
-
-.cleanRail,
-.blueRail {
-  width: 112px;
-  padding: 14px 10px;
-  background: #ffffff !important;
+.employeeHeroMain {
+  min-height: 190px;
+  padding: 24px;
+  border-radius: 8px;
+  background: #ffffff;
   color: var(--gn-text);
-  border-right: 1px solid var(--gn-border);
+  border: 1px solid var(--gn-border);
+  box-shadow: var(--gn-shadow);
+}
+
+.employeeHeroMain::after {
+  display: none;
+}
+
+.employeeGreeting h1 {
+  color: var(--gn-text);
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.employeeGreeting p {
+  color: var(--gn-muted);
+  font-size: 15px;
+}
+
+.employeeBadges span {
+  border-radius: 6px;
+  background: var(--gn-blue-soft);
+  border: 1px solid #d2def5;
+  color: var(--gn-blue);
+  font-weight: 500;
+}
+
+.employeeBadges span.active {
+  background: #fff4ec;
+  border-color: #efd1bc;
+  color: var(--gn-accent-hover);
+}
+
+.heroActionsRow {
+  margin-top: 26px;
+}
+
+.gnPrimaryButton,
+.primaryButton,
+.panelAction,
+.smallButton,
+.assistantAsk,
+.employeeAssistantMini button,
+.openMaterialButton {
+  background: var(--gn-blue);
+  color: #ffffff !important;
   box-shadow: none;
 }
 
-.railBrandMark {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 18px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--gn-blue), var(--gn-blue-2));
-  color: #ffffff;
+.gnPrimaryButton:hover,
+.primaryButton:hover,
+.panelAction:hover,
+.smallButton:hover,
+.assistantAsk:hover,
+.employeeAssistantMini button:hover,
+.openMaterialButton:hover {
+  background: var(--gn-blue-2);
+  transform: none;
+}
+
+.gnSecondaryButton,
+.secondaryButton {
+  background: #ffffff;
+  color: var(--gn-blue);
+  border: 1px solid var(--gn-border);
+}
+
+.gnSecondaryButton:hover,
+.secondaryButton:hover {
+  background: var(--gn-blue-soft);
+  transform: none;
+}
+
+.dangerButton {
+  background: #fff4ec;
+  color: var(--gn-accent-hover);
+  border: 1px solid #efd1bc;
+}
+
+.dangerButton:hover {
+  background: #fbe6d8;
+  transform: none;
+}
+
+.employeeStats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.employeeStatCard {
+  padding: 16px;
+  border-top: 2px solid var(--gn-blue);
+}
+
+.employeeStatCard:nth-child(2) {
+  border-top-color: var(--gn-blue-2);
+}
+
+.employeeStatCard:nth-child(3) {
+  border-top-color: var(--gn-accent);
+}
+
+.employeeStatCard span {
+  color: var(--gn-muted);
   font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.employeeStatCard strong {
+  color: var(--gn-text);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.dashboardGrid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+}
+
+.dashboardCard {
+  padding: 20px;
+}
+
+.courseProgressTrack div,
+.wideProgress div {
+  background: var(--gn-blue);
+}
+
+.materialStatus.warning,
+.employeeBadges span.active,
+.softBadge {
+  background: #fff4ec;
+  color: var(--gn-accent-hover);
+}
+
+.rightPanel.cleanRightPanel {
+  padding: 18px 14px;
+  background: #ffffff;
+}
+
+.backendStatusCompact {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: #ffffff;
+  color: var(--gn-text);
+}
+
+.backendStatusCompact span {
+  color: var(--gn-muted);
+}
+
+.backendStatusCompact strong {
+  color: var(--gn-blue);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.backendStatusCompact p {
+  color: var(--gn-muted);
+}
+
+.cleanPanelBlock {
+  padding: 14px;
+}
+
+.cleanPanelBlock h3 {
+  margin-bottom: 8px;
+}
+
+.cleanPanelBlock button {
+  border-radius: 7px;
+  background: #f7f9fc;
+  color: var(--gn-text);
+  font-weight: 500;
+}
+
+.cleanPanelBlock button:hover {
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+}
+
+@media (max-width: 1180px) {
+  .productAppCompact {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .topBar.cleanTopBar {
+    padding: 12px;
+  }
+
+  .topActions.cleanTopActions {
+    display: none;
+  }
+
+  .searchPill.activeSearch,
+  .topBar .searchPill.activeSearch {
+    max-width: none;
+    width: 100%;
+  }
+
+  .employeeGreeting,
+  .cardHeaderLine {
+    display: grid;
+  }
+
+  .employeeStats,
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Search, source and pipeline compactness. */
+.materialTaskForm,
+.knowledgeForm {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+}
+
+.materialTaskForm textarea.questionInput,
+.knowledgeForm textarea.questionInput,
+.questionInput {
+  min-height: 104px;
+  padding: 14px 15px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.materialTaskForm button.primaryButton,
+.knowledgeForm button.primaryButton {
+  min-height: 40px;
+  min-width: 142px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   box-shadow: none;
 }
 
-.railMenuButton {
-  width: 34px;
-  height: 30px;
-  margin-bottom: 12px;
-  background: var(--gn-blue-soft);
-  border: 1px solid #d7e4ff;
+.materialTaskForm button.primaryButton {
+  min-width: 210px;
 }
 
-.railMenuButton span {
-  background: var(--gn-blue);
+.primaryButton:disabled {
+  cursor: progress;
+  opacity: 0.88;
 }
 
-.cleanRailIcons,
-.railIcons {
-  width: 100%;
-  gap: 6px;
-}
-
-.railIconButton {
-  width: 100%;
-  height: 34px;
-  justify-content: flex-start;
-  padding: 0 10px;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--gn-muted);
-  font-size: 0;
+.exampleButton {
+  border: 1px solid #d5e1f1;
+  background: #f7f9fc;
+  color: var(--gn-blue);
   font-weight: 500;
-  text-align: left;
+}
+
+.exampleButton:hover {
+  background: var(--gn-blue-soft);
+}
+
+.loadingLabel {
+  gap: 2px;
+}
+
+.loadingDots {
+  min-width: 18px;
+  gap: 0;
+  align-items: baseline;
+  font-weight: 700;
+}
+
+.loadingDots span {
+  width: auto;
+  height: auto;
+  background: none;
+  animation: loadingTextDotPulse 1.05s infinite ease-in-out;
+}
+
+.pipelineCompact h3,
+.loadingCard h3 {
+  margin-bottom: 14px;
+}
+
+.pipelineCompact .pipelineList,
+.loadingCard .pipelineList {
+  gap: 8px;
+}
+
+.pipelineCompact .pipelineItem,
+.loadingCard .pipelineItem {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
   box-shadow: none;
 }
 
-.railIconButton::after {
+.pipelineCompact .pipelineItem strong {
+  color: var(--gn-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pipelineCompact .pipelineItem p,
+.loadingCard .pipelineItem p {
+  margin-top: 3px;
+  color: var(--gn-muted);
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.4;
 }
 
-.cleanRailIcons .railIconButton:nth-child(1)::after {
-  content: "Рабочий";
+.check {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  border-radius: 999px;
+  background: var(--gn-blue) !important;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.cleanRailIcons .railIconButton:nth-child(2)::after {
-  content: "Материалы";
+.sourcesCard {
+  align-self: start;
 }
 
-.cleanRailIcons .railIconButton:nth-child(3)::after {
-  content: "База";
+.sourcesCard h3 {
+  margin-bottom: 10px;
 }
 
-.cleanRailIcons .railIconButton:nth-child(4)::after {
-  content: "Руководитель";
+.sourcesCard .sourceCompact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sourceCompact .sourceItem {
+  gap: 4px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  box-shadow: none;
+}
+
+.sourceCompact .sourceItem strong {
+  color: var(--gn-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.sourceCompact .sourceItem span {
+  color: var(--gn-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.sourceCompact .sourceItem p {
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .materialTaskForm,
+  .knowledgeForm {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledgeForm button.primaryButton,
+  .materialTaskForm button.primaryButton {
+    width: fit-content;
+    justify-self: start;
+  }
+
+  .sourcesCard .sourceCompact {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .productAppCompact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cleanRail {
+    display: none;
+  }
+
+  .knowledgeForm button.primaryButton,
+  .materialTaskForm button.primaryButton {
+    max-width: 100%;
+  }
+}
+
+/* Material and manager review polish. */
+.materialList {
+  gap: 10px;
+}
+
+.materialItemCard {
+  border-left: 3px solid var(--gn-blue);
+  gap: 9px;
+  padding: 15px;
+  box-shadow: none;
+}
+
+.materialItemCard:nth-child(2n),
+.materialItemCard:nth-child(3n) {
+  border-left-color: var(--gn-blue);
+}
+
+.materialCardHeader {
+  align-items: start;
+}
+
+.materialCardHeader strong {
+  color: var(--gn-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.materialCardHeader span:not(.hours),
+.tag,
+.courseMeta span {
+  border-radius: 6px;
+  color: var(--gn-blue);
+  background: var(--gn-blue-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.materialItemCard p {
+  margin: 0;
+  color: var(--gn-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.materialMeta {
+  gap: 6px;
+}
+
+.materialMeta span {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: var(--gn-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.hours {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: var(--gn-blue);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.openMaterialButton {
+  min-height: 32px;
+  padding: 8px 11px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.managerLayout {
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+}
+
+.managerCard {
+  gap: 14px;
+}
+
+.employeeAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: var(--gn-blue);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.managerCard h3 {
+  margin-bottom: 6px;
+}
+
+.statusBlock,
+.infoBlock {
+  padding: 13px;
+  box-shadow: none;
+}
+
+.statusBlock span,
+.infoBlock span,
+.trajectoryRoles span,
+.trajectoryProgress span,
+.managerDecisionPreview span {
+  color: var(--gn-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.statusBlock strong {
+  color: var(--gn-blue);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.buttonRow {
+  gap: 8px;
+}
+
+.buttonRow .primaryButton,
+.buttonRow .secondaryButton,
+.buttonRow .dangerButton {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.buttonRow .ownerButton {
+  color: var(--gn-accent-hover);
+  border-color: #efd1bc;
+  background: #fff8f3;
+}
+
+.buttonRow .ownerButton:hover {
+  color: #ffffff;
+  border-color: var(--gn-accent-hover);
+  background: var(--gn-accent-hover);
+}
+
+.plainList {
+  padding-left: 18px;
+}
+
+.plainList li {
+  margin-bottom: 8px;
+}
+
+.materialBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qualityAlertsCard,
+.guardrailCard {
+  border-left: 3px solid var(--gn-accent);
+}
+
+.qualityAlertsList {
+  display: grid;
+  gap: 8px;
+}
+
+.qualityAlertItem {
+  padding: 12px;
+  border: 1px solid #efd1bc;
+  border-radius: 8px;
+  background: #fff8f3;
+}
+
+.qualityAlertItem strong {
+  display: block;
+  color: var(--gn-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.qualityAlertItem p {
+  margin: 5px 0 0;
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.guardrailHint {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@media (max-width: 980px) {
+  .managerLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .buttonRow .primaryButton,
+  .buttonRow .secondaryButton,
+  .buttonRow .dangerButton {
+    width: 100%;
+  }
+}
+
+/* Gazprom-inspired home screen: airy corporate page, slim navigation. */
+:root {
+  --gn-ref-blue: #0072bc;
+  --gn-ref-blue-dark: #00508f;
+  --gn-ref-cyan: #00a3d9;
+  --gn-ref-orange: #f58220;
+  --gn-ref-page: #f1f5f8;
+}
+
+.productAppCompact {
+  grid-template-columns: 48px minmax(0, 1fr) 260px;
+}
+
+.cleanRail {
+  width: 48px;
+  padding: 12px 0;
+  background: #ffffff !important;
+  border-right: 1px solid #d8e2eb;
+  color: var(--gn-ref-blue);
+}
+
+.railMenuButton {
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border: 1px solid #d8e2eb;
+  background: #ffffff;
+}
+
+.railMenuButton span {
+  width: 14px;
+  background: var(--gn-ref-blue);
+}
+
+.internProfileWrap {
+  display: none;
+}
+
+.cleanRailIcons {
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.railIconButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  color: #70869a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.railIconButton:hover,
+.railIconButton.active {
+  background: #eaf5fb;
+  color: var(--gn-ref-blue);
+}
+
+.railIconButton.active {
+  box-shadow: inset 3px 0 0 var(--gn-ref-orange);
+}
+
+.railBottom {
+  gap: 8px;
+}
+
+.topBar.cleanTopBar {
+  height: 72px;
+  padding: 0 28px;
+  border-bottom: 1px solid #dfe7ee;
+}
+
+.topBrandBlock {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+}
+
+.brandLogoImage {
+  width: 52px;
+  height: 52px;
+  border-radius: 0;
+}
+
+.workspaceContent {
+  padding: 0;
+  background: #ffffff;
+}
+
+.workspaceContent .page.employeeDashboard {
+  max-width: none;
+  gap: 0;
+}
+
+.employeeHero {
+  display: block;
+}
+
+.employeeHeroMain {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 42px 56px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    linear-gradient(90deg, rgba(0, 34, 79, 0.88) 0%, rgba(0, 80, 143, 0.76) 45%, rgba(0, 114, 188, 0.38) 100%),
+    linear-gradient(165deg, #12283e 0%, #345b73 35%, #e7964c 36%, #194a70 45%, #0d78aa 100%);
+  color: #ffffff;
+}
+
+.employeeHeroMain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.18) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 120px);
+  pointer-events: none;
+}
+
+.employeeGreeting {
+  align-items: end;
+}
+
+.employeeGreeting h1 {
+  max-width: 720px;
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1.12;
+}
+
+.employeeGreeting p {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 16px;
+}
+
+.sectionKicker {
+  background: rgba(0, 163, 217, 0.88);
+  color: #ffffff;
+  border-radius: 0;
+  letter-spacing: 0;
+}
+
+.employeeBadges {
+  max-width: 420px;
+}
+
+.employeeBadges span {
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+.employeeBadges span.active {
+  background: var(--gn-ref-orange);
+  border-color: var(--gn-ref-orange);
+  color: #ffffff;
+}
+
+.heroActionsRow .gnPrimaryButton {
+  background: var(--gn-ref-orange);
+  color: #ffffff !important;
+}
+
+.heroActionsRow .gnPrimaryButton:hover {
+  background: #d96f18;
+}
+
+.heroActionsRow .gnSecondaryButton {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--gn-ref-blue-dark);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.employeeStats,
+.dashboardGrid {
+  width: min(1120px, calc(100% - 64px));
+  margin: 0 auto;
+}
+
+.employeeStats {
+  padding: 42px 0 18px;
+  gap: 0;
+  border-bottom: 1px solid #e2e8ef;
+}
+
+.employeeStatCard {
+  padding: 0 28px 18px;
+  border: 0;
+  border-left: 1px solid #e2e8ef;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.employeeStatCard:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.employeeStatCard span {
+  color: #657989;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.employeeStatCard strong {
+  margin: 10px 0 4px;
+  color: var(--gn-ref-blue-dark);
+  font-size: 34px;
+}
+
+.dashboardGrid {
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 26px;
+  padding: 34px 0 64px;
+  background: #ffffff;
+}
+
+.dashboardCard {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.cardHeaderLine {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8ef;
+}
+
+.cardHeaderLine h2 {
+  color: #67727c;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.cardHeaderLine button {
+  color: var(--gn-ref-blue);
+  font-weight: 500;
+}
+
+.courseRows {
+  gap: 0;
+}
+
+.courseRow,
+.materialItem,
+.trajectoryRoles div,
+.managerDecisionPreview {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid #e6edf3;
+  background: #ffffff;
+}
+
+.courseRow {
+  padding: 16px 0;
+}
+
+.courseIcon {
+  border-radius: 0;
+}
+
+.courseIcon.courseBlue {
+  background: var(--gn-ref-blue);
+}
+
+.courseIcon.courseOrange {
+  background: var(--gn-ref-orange);
+}
+
+.courseIcon.courseGreen {
+  background: var(--gn-ref-cyan);
+}
+
+.courseTop strong,
+.materialItem strong,
+.trajectoryRoles strong,
+.managerDecisionPreview strong {
+  color: #293847;
+  font-weight: 600;
+}
+
+.courseTop span,
+.materialStatus,
+.trajectoryProgress strong {
+  color: var(--gn-ref-blue);
+}
+
+.courseProgressTrack,
+.wideProgress {
+  height: 4px;
+  background: #e8eef3;
+}
+
+.courseProgressTrack div,
+.wideProgress div {
+  background: var(--gn-ref-blue);
+}
+
+.materialGrid {
+  gap: 0;
+}
+
+.materialItem {
+  padding: 16px 0;
+}
+
+.materialStatus {
+  border-radius: 0;
+  background: #e8f4fb;
+  font-weight: 500;
+}
+
+.materialStatus.warning {
+  background: #fff0e4;
+  color: #a95422;
+}
+
+.trajectoryPanel,
+.managerPanel {
+  padding: 20px;
+  border: 1px solid #e2e8ef;
+  background: #f7fafc;
+}
+
+.trajectoryRoles div,
+.managerDecisionPreview {
+  padding: 14px 0;
+  background: transparent;
+}
+
+.panelAction {
+  border-radius: 0;
+  background: var(--gn-ref-blue);
+}
+
+.panelAction:hover {
+  background: var(--gn-ref-blue-dark);
+}
+
+@media (max-width: 1180px) {
+  .productAppCompact {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .employeeHeroMain {
+    min-height: 300px;
+    padding: 28px 18px;
+  }
+
+  .employeeGreeting h1 {
+    font-size: 32px;
+  }
+
+  .employeeStats,
+  .dashboardGrid {
+    width: min(100% - 28px, 1120px);
+  }
+
+  .employeeStats {
+    gap: 18px;
+  }
+
+  .employeeStatCard {
+    padding: 0 0 18px;
+    border-left: 0;
+    border-bottom: 1px solid #e2e8ef;
+  }
+}
+
+/* Home cleanup requested during visual QA. */
+.employeeHeroMain::before {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.18) 100%);
+}
+
+.topBrandBlock {
+  border: 1px solid #d8e6f1;
+  border-radius: 18px;
+  background: #f4f9fc;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.topBrandBlock:hover {
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 80, 143, 0.12);
+  transform: translateY(-1px);
+}
+
+.brandLogoImage {
+  border-radius: 14px;
+}
+
+.railIconButton {
+  border: 1px solid #d6e3ee;
+  border-radius: 10px;
+  background: #f1f7fb;
+  color: var(--gn-ref-blue-dark);
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.railIconButton:hover,
+.railIconButton.active {
+  background: #dff1fb;
+  border-color: #b9d8ec;
+  color: var(--gn-ref-blue);
+  transform: translateY(-1px);
+}
+
+.railIconButton.active {
+  box-shadow: inset 0 -3px 0 var(--gn-ref-orange);
+}
+
+.heroActionsRow .gnPrimaryButton,
+.heroActionsRow .gnSecondaryButton,
+.cardHeaderLine button,
+.dashboardGrid .panelAction {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.heroActionsRow .gnPrimaryButton:hover,
+.heroActionsRow .gnSecondaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px rgba(0, 34, 79, 0.18);
+}
+
+.cardHeaderLine button {
+  padding: 8px 13px;
+  border: 1px solid #cfe1ee;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.cardHeaderLine button:hover {
+  background: #eaf5fb;
+  border-color: #b9d8ec;
+  transform: translateY(-2px);
+}
+
+.dashboardGrid .panelAction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 80, 143, 0.14);
+}
+
+.courseIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+}
+
+.courseIcon.courseBlue {
+  background: #dceff8;
+  border: 1px solid #c2dfed;
+}
+
+.courseIcon.courseOrange {
+  background: #fde8d7;
+  border: 1px solid #f4d0b2;
+}
+
+.courseIcon.courseGreen {
+  background: #dff3f6;
+  border: 1px solid #c5e6eb;
+}
+
+/* Screenshot QA polish: targeted home-screen fixes only. */
+.employeeHeroMain {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 44px 32px;
+}
+
+.employeeGreeting {
+  width: min(760px, 100%);
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.employeeGreeting h1,
+.employeeGreeting p {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.heroActionsRow {
+  justify-content: center;
+}
+
+.employeeHeroMain .sectionKicker {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  text-transform: none;
+}
+
+.heroActionsRow .gnPrimaryButton {
+  background: var(--gn-blue);
+  color: #ffffff !important;
+}
+
+.heroActionsRow .gnPrimaryButton:hover {
+  background: var(--gn-blue-2);
+}
+
+.heroActionsRow .gnSecondaryButton {
+  background: #ffffff;
+  border-color: var(--gn-border);
+  color: var(--gn-blue);
+}
+
+.cleanRail {
+  background: #f8fbfd !important;
+}
+
+.railIconButton {
+  background: #ffffff;
+  border: 1px solid var(--gn-border);
+  color: var(--gn-blue);
 }
 
 .railIconButton:hover,
 .railIconButton.active {
   background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
   color: var(--gn-blue);
-  box-shadow: inset 3px 0 0 var(--gn-blue);
 }
 
-.railBottom .railIconButton {
-  justify-content: center;
-  width: 34px;
-  padding: 0;
-  font-size: 0;
+.menuDrawer {
+  left: 48px;
+  width: 260px;
+  max-width: 280px;
+  padding: 18px;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 14px 0 34px rgba(11, 31, 58, 0.14);
 }
 
-.railBottom .railIconButton::after {
-  content: "?";
-  font-size: 13px;
+.drawerNavItem {
+  min-height: 44px;
+  border-radius: 16px;
+  font-weight: 600;
 }
 
-.cleanTopBar,
-.topBar {
-  min-height: 56px;
-  height: 56px;
-  grid-template-columns: auto minmax(280px, 620px);
-  gap: 14px;
-  padding: 0 20px;
-  background: rgba(255, 255, 255, 0.98);
+.drawerNavItem.active,
+.drawerNavItem:hover {
+  background: var(--gn-blue-soft);
 }
 
-.topBrandBlock {
-  width: auto;
-  min-width: 118px;
-  height: 34px;
-  justify-content: flex-start;
+.coursesPanel .courseRow {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.courseTop {
+  align-items: baseline;
+}
+
+.courseTop span {
+  min-width: 48px;
+  text-align: right;
+}
+
+.courseProgressTrack {
+  max-width: 420px;
+}
+
+.trajectoryPanel,
+.managerPanel {
+  padding: 18px;
+  border: 1px solid var(--gn-border);
+  border-radius: 24px;
+  background: #f8fafc;
+}
+
+.trajectoryRoles {
   gap: 8px;
-  padding: 0 10px;
-  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.trajectoryRoles div,
+.managerDecisionPreview {
+  padding: 10px 0;
+}
+
+.materialGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 22px;
+}
+
+.materialStatus {
+  border-radius: 999px;
+  padding: 5px 9px;
+}
+
+.managerDecisionPreview {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  padding: 12px;
+}
+
+.managerPanel .panelAction {
+  width: fit-content;
+  min-height: 38px;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.rightPanel.cleanRightPanel {
+  padding: 16px 12px;
+}
+
+.backendStatusCompact,
+.cleanPanelBlock {
+  padding: 12px;
+}
+
+.cleanPanelBlock button {
+  min-height: 38px;
+  border-radius: 12px;
+}
+
+@media (max-width: 760px) {
+  .menuDrawer {
+    left: 0;
+    width: min(260px, 86vw);
+  }
+
+  .materialGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cleanRail .railIconButton,
+.cleanRail .railIcons button,
+.cleanRail .railBottom button {
+  border: 1px solid var(--gn-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--gn-blue);
+}
+
+.cleanRail .railIconButton:hover,
+.cleanRail .railIconButton.active,
+.cleanRail .railIcons button:hover,
+.cleanRail .railBottom button:hover {
+  background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
+  color: var(--gn-blue);
+}
+
+.cleanRail .railIconButton.active {
+  box-shadow: inset 0 -3px 0 var(--gn-accent);
+}
+
+/* Final dashboard polish: calm corporate desktop refinements. */
+.employeeHeroMain {
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.employeeHeroMain::after {
+  content: "";
+  position: absolute;
+  top: -42%;
+  left: -46%;
+  width: 72%;
+  height: 190%;
+  background: linear-gradient(
+    112deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 38%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.04) 62%,
+    transparent 100%
+  );
+  opacity: 0.14;
+  transform: translateX(-20%) rotate(12deg);
+  animation: heroLightSweep 24s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-25%) rotate(12deg);
+  }
+
+  100% {
+    transform: translateX(230%) rotate(12deg);
+  }
+}
+
+.employeeGreeting,
+.heroStatusLine {
+  position: relative;
+  z-index: 1;
+}
+
+.employeeGreeting {
+  width: min(820px, 100%);
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+  justify-items: center;
+}
+
+.employeeGreeting h1 {
+  max-width: 820px;
+  line-height: 1.08;
+}
+
+.employeeGreeting p {
+  max-width: 820px;
+  line-height: 1.5;
+}
+
+.employeeHeroMain .sectionKicker {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.heroStatusLine {
+  width: fit-content;
+  max-width: min(760px, 100%);
+  margin: 24px auto 0;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.cardHeaderLine {
+  align-items: center;
+}
+
+.cardHeaderLine button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+}
+
+.coursesPanel .courseRow {
+  grid-template-columns: 58px minmax(0, 1fr);
+  min-height: 86px;
+  gap: 14px;
+}
+
+.courseTypeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  min-height: 30px;
+  border-radius: 999px;
+  border: 1px solid #d3e2ef;
+  background: #eef6fb;
+  color: var(--gn-blue);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.courseTypeBadge.courseOrange {
+  border-color: #f2d8c5;
+  background: #fbefe7;
+  color: #9b5528;
+}
+
+.courseTypeBadge.courseGreen {
+  border-color: #cfe6eb;
+  background: #edf8fa;
+  color: #226b77;
+}
+
+.courseBody {
+  min-width: 0;
+}
+
+.courseTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 54px;
+  gap: 14px;
+  align-items: baseline;
+}
+
+.courseTop span {
+  min-width: 54px;
+  color: var(--gn-blue);
+  font-size: 13px;
+  text-align: right;
+}
+
+.courseProgressTrack {
+  width: min(360px, 100%);
+  max-width: 360px;
+  margin-top: 10px;
+  border-radius: 999px;
+}
+
+.selectionSummary {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+
+.selectionSummary div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.selectionSummary span,
+.trajectoryProgress span {
+  color: var(--gn-muted);
+  font-size: 12px;
+}
+
+.selectionSummary strong {
+  color: var(--gn-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.trajectoryPanel {
+  padding: 22px;
+}
+
+.trajectoryProgress {
+  gap: 10px;
+}
+
+.materialGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 18px;
+}
+
+.materialItem {
+  display: grid;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid #e7eef5;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.materialItem strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.materialItem p {
+  margin-top: 5px;
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.materialStatus {
+  width: fit-content;
+  border: 1px solid #d6e7f4;
+  background: #edf6fc;
+  color: var(--gn-blue);
+}
+
+.cleanPanelBlock {
+  display: grid;
+  gap: 8px;
+}
+
+.cleanPanelBlock button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #e3eaf3;
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--gn-text);
+  font-weight: 600;
+  text-align: left;
   box-shadow: none;
 }
 
-.topBrandBlock::after {
-  content: "T&D платформа";
+.cleanPanelBlock button::after {
+  content: "›";
+  color: var(--gn-blue);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cleanPanelBlock button:hover {
+  background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
+  color: var(--gn-blue);
+  transform: translateY(-1px);
+}
+
+.materialsDrawerLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(11, 31, 58, 0.28);
+}
+
+.materialsDrawer {
+  width: 560px;
+  max-width: calc(100vw - 80px);
+  height: 100%;
+  padding: 26px;
+  overflow-y: auto;
+  border-left: 1px solid var(--gn-border);
+  background: #ffffff;
+  box-shadow: -24px 0 46px rgba(11, 31, 58, 0.18);
+}
+
+.materialsDrawerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e7eef5;
+}
+
+.materialsDrawerHeader span {
+  color: var(--gn-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.materialsDrawerHeader h2 {
+  margin: 6px 0;
   color: var(--gn-text);
+  font-size: 24px;
+  line-height: 1.18;
+}
+
+.materialsDrawerHeader p {
+  color: var(--gn-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.materialsDrawerHeader button,
+.materialsDrawerItem button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 9px 13px;
+  border: 1px solid var(--gn-border);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--gn-blue);
+  font-weight: 600;
+}
+
+.materialsDrawerHeader button:hover,
+.materialsDrawerItem button:hover {
+  background: var(--gn-blue-soft);
+  border-color: #bfd0f3;
+}
+
+.materialsDrawerSearch {
+  width: 100%;
+  margin: 18px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--gn-border);
+  border-radius: 14px;
+  background: #f8fafc;
+  color: var(--gn-text);
+  font: inherit;
+}
+
+.materialsDrawerSearch:focus {
+  border-color: #b7c9ed;
+  background: #ffffff;
+  outline: 3px solid rgba(0, 38, 151, 0.1);
+}
+
+.materialsDrawerFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.materialsDrawerFilters button {
+  min-height: 32px;
+  padding: 7px 11px;
+  border: 1px solid #dbe6f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--gn-muted);
   font-size: 12px;
   font-weight: 600;
-  white-space: nowrap;
 }
 
-.brandSymbol {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  background:
-    linear-gradient(135deg, var(--gn-blue), var(--gn-blue-2));
+.materialsDrawerFilters button.active,
+.materialsDrawerFilters button:hover {
+  border-color: #bfd0f3;
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
 }
 
-.brandSymbol span {
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--gn-accent);
+.materialsDrawerList {
+  display: grid;
+  gap: 10px;
 }
 
-.topBar .searchPill.activeSearch,
-.searchPill.activeSearch {
-  max-width: 620px;
-  height: 38px;
-  min-height: 38px;
+.materialsDrawerItem {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #e5edf5;
+  border-radius: 16px;
+  background: #ffffff;
 }
 
-.globalSearchButton {
-  min-width: 60px;
-  min-height: 29px;
-  height: 29px;
-  padding: 0 11px;
-  border-radius: 7px;
+.drawerMaterialType {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  border-radius: 999px;
+  background: #edf6fc;
+  color: var(--gn-blue);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.materialsDrawerItem strong {
+  display: block;
+  color: var(--gn-text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.materialsDrawerItem p {
+  margin-top: 4px;
+  color: var(--gn-muted);
   font-size: 12px;
 }
 
-@media (max-width: 980px) {
-  .productAppCompact {
-    grid-template-columns: 96px minmax(0, 1fr);
-  }
+.drawerMaterialMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
 
-  .cleanRail,
-  .blueRail {
-    width: 96px;
+.drawerMaterialMeta span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f3f7fb;
+  color: #526276;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .employeeHeroMain::after {
+    animation: none;
   }
 }
 
 @media (max-width: 760px) {
-  .productAppCompact {
+  .employeeHeroMain {
+    min-height: 300px;
+    padding: 36px 18px;
+  }
+
+  .heroStatusLine {
+    width: 100%;
+    border-radius: 18px;
+  }
+
+  .coursesPanel .courseRow {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .materialGrid {
     grid-template-columns: 1fr;
   }
 
-  .cleanRail,
-  .blueRail {
-    display: none;
+  .materialsDrawer {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
   }
 
-  .cleanTopBar,
-  .topBar {
-    grid-template-columns: auto minmax(0, 1fr);
-    height: auto;
-    min-height: 56px;
-    padding: 9px 12px;
-    gap: 10px;
+  .materialsDrawerItem {
+    grid-template-columns: 50px minmax(0, 1fr);
   }
 
-  .topBrandBlock {
-    min-width: 42px;
-    width: 42px;
+  .materialsDrawerItem button {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+}
+
+/* Microfix: hero status and current materials alignment. */
+.employeeHeroMain {
+  align-items: center;
+  text-align: center;
+}
+
+.employeeGreeting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.employeeGreeting > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heroStatusLine {
+  width: fit-content;
+  max-width: min(760px, calc(100% - 48px));
+  margin: 22px auto 0;
+  border-radius: 999px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.employeeHeroMain::after {
+  z-index: 1;
+  opacity: 0.34;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.12) 80%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  animation-duration: 12s;
+}
+
+.employeeHeroMain > * {
+  position: relative;
+  z-index: 2;
+}
+
+.employeeGreeting,
+.heroStatusLine {
+  z-index: 2;
+}
+
+.coursesPanel .courseRow {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 72px;
+  align-items: center;
+  column-gap: 18px;
+  text-align: left;
+}
+
+.courseBody {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.courseTop {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.courseTop strong,
+.courseBody p {
+  text-align: left;
+}
+
+.courseProgressTrack {
+  align-self: flex-start;
+  width: min(380px, 100%);
+  margin-top: 12px;
+}
+
+.courseRowValue {
+  justify-self: end;
+  min-width: 72px;
+  color: var(--gn-blue);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .heroStatusLine {
+    white-space: normal;
+  }
+
+  .coursesPanel .courseRow {
+    grid-template-columns: 52px minmax(0, 1fr) 62px;
+    column-gap: 12px;
+  }
+
+  .courseRowValue {
+    min-width: 62px;
+  }
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-45%) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateX(10%) rotate(-12deg);
+  }
+
+  100% {
+    transform: translateX(55%) rotate(-12deg);
+  }
+}
+
+/* Main screen final UI fixes. */
+.productAppCompact {
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.cleanRail {
+  width: 92px;
+}
+
+.railBrandMark,
+.topBrandBlock {
+  cursor: default;
+  pointer-events: none;
+}
+
+.topBrandBlock:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.cleanRailIcons {
+  width: 100%;
+  gap: 8px;
+}
+
+.cleanRail .railIconButton,
+.cleanRail .railIcons button,
+.cleanRail .railBottom button {
+  width: 78px;
+  min-height: 54px;
+  height: auto;
+  padding: 7px 5px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.railIconGlyph {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}
+
+.drawerNavIcon {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}
+
+.railIconGlyph::before,
+.railIconGlyph::after,
+.drawerNavIcon::before,
+.drawerNavIcon::after {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.railIconGlyph.home::before,
+.drawerNavIcon.home::before {
+  inset: 7px 3px 3px;
+  border: 2px solid currentColor;
+  border-top: 0;
+  border-radius: 3px;
+}
+
+.railIconGlyph.home::after,
+.drawerNavIcon.home::after {
+  left: 4px;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  border-left: 2px solid currentColor;
+  border-top: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.railIconGlyph.materials::before,
+.drawerNavIcon.materials::before {
+  inset: 3px 4px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.railIconGlyph.materials::after,
+.drawerNavIcon.materials::after {
+  left: 8px;
+  top: 7px;
+  width: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 4px 0 currentColor;
+}
+
+.railIconGlyph.collections::before,
+.drawerNavIcon.collections::before {
+  inset: 4px 7px 7px 4px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.railIconGlyph.collections::after,
+.drawerNavIcon.collections::after {
+  inset: 7px 4px 4px 7px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.railIconGlyph.review::before,
+.drawerNavIcon.review::before {
+  left: 4px;
+  top: 5px;
+  width: 12px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.railIconLabel {
+  max-width: 70px;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.globalSearchButton {
+  border: 1px solid #c9d8ea;
+  background: #eef4ff;
+  color: var(--gn-blue);
+  box-shadow: none;
+}
+
+.globalSearchButton:hover {
+  background: #e3edfb;
+  color: var(--gn-blue);
+}
+
+.cleanTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topStatusMenu {
+  position: relative;
+}
+
+.topStatusMenu::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  height: 10px;
+}
+
+.demoContourBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d7e2ee;
+  border-radius: 999px;
+  background: #f7fbff;
+  color: var(--gn-blue);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.demoContourBadge:hover {
+  background: #eef6ff;
+}
+
+.topActionDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 70;
+  width: 210px;
+  padding: 8px;
+  border: 1px solid #dce6f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(11, 31, 58, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.topStatusMenu:hover .topActionDropdown,
+.topStatusMenu:focus-within .topActionDropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.topActionDropdown button {
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gn-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topActionDropdown button:hover {
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+}
+
+.rightPanel,
+.rightPanel.cleanRightPanel {
+  display: none;
+}
+
+.employeeHeroMain::after {
+  top: -72%;
+  left: -68%;
+  width: 52%;
+  height: 260%;
+  opacity: 0.82;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 18%,
+      rgba(255, 255, 255, 0.34) 36%,
+      rgba(255, 255, 255, 0.78) 50%,
+      rgba(117, 197, 255, 0.4) 62%,
+      rgba(255, 255, 255, 0.16) 78%,
+      transparent 100%
+    );
+  filter: blur(3px) drop-shadow(0 0 30px rgba(188, 226, 255, 0.5));
+  mix-blend-mode: screen;
+  animation-duration: 7s;
+  animation-timing-function: ease-in-out;
+}
+
+.trajectoryPanel .cardHeaderLine h2 {
+  max-width: none;
+  font-size: 20px;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+.trajectoryPanel .cardHeaderLine {
+  gap: 12px;
+}
+
+.trajectoryPanel .cardHeaderLine button {
+  flex: 0 0 auto;
+}
+
+.employeeStatCard span,
+.employeeStatCard p,
+.courseBody p,
+.selectionSummary span,
+.trajectoryProgress span,
+.materialItem p,
+.managerPanel p,
+.managerDecisionPreview span {
+  font-weight: 400;
+}
+
+.cardHeaderLine h2,
+.courseTop strong,
+.materialItem strong,
+.selectionSummary strong,
+.trajectoryProgress strong,
+.managerDecisionPreview strong {
+  color: #263447;
+  font-weight: 550;
+}
+
+.cardHeaderLine h2,
+.managerPanel h2 {
+  font-weight: 400;
+}
+
+.coursesPanel .cardHeaderLine h2,
+.knowledgePanel .cardHeaderLine h2,
+.managerPanel .cardHeaderLine h2 {
+  color: #65717f;
+  font-size: 23px;
+  line-height: 1.18;
+}
+
+.courseBody p,
+.selectionSummary span,
+.trajectoryProgress span,
+.materialItem p,
+.managerPanel p,
+.managerDecisionPreview span {
+  color: #728096;
+  line-height: 1.48;
+}
+
+.managerPanel {
+  padding: 22px;
+}
+
+.managerPanel p {
+  margin: 14px 0 16px;
+  text-align: left;
+}
+
+.managerDecisionPreview {
+  box-shadow: none;
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-90%) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateX(165%) rotate(-12deg);
+  }
+
+  100% {
+    transform: translateX(420%) rotate(-12deg);
+  }
+}
+
+.drawerBackdrop {
+  background: rgba(11, 31, 58, 0.18);
+  backdrop-filter: blur(2px);
+}
+
+.menuDrawer {
+  left: 92px;
+  width: 304px;
+  max-width: min(304px, calc(100vw - 92px));
+  padding: 18px;
+  border: 1px solid #dfe8f2;
+  border-left: 0;
+  border-radius: 0 24px 24px 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 18px 0 42px rgba(11, 31, 58, 0.14);
+}
+
+.drawerHeader {
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid #e3ebf4;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.drawerHeader span {
+  color: #7a8797;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.drawerHeader h2 {
+  margin-top: 3px;
+  color: #13233a;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.drawerHeader button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dce6f0;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #516173;
+  font-size: 18px;
+}
+
+.drawerNav {
+  gap: 7px;
+}
+
+.drawerNavItem {
+  min-height: 48px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  color: #44566d;
+  font-weight: 600;
+}
+
+.drawerNavItem span {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background: #edf4ff;
+  color: var(--gn-blue);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.drawerNavItem:hover,
+.drawerNavItem.active {
+  border-color: #cdddf2;
+  background: #eef5ff;
+  color: var(--gn-blue);
+}
+
+.drawerNavItem.active {
+  box-shadow: inset 3px 0 0 var(--gn-accent);
+}
+
+.drawerHint {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border: 1px solid #e4ebf3;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #69788e;
+  font-size: 12px;
+}
+
+@media (max-width: 1180px) {
+  .productAppCompact {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+
+  .cleanRail {
+    width: 78px;
+  }
+
+  .cleanRail .railIconButton,
+  .cleanRail .railIcons button,
+  .cleanRail .railBottom button {
+    width: 66px;
+  }
+
+  .railIconLabel {
+    max-width: 58px;
+    font-size: 9px;
+  }
+
+  .menuDrawer {
+    left: 78px;
+    max-width: min(304px, calc(100vw - 78px));
+  }
+}
+
+/* Agent cockpit polish. */
+.employeeHeroMain {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 66% 36%, rgba(96, 211, 255, 0.46), transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(255, 208, 117, 0.26), transparent 30%),
+    radial-gradient(circle at 20% 80%, rgba(0, 92, 188, 0.5), transparent 36%),
+    linear-gradient(118deg, #061c43 0%, #0a3777 42%, #1271b5 100%);
+}
+
+.employeeHeroMain::before {
+  z-index: 0;
+  inset: -18% -16%;
+  background:
+    radial-gradient(circle at 18% 30%, rgba(255, 213, 142, 0.5), transparent 30%),
+    radial-gradient(circle at 76% 68%, rgba(75, 192, 255, 0.34), transparent 34%),
+    linear-gradient(
+      126deg,
+      transparent 0%,
+      transparent 22%,
+      rgba(211, 145, 55, 0.18) 34%,
+      rgba(255, 217, 144, 0.52) 45%,
+      rgba(255, 239, 201, 0.34) 51%,
+      rgba(64, 191, 255, 0.18) 59%,
+      transparent 72%,
+      transparent 100%
+    ),
+    linear-gradient(
+      138deg,
+      transparent 0%,
+      rgba(246, 186, 83, 0.2) 38%,
+      rgba(255, 226, 164, 0.36) 48%,
+      transparent 62%
+    );
+  background-size: 140% 140%, 150% 150%, 190% 190%, 170% 170%;
+  opacity: 1;
+  mix-blend-mode: screen;
+  animation: heroAmbientFlow 8s ease-in-out infinite alternate;
+}
+
+.employeeHeroMain::after {
+  top: -82%;
+  left: -88%;
+  width: 74%;
+  height: 280%;
+  opacity: 1;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 224, 164, 0.22) 14%,
+      rgba(244, 191, 96, 0.66) 34%,
+      rgba(255, 238, 196, 0.98) 50%,
+      rgba(108, 205, 255, 0.46) 64%,
+      rgba(255, 213, 134, 0.28) 84%,
+      transparent 100%
+    );
+  filter: blur(4px) drop-shadow(0 0 44px rgba(255, 210, 122, 0.62));
+  mix-blend-mode: screen;
+  animation-duration: 4.2s;
+}
+
+@keyframes heroAmbientFlow {
+  0% {
+    background-position: 0% 0%, 82% 40%, -32% 0%, 0% 40%;
+    transform: translate3d(-2%, 0, 0);
+  }
+
+  100% {
+    background-position: 24% 10%, 58% 56%, 118% 24%, 82% 54%;
+    transform: translate3d(2%, -1.2%, 0);
+  }
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-105%) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateX(145%) rotate(-12deg);
+  }
+
+  100% {
+    transform: translateX(330%) rotate(-12deg);
+  }
+}
+
+.heroStatusLine {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.heroStatusLine:hover,
+.heroStatusLine:focus-visible {
+  border-color: rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.heroStatusLine strong {
+  color: #ffffff;
+  font-weight: 650;
+}
+
+.heroStatusDivider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.demoContourBadge {
+  cursor: pointer;
+  pointer-events: auto;
+  background: #f8fbff;
+  color: #2f5f9b;
+}
+
+.agentProfileWrap {
+  position: relative;
+}
+
+.agentProfileWrap::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 42px;
+  height: 10px;
+}
+
+.agentProfileTrigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d7e2ee;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #2f5f9b;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.agentProfileTrigger:hover,
+.agentProfileTrigger:focus-visible {
+  border-color: #b9cdeb;
+  box-shadow: 0 8px 22px rgba(0, 38, 151, 0.12);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.agentAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #eaf3ff, #ffffff);
+  color: #2f5f9b;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.agentAvatar.large {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+}
+
+.agentProfilePopover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 75;
+  width: 340px;
+  padding: 16px;
+  border: 1px solid #dce6f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 22px 46px rgba(11, 31, 58, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.agentProfileWrap:hover .agentProfilePopover,
+.agentProfileWrap:focus-within .agentProfilePopover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.agentPopoverHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e7eef5;
+}
+
+.agentPopoverHeader strong {
+  display: block;
+  color: var(--gn-text);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.agentPopoverHeader p,
+.agentPopoverText,
+.agentContextBlock span,
+.agentMetrics span {
+  color: #728096;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.agentPopoverText {
+  margin: 12px 0;
+}
+
+.agentContextBlock {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid #edf2f7;
+}
+
+.agentContextBlock strong {
+  color: #263447;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.agentMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.agentMetrics div {
+  padding: 10px;
+  border: 1px solid #e4edf6;
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.agentMetrics strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--gn-blue);
+  font-size: 16px;
+}
+
+.agentProfilePopover > button {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--gn-blue);
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.cleanRail {
+  background: #f8fbff !important;
+}
+
+.railMenuButton {
+  border-color: #dce7f2;
+  border-radius: 14px;
+  background: #ffffff;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.railMenuButton:hover {
+  border-color: #c6d6eb;
+  background: #edf5ff;
+}
+
+.cleanRail .railIconButton,
+.cleanRail .railIcons button,
+.cleanRail .railBottom button {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: #607186;
+}
+
+.cleanRail .railIconButton:hover,
+.cleanRail .railIconButton.active,
+.cleanRail .railIcons button:hover,
+.cleanRail .railBottom button:hover {
+  border-color: #d4e2f1;
+  background: #eef6ff;
+  color: var(--gn-blue);
+}
+
+.cleanRail .railIconButton.active {
+  box-shadow: inset 3px 0 0 var(--gn-blue);
+}
+
+.drawerBackdrop {
+  background: rgba(11, 31, 58, 0.13);
+  backdrop-filter: blur(1.5px);
+}
+
+.menuDrawer {
+  top: 0;
+  left: 92px;
+  height: 100vh;
+  width: 312px;
+  max-width: min(312px, calc(100vw - 92px));
+  padding: 18px;
+  border: 0;
+  border-right: 1px solid #dce7f2;
+  border-radius: 0 22px 22px 0;
+  background: #f8fbff;
+  box-shadow: 16px 0 34px rgba(11, 31, 58, 0.11);
+}
+
+.drawerHeader {
+  padding: 12px 0 16px;
+  border: 0;
+  border-bottom: 1px solid #e2eaf3;
+  border-radius: 0;
+  background: transparent;
+}
+
+.drawerHeader h2 {
+  max-width: 210px;
+  font-size: 18px;
+  line-height: 1.18;
+}
+
+.drawerHeader button {
+  background: #ffffff;
+}
+
+.drawerNav {
+  margin-top: 16px;
+}
+
+.drawerNavItem {
+  min-height: 46px;
+  border-radius: 14px;
+  background: transparent;
+}
+
+.drawerNavItem.active {
+  box-shadow: inset 3px 0 0 var(--gn-blue);
+}
+
+.drawerHint {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #dbe8f5;
+  border-radius: 18px;
+  background: #eef6ff;
+}
+
+.drawerHint div {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 10px;
+  padding-left: 14px;
+  position: relative;
+}
+
+.drawerHint div::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #2dba73;
+}
+
+.drawerHint strong {
+  color: var(--gn-text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.drawerHint span,
+.drawerHint p {
+  color: #5f7086;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.drawerHint p {
+  margin: 4px 0 0;
+}
+
+.trajectoryPanel,
+.managerPanel {
+  border-radius: 24px;
+}
+
+.panelAction,
+.managerPanel .panelAction {
+  width: auto;
+  min-height: 42px;
+  padding: 11px 16px;
+  border-radius: 16px;
+  background: #2f73b9;
+  box-shadow: none;
+  font-weight: 650;
+}
+
+.panelAction:hover,
+.managerPanel .panelAction:hover {
+  background: #245f9c;
+}
+
+.managerPanel p {
+  max-width: 620px;
+  font-size: 14px;
+}
+
+.managerDecisionPreview {
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.managerDecisionPreview strong {
+  font-size: 14px;
+}
+
+.introOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(11, 31, 58, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.introCard {
+  position: relative;
+  width: min(700px, 100%);
+  padding: 28px;
+  border: 1px solid #dce7f2;
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 28px 64px rgba(11, 31, 58, 0.2);
+}
+
+.introClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #dce6f0;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #53657b;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.introBadge {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 7px 11px;
+  border: 1px solid #cfdff2;
+  border-radius: 999px;
+  background: #f4f9ff;
+  color: var(--gn-blue);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.introCard h2 {
+  margin: 0 42px 14px 0;
+  color: var(--gn-text);
+  font-size: 28px;
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.introCard p {
+  margin: 0 0 12px;
+  color: #53657b;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.introPrimary {
+  min-height: 46px;
+  margin-top: 10px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--gn-blue);
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* Final dashboard alignment tweaks. */
+@media (min-width: 761px) {
+  .trajectoryPanel {
+    align-self: start;
+    margin-top: -22px;
+  }
+
+  .managerPanel {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(760px, 100%);
+    text-align: center;
+  }
+
+  .managerPanel .cardHeaderLine {
+    position: relative;
     justify-content: center;
   }
 
-  .topBrandBlock::after {
+  .managerPanel .cardHeaderLine button {
+    position: absolute;
+    right: 0;
+  }
+
+  .managerPanel p {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+  }
+
+  .managerPanel .panelAction {
+    display: inline-flex;
+    justify-content: center;
+  }
+}
+
+/* Inner screens enterprise polish. */
+.workspaceContent > .page:not(.employeeDashboard) {
+  width: min(1180px, calc(100% - 56px));
+  margin: 0 auto;
+  padding: 30px 0 64px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .screenHeader {
+  margin: 0 0 18px;
+  padding: 0 0 22px;
+  border-bottom: 1px solid #dce6f0;
+  background: transparent;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .screenHeader > div {
+  max-width: 820px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .eyebrow {
+  width: fit-content;
+  margin-bottom: 12px;
+  padding: 7px 12px;
+  border: 1px solid #d8e5f5;
+  border-radius: 10px;
+  background: #eef4ff;
+  color: #123f91;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .screenHeader h2 {
+  margin: 0;
+  color: #12213a;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.14;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .screenHeader p {
+  max-width: 760px;
+  margin: 10px 0 0;
+  color: #66758c;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px 18px;
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  border: 1px solid #dce6f0;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(11, 31, 58, 0.06);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .field label {
+  margin-bottom: 10px;
+  color: #66758c;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) textarea.questionInput {
+  min-height: 88px;
+  max-height: 112px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-color: #d7e2ee;
+  color: #16243b;
+  font-size: 14px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .exampleGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .exampleButton {
+  min-height: 34px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  background: #f8fbff;
+  color: #123f91;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  min-height: 42px;
+  min-width: 156px;
+  padding: 0 16px;
+  border: 1px solid #c7d8ee;
+  border-radius: 12px;
+  background: #eef5ff;
+  color: #123f91;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  min-width: 220px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  background: #e2edfb;
+  border-color: #b6cde9;
+  color: #002697;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .resultGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .card,
+.workspaceContent > .page:not(.employeeDashboard) .largeCard {
+  padding: 22px 24px;
+  border: 1px solid #dce6f0;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(11, 31, 58, 0.05);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .largeCard h3,
+.workspaceContent > .page:not(.employeeDashboard) .card h3 {
+  margin: 0 0 14px;
+  color: #12213a;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.sectionTitleRow {
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.answerCard .answerText {
+  max-width: 960px;
+  margin: 0;
+  color: #40516a;
+  font-size: 15px;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.answerMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #edf2f7;
+}
+
+.answerMetaRow > span {
+  color: #66758c;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.answerMetaRow .tagList,
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .tag {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: #123f91;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.softBadge {
+  padding: 7px 10px;
+  border: 1px solid #e5edf6;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #53657b;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pipelineCompact .pipelineList,
+.loadingCard .pipelineList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pipelineCompact .pipelineItem,
+.loadingCard .pipelineItem {
+  min-height: auto;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.pipelineCompact .pipelineItem strong,
+.loadingCard .pipelineItem span:last-child {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pipelineCompact .pipelineItem p {
+  max-width: 100%;
+}
+
+.materialList.courseList {
+  display: grid;
+  gap: 12px;
+}
+
+.materialItemCard {
+  padding: 18px 20px;
+  border-radius: 16px;
+  text-align: left;
+}
+
+.materialCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.materialCardHeader strong {
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.materialBadges {
+  margin-top: 9px;
+}
+
+.materialItemCard p {
+  max-width: 980px;
+  color: #5f7086;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.materialMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.openMaterialButton {
+  justify-self: start;
+  width: fit-content;
+  min-height: 36px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: #002697;
+  font-size: 13px;
+}
+
+.sourcesCard .sourceCompact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sourceCompact .sourceItem {
+  min-height: auto;
+  padding: 14px;
+  text-align: left;
+}
+
+.sourceCompact .sourceItem p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.qualityAlertsCard {
+  border-left: 4px solid #c8672a;
+  background: #fffaf6;
+}
+
+.qualityAlertsHeader {
+  margin-bottom: 12px;
+}
+
+.qualityAlertsHeader h3 {
+  margin-bottom: 5px !important;
+}
+
+.qualityAlertsHeader p {
+  margin: 0;
+  color: #79553d;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.qualityAlertsList {
+  gap: 7px;
+}
+
+.qualityAlertItem {
+  padding: 10px 12px;
+  border-color: #efd7c4;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+}
+
+.managerLayout {
+  align-items: start;
+  gap: 18px;
+}
+
+.managerCard,
+.managerChecklistCard {
+  text-align: left;
+}
+
+.managerCard .employeeAvatar {
+  margin: 0;
+}
+
+.managerCard > div:nth-child(2) p {
+  margin-top: 4px;
+  color: #66758c;
+  font-size: 14px;
+  text-align: left;
+}
+
+.statusBlock,
+.infoBlock {
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.managerChecklist {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.managerChecklist li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin: 0;
+  color: #53657b;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.managerChecklist li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: #123f91;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.buttonRow .primaryButton {
+  border-radius: 12px;
+  background: #002697;
+}
+
+.buttonRow .secondaryButton {
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* Quick QA fixes for inner screens. */
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  border-color: #2f73b9;
+  background: #2f73b9;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(47, 115, 185, 0.16);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  border-color: #245f9c;
+  background: #245f9c;
+  color: #ffffff;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:disabled,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:disabled {
+  border-color: #8eacd0;
+  background: #8eacd0;
+  color: #ffffff;
+  opacity: 1;
+}
+
+.materialCardHeader > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.materialCardHeader .hours {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.materialItemCard {
+  position: relative;
+  padding-right: 96px;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard {
+  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-areas:
+    "label label"
+    "input button"
+    "chips chips";
+  align-items: stretch;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(96, 211, 255, 0.28), transparent 34%),
+    linear-gradient(118deg, #061c43 0%, #0a3777 46%, #1271b5 100%);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .field {
+  display: contents;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .field label {
+  grid-area: label;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard textarea.questionInput {
+  grid-area: input;
+  min-height: 64px;
+  max-height: 78px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .exampleGrid {
+  grid-area: chips;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .formCard .exampleButton {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  grid-area: button;
+  align-self: stretch;
+  min-height: 64px;
+  border-color: rgba(255, 255, 255, 0.72);
+  background: #ffffff;
+  color: #002697;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  border-color: #ffffff;
+  background: #eaf1ff;
+  color: #002697;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:disabled,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:disabled {
+  border-color: rgba(255, 255, 255, 0.56);
+  background: rgba(255, 255, 255, 0.72);
+  color: #002697;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .employeeHeroMain::before,
+  .employeeHeroMain::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .cleanTopActions {
+    gap: 6px;
+  }
+
+  .demoContourBadge,
+  .workContext {
     display: none;
+  }
+
+  .agentProfilePopover {
+    right: -8px;
+    width: min(330px, calc(100vw - 32px));
+  }
+
+  .heroStatusLine {
+    gap: 7px;
+    white-space: normal;
+  }
+
+  .heroStatusDivider {
+    display: none;
+  }
+
+  .menuDrawer {
+    left: 78px;
+    max-width: min(312px, calc(100vw - 78px));
+  }
+
+  .workspaceContent > .page:not(.employeeDashboard) {
+    width: min(100% - 24px, 1180px);
+    padding-top: 20px;
+  }
+
+  .workspaceContent > .page:not(.employeeDashboard) .formCard,
+  .pipelineCompact .pipelineList,
+  .loadingCard .pipelineList,
+  .sourcesCard .sourceCompact {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+  .workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .workspaceContent > .page:not(.employeeDashboard) .formCard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "input"
+      "button"
+      "chips";
+  }
+
+  .materialItemCard {
+    padding-right: 20px;
+  }
+
+  .materialCardHeader .hours {
+    position: static;
+    margin-left: 0;
   }
 }

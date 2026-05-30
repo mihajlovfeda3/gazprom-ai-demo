@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   mockRouteResponse,
   mockKnowledgeResponse,
@@ -6,95 +6,53 @@ import {
 } from "./mockResponses";
 import "./styles.css";
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const API_URL = "http://127.0.0.1:8000";
+const INTRO_STORAGE_KEY = "gazprom-ai-demo-intro-seen";
 
 function App() {
   const [screen, setScreen] = useState("landing");
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
   const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие материалы помогут разобраться с проектированием API?");
-  const [materialTask, setMaterialTask] = useState("Какие материалы помогут разобраться с проектированием API?");
+  const [materialTask, setMaterialTask] = useState("Нужно разобраться, как описывать API и интеграции в проекте");
   const [globalSearch, setGlobalSearch] = useState("");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
-  const [mode, setMode] = useState("demo");
+  const managerDecisionTouched = useRef(false);
 
-  async function fetchRouteAgent(taskText = materialTask) {
+  async function fetchRouteAgent(queryText = materialTask) {
     setRouteLoading(true);
 
-    const finalTask =
-      taskText && taskText.trim().length > 0
-        ? taskText.trim()
-        : "Какие материалы помогут разобраться с проектированием API?";
-
-    const newPayload = {
-      employee_id: "emp_001",
-      task: finalTask,
-      question: finalTask,
-      current_role: "Сотрудник ИТ-кластера",
-      target_role: "Решение рабочей задачи"
-    };
-
-    const legacyPayload = {
-      current_role: "Middle системный аналитик",
-      target_role: "Senior системный аналитик",
-      employee_id: "emp_001"
-    };
+    const finalQuery =
+      queryText && queryText.trim().length > 0
+        ? queryText.trim()
+        : "Нужно разобраться, как описывать API и интеграции в проекте";
 
     try {
-      let response = await fetch(`${API_URL}/api/route-agent`, {
+      const response = await fetch(`${API_URL}/api/material-agent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(newPayload)
+        body: JSON.stringify({
+          query: finalQuery,
+          employee_id: "emp_001"
+        })
       });
 
       if (!response.ok) {
-        response = await fetch(`${API_URL}/api/route-agent`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(legacyPayload)
-        });
+        throw new Error("Material agent backend error");
       }
 
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
+      const data = await response.json();
 
-      let data = await response.json();
-
-      if (data.status === "error") {
-        response = await fetch(`${API_URL}/api/route-agent`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(legacyPayload)
-        });
-
-        if (!response.ok) {
-          throw new Error("Backend error");
-        }
-
-        data = await response.json();
-
-        if (data.status === "error") {
-          throw new Error(data.message || "Backend error");
-        }
-      }
-
-      console.log("MATERIAL SELECTION DATA:", data);
+      console.log("MATERIAL AGENT DATA:", data);
       setRouteResult(data);
-      setMode("live backend");
     } catch (error) {
-      console.warn("Backend unavailable, using mock route response");
+      console.warn("Material agent unavailable, using mock response", error);
       setRouteResult(mockRouteResponse);
-      setMode("fallback demo");
     } finally {
       setTimeout(() => {
         setRouteLoading(false);
@@ -128,11 +86,9 @@ function App() {
     const data = await response.json();
     console.log("KNOWLEDGE DATA:", data);
     setKnowledgeResult(data);
-    setMode("live backend");
-  } catch (error) {
+  } catch {
     console.warn("Backend unavailable, using mock knowledge response");
     setKnowledgeResult(mockKnowledgeResponse);
-    setMode("fallback demo");
   } finally {
     setTimeout(() => {
       setKnowledgeLoading(false);
@@ -194,23 +150,31 @@ function App() {
     };
 
     setManagerResult(normalizedManager);
-    setManagerStatus(normalizedManager.status);
-    setMode("live backend");
-  } catch (error) {
+    if (!managerDecisionTouched.current) {
+      setManagerStatus(normalizedManager.status);
+    }
+  } catch {
     console.warn("Backend unavailable, using mock manager response");
     setManagerResult(mockManagerResponse);
-    setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
-    setMode("fallback demo");
+    if (!managerDecisionTouched.current) {
+      setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
+    }
   }
 }
 
   function sendToManager() {
+    managerDecisionTouched.current = false;
     fetchManagerAgent();
     setScreen("manager");
   }
 
 function updateManagerStatus(status) {
+    managerDecisionTouched.current = true;
     setManagerStatus(status);
+    setManagerResult((currentResult) => ({
+      ...currentResult,
+      status
+    }));
   }
 
   function handleGlobalSearch(query = globalSearch) {
@@ -230,7 +194,6 @@ function updateManagerStatus(status) {
   <AppShell
   screen={screen}
   setScreen={setScreen}
-  mode={mode}
   globalSearch={globalSearch}
   setGlobalSearch={setGlobalSearch}
   onGlobalSearch={handleGlobalSearch}
@@ -271,25 +234,61 @@ function updateManagerStatus(status) {
 function AppShell({
   screen,
   setScreen,
-  mode,
   children,
   globalSearch,
   setGlobalSearch,
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [introOpen, setIntroOpen] = useState(() => {
+    try {
+      return window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "true";
+    } catch {
+      return true;
+    }
+  });
 
   const menuItems = [
-  { id: "landing", label: "Рабочий стол", short: "Г" },
-  { id: "route", label: "Подбор материалов", short: "М" },
-  { id: "knowledge", label: "База знаний", short: "Б" },
-  { id: "manager", label: "Проверка подборки", short: "Р" }
+  { id: "landing", label: "Главная", icon: "home" },
+  { id: "knowledge", label: "Материалы", icon: "materials" },
+  { id: "route", label: "Подборки", icon: "collections" },
+  { id: "manager", label: "Проверка", icon: "review" }
 ];
 
   function openScreen(screenId) {
     setScreen(screenId);
     setMenuOpen(false);
   }
+
+  function closeIntro() {
+    try {
+      window.localStorage?.setItem(INTRO_STORAGE_KEY, "true");
+    } catch {
+      // Ignore storage restrictions in embedded or private browser contexts.
+    }
+
+    setIntroOpen(false);
+  }
+
+  useEffect(() => {
+    function handleEscape(event) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (introOpen) {
+        closeIntro();
+        return;
+      }
+
+      if (menuOpen) {
+        setMenuOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [introOpen, menuOpen]);
 
   return (
     <div className="gazpromShell">
@@ -305,13 +304,12 @@ function AppShell({
           <span />
         </button>
 
-        <button
+        <div
           className="railBrandMark"
-          onClick={() => openScreen("landing")}
           aria-label="Газпром нефть"
         >
           ГН
-        </button>
+        </div>
 
         <div className="internProfileWrap">
   <button
@@ -340,15 +338,16 @@ function AppShell({
 
         <div className="railIcons cleanRailIcons">
           {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={screen === item.id ? "railIconButton active" : "railIconButton"}
-              onClick={() => openScreen(item.id)}
-              title={item.label}
-            >
-              {item.short}
-            </button>
-          ))}
+	            <button
+	              key={item.id}
+		              className={screen === item.id ? "railIconButton active" : "railIconButton"}
+		              onClick={() => openScreen(item.id)}
+		              title={item.label}
+		            >
+		              <span className={`railIconGlyph ${item.icon}`} />
+		              <span className="railIconLabel">{item.label}</span>
+		            </button>
+	          ))}
         </div>
 
         <div className="railBottom">
@@ -367,50 +366,44 @@ function AppShell({
           <div className="drawerBackdrop" onClick={() => setMenuOpen(false)} />
 
           <aside className="menuDrawer">
-            <div className="drawerHeader">
-              <div>
-                <span>Газпром нефть</span>
-                <h2>ИИ T&amp;D платформа</h2>
-              </div>
-
-              <button onClick={() => setMenuOpen(false)}>×</button>
-            </div>
+	            <div className="drawerHeader">
+	              <div>
+	                <span>Газпром нефть</span>
+	                <h2>Рабочий кабинет ИТ-кластера</h2>
+	              </div>
+	
+	              <button aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}>×</button>
+	            </div>
 
             <nav className="drawerNav">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
-                  onClick={() => openScreen(item.id)}
-                >
-                  <span>{item.short}</span>
-                  {item.label}
-                </button>
+	                  className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
+	                  onClick={() => openScreen(item.id)}
+	                >
+		                  <span className={`drawerNavIcon ${item.icon}`} />
+		                  {item.label}
+		                </button>
               ))}
             </nav>
 
-            <div className="drawerHint">
-              Единая экосистема ИИ-помощников для поиска проверенных материалов, источников и ответственных.
-            </div>
-          </aside>
+	          </aside>
         </>
       )}
 
       <main className="mainWorkspace">
         <header className="topBar cleanTopBar">
-          <button
+          <div
             className="topBrandBlock"
-            onClick={() => openScreen("landing")}
-            type="button"
+            aria-label="Газпром"
           >
-            <span className="brandSymbol">
-              <span />
-            </span>
-            <span className="brandText">
-              <strong>Газпром нефть</strong>
-              <span>ИИ T&amp;D платформа</span>
-            </span>
-          </button>
+            <img
+              className="brandLogoImage"
+              src="/gazprom-emblem.jpg"
+              alt="Газпром"
+            />
+          </div>
 
           <form
   className="searchPill activeSearch"
@@ -431,100 +424,145 @@ function AppShell({
   </button>
 </form>
 
-          <div className="topActions cleanTopActions">
-            <button className="topKnowledgeButton" onClick={() => openScreen("knowledge")}>
-              ИИ-поиск
-            </button>
-          </div>
+	          <div className="topActions cleanTopActions" aria-label="Контекст">
+		            <div className="topStatusMenu">
+		              <button
+		                className="demoContourBadge"
+		                type="button"
+		              >
+		                Демо-контур
+		              </button>
+	
+		              <div className="topActionDropdown">
+		                <button type="button" onClick={() => openScreen("route")}>
+		                  Найти материалы
+		                </button>
+		                <button type="button" onClick={() => openScreen("knowledge")}>
+		                  База знаний
+		                </button>
+		                <button type="button" onClick={() => openScreen("manager")}>
+		                  Проверка
+		                </button>
+		              </div>
+		            </div>
+	
+	            <div className="agentProfileWrap">
+	              <button
+	                className="agentProfileTrigger"
+	                type="button"
+	                aria-label="Профиль агента подбора материалов"
+	              >
+	                <span className="agentAvatar">ИИ</span>
+	              </button>
+	
+	              <div className="agentProfilePopover" role="dialog" aria-label="Профиль агента">
+	                <div className="agentPopoverHeader">
+	                  <span className="agentAvatar large">ИИ</span>
+	                  <div>
+	                    <strong>Агент подбора материалов</strong>
+	                    <p>Активен · обновил подборку 3 мин назад</p>
+	                  </div>
+	                </div>
+	
+	                <p className="agentPopoverText">
+	                  Помогает находить релевантные источники под текущий курс и готовит подборку к проверке.
+	                </p>
+	
+	                <div className="agentContextBlock">
+	                  <span>Курс</span>
+	                  <strong>Интеграционная архитектура и API</strong>
+	                </div>
+	
+	                <div className="agentContextBlock">
+	                  <span>Сейчас выполняет</span>
+	                  <strong>Проверяет релевантность источников и готовность подборки</strong>
+	                </div>
+	
+	                <div className="agentMetrics">
+	                  <div><span>Материалов</span><strong>12</strong></div>
+	                  <div><span>Уточнить</span><strong>2</strong></div>
+	                  <div><span>Готовность</span><strong>47%</strong></div>
+	                </div>
+	
+	                <button type="button" onClick={() => openScreen("route")}>
+	                  Открыть подборку
+	                </button>
+	              </div>
+	            </div>
+	          </div>
         </header>
 
         <div className="workspaceContent">
           {children}
         </div>
-      </main>
-
-      <aside className="rightPanel cleanRightPanel">
-        <div className="assistantCard cleanAssistantCard">
-          <div className="assistantTitle">
-            <span>ИИ</span>
-            <h3>Ассистент развития</h3>
-          </div>
-
-          <p>
-            Помогает найти проверенные материалы, источники и ответственных
-            под рабочую задачу.
-          </p>
-
-          <button className="assistantAsk" onClick={() => openScreen("knowledge")} type="button">
-            Задать вопрос
-          </button>
-        </div>
-
-        <div className="panelBlock cleanPanelBlock">
-          <h3>Быстрые действия</h3>
-
-          <button onClick={() => openScreen("route")}>
-            Найти материалы под задачу
-          </button>
-
-          <button onClick={() => openScreen("knowledge")}>
-            Найти знания и материалы
-          </button>
-
-          <button onClick={() => openScreen("manager")}>
-            Проверка подборки
-          </button>
-        </div>
-
-        <div className="backendStatusCard">
-          <span>Статус подключения</span>
-          <strong>{mode === "live backend" ? "Рабочий контур" : "Демо-режим"}</strong>
-          <p>
-            {mode === "live backend"
-              ? "Данные поступают из backend."
-              : "Используются резервные demo-данные."}
-          </p>
-        </div>
-      </aside>
-    </div>
-    </div>
-  );
+	      </main>
+	
+	      {introOpen && (
+	        <div className="introOverlay" role="presentation" onClick={closeIntro}>
+	          <section
+	            className="introCard"
+	            role="dialog"
+	            aria-modal="true"
+	            aria-labelledby="introTitle"
+	            onClick={(event) => event.stopPropagation()}
+	          >
+	            <button className="introClose" type="button" aria-label="Закрыть окно" onClick={closeIntro}>
+	              ×
+	            </button>
+	
+	            <span className="introBadge">Демо-контур</span>
+	            <h2 id="introTitle">О демонстрационном продукте</h2>
+	            <p>Это демонстрационный продукт для кейса Газпром нефти.</p>
+	            <p>
+	              Он показывает, как ИИ-агент может помогать сотруднику ИТ-кластера быстрее находить и собирать материалы под текущую рабочую задачу.
+	            </p>
+	            <p>
+	              В этом сценарии сотрудник проходит курс по интеграционной архитектуре и API. Система подбирает релевантные источники из базы знаний, показывает прогресс подготовки материалов и помогает передать подборку на проверку руководителю.
+	            </p>
+	            <p>
+	              Интерфейс работает в демо-контуре и предназначен для демонстрации логики продукта, пользовательского сценария и ценности ИИ-помощника.
+	            </p>
+	
+	            <button className="introPrimary" type="button" onClick={closeIntro}>
+	              Понятно, перейти в кабинет
+	            </button>
+	          </section>
+	        </div>
+	      )}
+	    </div>
+	    </div>
+	  );
 }
 
-
-function Header({ screen, setScreen, mode }) {
-  return (
-    <header className="header">
-      <div>
-        <div className="logo">Gazprom ИИ T&amp;D</div>
-        <div className="subtitle">RAG-lite demo prototype</div>
-      </div>
-
-      <nav className="nav">
-        <button className={screen === "landing" ? "navButton active" : "navButton"} onClick={() => setScreen("landing")}>Лендинг</button>
-        <button className={screen === "route" ? "navButton active" : "navButton"} onClick={() => setScreen("route")}>Материалы</button>
-        <button className={screen === "knowledge" ? "navButton active" : "navButton"} onClick={() => setScreen("knowledge")}>Знания</button>
-        <button className={screen === "manager" ? "navButton active" : "navButton"} onClick={() => setScreen("manager")}>Руководитель</button>
-      </nav>
-
-      <div className="modeBadge">{mode}</div>
-    </header>
-  );
-}
 
 function normalizeSelectionData(data = {}) {
   return {
+    answer: data.answer || "",
+    answerMode: data.answer_mode || "",
+    llmModel: data.llm_model || "",
     topics: data.detected_topics || data.topics || data.skill_gap || [],
     materials:
       data.recommended_materials ||
       data.materials ||
       data.recommended_courses ||
       [],
-    draft: data.draft_selection || data.selection_draft || data.ipr_draft || [],
+    qualityAlerts: data.quality_alerts || [],
     sources: data.sources || [],
     summary: data.summary || "",
     pipeline: data.pipeline || []
   };
+}
+
+function getText(value, fallback = "") {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return fallback;
 }
 
 function getTopicTitle(topic) {
@@ -596,27 +634,136 @@ function formatDisplayText(value) {
     .trim();
 }
 
+function truncateDisplayText(value, maxLength = 220) {
+  const text = formatDisplayText(value);
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength).trim()}...`;
+}
+
 function LandingScreen({ setScreen }) {
+  const [materialsDrawerOpen, setMaterialsDrawerOpen] = useState(false);
+  const [materialsSearch, setMaterialsSearch] = useState("");
+  const [materialsFilter, setMaterialsFilter] = useState("Все");
+
   const courses = [
     {
-      title: "Архитектура облачных решений",
-      meta: "Обязательный · до 30 июня",
+      title: "Проектирование интеграций и API",
+      meta: "Подборка в работе · владелец: ЦК системного анализа",
       progress: 65,
-      type: "courseBlue"
+      type: "courseBlue",
+      typeLabel: "НМД"
     },
     {
-      title: "ИБ для ИТ-специалиста",
-      meta: "Обязательный · до 15 июля",
-      progress: 20,
-      type: "courseOrange"
-    },
-    {
-      title: "DevOps-практики Газпром нефти",
-      meta: "Рекомендован · ЦК DevOps",
+      title: "Шаблон описания интеграционного решения",
+      meta: "Новый материал · архитектурный офис",
       progress: 0,
-      type: "courseGreen"
+      type: "courseOrange",
+      typeLabel: "Метод"
+    },
+    {
+      title: "Архитектурное мышление для аналитиков",
+      meta: "Рекомендовано · ЦК архитектуры",
+      progress: 35,
+      type: "courseGreen",
+      typeLabel: "Видео"
     }
   ];
+
+  const materialFilters = [
+    "Все",
+    "НМД",
+    "Видео",
+    "Методички",
+    "Внутренние курсы",
+    "Требуют уточнения",
+    "Актуально"
+  ];
+
+  const dashboardMaterials = [
+    {
+      typeLabel: "НМД",
+      typeGroup: "НМД",
+      title: "Стандарт описания REST API и интеграций",
+      responsibleLabel: "ЦК системного анализа",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 94%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Видео",
+      typeGroup: "Видео",
+      title: "Вебинар: проектирование API в продуктовой команде",
+      responsibleLabel: "Архитектурный офис",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 91%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Метод",
+      typeGroup: "Методички",
+      title: "Шаблон интеграционного решения",
+      responsibleLabel: "ЦК системного анализа",
+      actualityLabel: "Требует уточнения",
+      matchLabel: "Совпадение 88%",
+      needsClarification: true
+    },
+    {
+      typeLabel: "Курс",
+      typeGroup: "Внутренние курсы",
+      title: "Системный дизайн для аналитиков",
+      responsibleLabel: "Корпоративный университет",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 84%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "НМД",
+      typeGroup: "НМД",
+      title: "Регламент согласования API-контрактов",
+      responsibleLabel: "ИТ-архитектура",
+      actualityLabel: "Требует уточнения",
+      matchLabel: "Совпадение 81%",
+      needsClarification: true
+    },
+    {
+      typeLabel: "Метод",
+      typeGroup: "Методички",
+      title: "Чек-лист качества интеграционного описания",
+      responsibleLabel: "Офис качества ИТ",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 79%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Видео",
+      typeGroup: "Видео",
+      title: "Разбор ошибок при описании интеграций",
+      responsibleLabel: "Команда API-платформы",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 76%",
+      needsClarification: false
+    }
+  ];
+
+  const filteredDashboardMaterials = dashboardMaterials.filter((material) => {
+    const searchText = materialsSearch.trim().toLowerCase();
+    const matchesSearch =
+      !searchText ||
+      `${material.title} ${material.typeLabel} ${material.responsibleLabel}`
+        .toLowerCase()
+        .includes(searchText);
+    const matchesFilter =
+      materialsFilter === "Все" ||
+      material.typeGroup === materialsFilter ||
+      (materialsFilter === "Требуют уточнения" && material.needsClarification) ||
+      (materialsFilter === "Актуально" && material.actualityLabel === "Актуально");
+
+    return matchesSearch && matchesFilter;
+  });
 
   const materials = [
     {
@@ -648,69 +795,37 @@ function LandingScreen({ setScreen }) {
           <div className="employeeGreeting">
             <div>
               <span className="sectionKicker">Рабочий стол</span>
-              <h1>Добрый день, Александр</h1>
+              <h1>Добрый день, Александр!</h1>
               <p>
-                ИТ-кластер, Тюмень · рабочие задачи, материалы и источники в одном контуре
+                ИТ-кластер · Санкт-Петербург · текущий фокус: подбор материалов под рабочую задачу
               </p>
             </div>
 
-            <div className="employeeBadges">
-              <span>Доступы</span>
-              <span>Знакомство</span>
-              <span className="active">Архитектура</span>
-              <span>Регламенты</span>
-            </div>
           </div>
 
-          <div className="heroActionsRow">
-            <button className="gnPrimaryButton" onClick={() => setScreen("route")}>
-              Найти материалы под задачу
-            </button>
-
-            <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
-              Спросить ИИ-помощника
-            </button>
-          </div>
-        </div>
-
-        <div className="employeeAssistantMini">
-          <div className="assistantMiniHeader">
-            <span>ИИ</span>
-            <strong>Помощник развития</strong>
-          </div>
-
-          <p>
-            Нашёл 3 материала по архитектуре и доступам. Можно собрать
-            подборку под задачу или задать вопрос по базе знаний.
-          </p>
-
-          <button onClick={() => setScreen("knowledge")}>
-            Открыть базу знаний
+          <button className="heroStatusLine" type="button" onClick={() => setScreen("route")}>
+            <span>Текущий курс: Интеграционная архитектура и API</span>
+            <span className="heroStatusDivider" />
+            <strong>Продолжить</strong>
           </button>
         </div>
       </section>
 
       <section className="employeeStats">
         <div className="employeeStatCard">
-          <span>Материалов найдено</span>
+          <span>Материалы к изучению</span>
           <strong>12</strong>
-          <p>3 новых этой неделе</p>
+          <p>3 новых на этой неделе</p>
         </div>
 
         <div className="employeeStatCard">
-          <span>Статей прочитано</span>
-          <strong>34</strong>
-          <p>из базы знаний</p>
+          <span>Подборки в работе</span>
+          <strong>2</strong>
+          <p>ожидают уточнения источников</p>
         </div>
 
         <div className="employeeStatCard">
-          <span>Вопросов решено</span>
-          <strong>8</strong>
-          <p>через ИИ-помощника</p>
-        </div>
-
-        <div className="employeeStatCard">
-          <span>Подборка</span>
+          <span>Прогресс по текущей задаче</span>
           <strong>47%</strong>
           <p>готовность к проверке</p>
         </div>
@@ -719,18 +834,19 @@ function LandingScreen({ setScreen }) {
       <section className="dashboardGrid">
         <div className="dashboardCard coursesPanel">
           <div className="cardHeaderLine">
-            <h2>Мои материалы</h2>
-            <button onClick={() => setScreen("route")}>Все материалы →</button>
+            <h2>Текущие материалы</h2>
+            <button onClick={() => setMaterialsDrawerOpen(true)}>Все материалы</button>
           </div>
 
           <div className="courseRows">
             {courses.map((course) => (
               <div className="courseRow" key={course.title}>
-                <div className={`courseIcon ${course.type}`} />
+                <span className={`courseTypeBadge ${course.type}`}>
+                  {course.typeLabel}
+                </span>
                 <div className="courseBody">
                   <div className="courseTop">
                     <strong>{course.title}</strong>
-                    {course.progress > 0 ? <span>{course.progress}%</span> : <span>Новый</span>}
                   </div>
 
                   <p>{course.meta}</p>
@@ -739,6 +855,9 @@ function LandingScreen({ setScreen }) {
                     <div style={{ width: `${course.progress || 8}%` }} />
                   </div>
                 </div>
+                <span className="courseRowValue">
+                  {course.progress > 0 ? `${course.progress}%` : "Новый"}
+                </span>
               </div>
             ))}
           </div>
@@ -746,26 +865,36 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard trajectoryPanel">
           <div className="cardHeaderLine">
-            <h2>Подбор материалов</h2>
-            <button onClick={() => setScreen("route")}>Открыть →</button>
+            <h2>Подборка в работе</h2>
+            <button onClick={() => setScreen("route")}>Открыть</button>
           </div>
 
-          <div className="trajectoryRoles">
+          <div className="selectionSummary">
             <div>
               <span>Рабочая задача</span>
-              <strong>Проектирование API</strong>
+              <strong>Проектирование API и интеграций</strong>
             </div>
 
             <div>
-              <span>Цель</span>
-              <strong>Найти проверенные материалы</strong>
+              <span>Темы</span>
+              <strong>API · интеграции · системный дизайн</strong>
+            </div>
+
+            <div>
+              <span>Материалов</span>
+              <strong>12</strong>
+            </div>
+
+            <div>
+              <span>Требуют уточнения</span>
+              <strong>2</strong>
             </div>
           </div>
 
           <div className="trajectoryProgress">
             <div>
-              <span>Темы запроса</span>
-              <strong>61%</strong>
+              <span>Готово к проверке</span>
+              <strong>47%</strong>
             </div>
 
             <div className="wideProgress">
@@ -780,8 +909,8 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard knowledgePanel">
           <div className="cardHeaderLine">
-            <h2>База знаний · последние материалы</h2>
-            <button onClick={() => setScreen("knowledge")}>Открыть базу →</button>
+            <h2>Последние материалы базы знаний</h2>
+            <button onClick={() => setScreen("knowledge")}>Открыть базу</button>
           </div>
 
           <div className="materialGrid">
@@ -802,8 +931,8 @@ function LandingScreen({ setScreen }) {
 
         <div className="dashboardCard managerPanel">
           <div className="cardHeaderLine">
-            <h2>Проверка подборки</h2>
-            <button onClick={() => setScreen("manager")}>Перейти →</button>
+            <h2>Проверка руководителем</h2>
+            <button onClick={() => setScreen("manager")}>Перейти</button>
           </div>
 
           <p>
@@ -821,20 +950,85 @@ function LandingScreen({ setScreen }) {
           </button>
         </div>
       </section>
+
+      {materialsDrawerOpen && (
+        <div
+          className="materialsDrawerLayer"
+          role="presentation"
+          onClick={() => setMaterialsDrawerOpen(false)}
+        >
+          <aside
+            className="materialsDrawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="materialsDrawerTitle"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="materialsDrawerHeader">
+              <div>
+                <span>Подборка</span>
+                <h2 id="materialsDrawerTitle">Все материалы подборки</h2>
+                <p>Материалы по рабочей задаче “Проектирование API и интеграций”</p>
+              </div>
+
+              <button type="button" onClick={() => setMaterialsDrawerOpen(false)}>
+                Закрыть
+              </button>
+            </div>
+
+            <input
+              className="materialsDrawerSearch"
+              value={materialsSearch}
+              onChange={(event) => setMaterialsSearch(event.target.value)}
+              placeholder="Найти по названию или типу"
+            />
+
+            <div className="materialsDrawerFilters" aria-label="Фильтры материалов">
+              {materialFilters.map((filter) => (
+                <button
+                  className={materialsFilter === filter ? "active" : ""}
+                  key={filter}
+                  type="button"
+                  onClick={() => setMaterialsFilter(filter)}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+
+            <div className="materialsDrawerList">
+              {filteredDashboardMaterials.map((material) => (
+                <div className="materialsDrawerItem" key={material.title}>
+                  <span className="drawerMaterialType">{material.typeLabel}</span>
+
+                  <div>
+                    <strong>{material.title}</strong>
+                    <p>{material.responsibleLabel}</p>
+                    <div className="drawerMaterialMeta">
+                      <span>{material.actualityLabel}</span>
+                      <span>{material.matchLabel}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMaterialsDrawerOpen(false);
+                      setScreen("route");
+                    }}
+                  >
+                    Открыть
+                  </button>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }
 
-
-function AgentCard({ title, text, button, onClick }) {
-  return (
-    <div className="card agentCard">
-      <h3>{title}</h3>
-      <p>{text}</p>
-      <button className="smallButton" onClick={onClick}>{button}</button>
-    </div>
-  );
-}
 
 function RouteAgentScreen({
   routeResult,
@@ -848,9 +1042,18 @@ function RouteAgentScreen({
     "Какие материалы помогут разобраться с проектированием API?",
     "Что изучить перед задачей по системному дизайну?",
     "Где найти актуальные материалы по интеграциям?",
-    "Какие внутренние материалы есть по архитектурному мышлению?"
+    "Есть ли запись или вебинар про проектирование API?"
   ];
   const selection = normalizeSelectionData(routeResult || {});
+  const isGuardrail = selection.answerMode === "guardrail";
+  const answerBadge =
+    selection.answerMode === "llm"
+      ? selection.llmModel && selection.llmModel.toLowerCase().includes("qwen")
+        ? "Ответ сформирован Qwen"
+        : "Ответ сформирован ИИ"
+      : selection.answerMode === "template_fallback"
+        ? "Ответ сформирован по шаблону"
+        : "";
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -862,11 +1065,10 @@ function RouteAgentScreen({
       <section className="screenHeader">
         <div>
           <div className="eyebrow">Подбор материалов</div>
-<h2>Найти материалы под задачу</h2>
-<p>
-  Опишите рабочую задачу или цель развития. ИИ-помощник подберет проверенные
-  материалы, источники и ответственных по теме.
-</p>
+          <h2>Найти материалы под задачу</h2>
+          <p>
+            Опишите рабочую задачу, а помощник подберет проверенные источники и ответственных.
+          </p>
         </div>
       </section>
 
@@ -894,7 +1096,7 @@ function RouteAgentScreen({
           </div>
         </div>
 
-        <button className="primaryButton" type="submit">
+        <button className="primaryButton" type="submit" disabled={routeLoading}>
           {routeLoading ? <LoadingLabel text="Ищем материалы" /> : "Найти материалы под задачу"}
         </button>
       </form>
@@ -903,42 +1105,63 @@ function RouteAgentScreen({
 
       {routeResult && !routeLoading && (
         <section className="resultGrid">
-          <PipelineBlock pipeline={selection.pipeline} />
+          {isGuardrail ? (
+            <GuardrailBlock answer={selection.answer} />
+          ) : (
+            <>
+              {selection.answer && (
+                <div className="card largeCard answerCard">
+                  <div className="sectionTitleRow">
+                    <h3>Ответ ИИ-помощника</h3>
+                    {answerBadge && <span className="softBadge">{answerBadge}</span>}
+                  </div>
+                  <p className="answerText">{formatDisplayText(selection.answer)}</p>
 
-          <div className="card">
-            <h3>Темы запроса</h3>
-            <TagList items={selection.topics} />
-          </div>
+                  {selection.topics.length > 0 && (
+                    <div className="answerMetaRow">
+                      <span>Темы запроса:</span>
+                      <TagList items={selection.topics} />
+                    </div>
+                  )}
+                </div>
+              )}
 
-          <div className="card largeCard">
-            <h3>Рекомендованные материалы</h3>
-            <MaterialList materials={selection.materials} />
-          </div>
+              {selection.pipeline.length > 0 && <PipelineBlock pipeline={selection.pipeline} />}
 
-          <div className="card largeCard">
-            <h3>Черновик подборки для развития</h3>
-            <NumberedList items={selection.draft} />
-          </div>
+              {selection.materials.length > 0 && (
+                <div className="card largeCard">
+                  <h3>Рекомендованные материалы</h3>
+                  <MaterialList materials={selection.materials} />
+                </div>
+              )}
 
-          <div className="card largeCard sourcesCard">
-            <h3>Использованные источники</h3>
-            <SourceList sources={selection.sources} />
-          </div>
+              {selection.qualityAlerts.length > 0 && (
+                <QualityAlerts alerts={selection.qualityAlerts} />
+              )}
 
-          {selection.summary && (
-            <div className="card">
-              <h3>Пояснение</h3>
-              <p className="answerText">{formatDisplayText(selection.summary)}</p>
-            </div>
+              {selection.sources.length > 0 && (
+                <div className="card largeCard sourcesCard">
+                  <h3>Использованные источники</h3>
+                  <SourceList sources={selection.sources} />
+                </div>
+              )}
+
+              {selection.summary && (
+                <div className="card">
+                  <h3>Пояснение</h3>
+                  <p className="answerText">{formatDisplayText(selection.summary)}</p>
+                </div>
+              )}
+
+              <div className="card actionCard">
+                <h3>Проверка подборки руководителем</h3>
+                <p>
+                  После проверки подборку можно отправить руководителю для согласования времени на изучение.
+                </p>
+                <button className="primaryButton" onClick={sendToManager}>Отправить подборку руководителю</button>
+              </div>
+            </>
           )}
-
-          <div className="card actionCard">
-            <h3>Проверка подборки</h3>
-            <p>
-  После проверки подборку можно отправить руководителю для согласования времени на изучение.
-</p>
-            <button className="primaryButton" onClick={sendToManager}>Отправить подборку руководителю</button>
-          </div>
         </section>
       )}
     </main>
@@ -964,17 +1187,22 @@ function KnowledgeAgentScreen({
       <section className="screenHeader">
         <div>
           <div className="eyebrow">Корпоративные знания</div>
-<h2>База знаний</h2>
-<p>
-  Пользователь задает вопрос, а ИИ-помощник ищет релевантные материалы,
-  источники и ответственных в корпоративной базе знаний.
-</p>
+          <h2>База знаний</h2>
+          <p>
+            Найдите внутренние материалы, регламенты, НМД и записи вебинаров по рабочей задаче.
+          </p>
         </div>
       </section>
 
-      <section className="formCard card knowledgeForm">
+      <form
+        className="formCard card knowledgeForm"
+        onSubmit={(event) => {
+          event.preventDefault();
+          fetchKnowledgeAgent(knowledgeQuestion);
+        }}
+      >
         <div className="field">
-          <label>Введите вопрос агенту знаний</label>
+          <label>Введите вопрос по базе знаний</label>
 
           <textarea
             className="questionInput"
@@ -999,11 +1227,12 @@ function KnowledgeAgentScreen({
 
         <button
           className="primaryButton"
-          onClick={() => fetchKnowledgeAgent(knowledgeQuestion)}
+          type="submit"
+          disabled={knowledgeLoading}
         >
           {knowledgeLoading ? <LoadingLabel text="Ищем ответ" /> : "Найти ответ"}
         </button>
-      </section>
+      </form>
 
       {knowledgeLoading && <LoadingPipeline />}
 
@@ -1011,7 +1240,7 @@ function KnowledgeAgentScreen({
         <section className="resultGrid">
           <PipelineBlock pipeline={knowledgeResult.pipeline} />
 
-          <div className="card largeCard">
+          <div className="card largeCard answerCard">
             <div className="sectionTitleRow">
               <h3>Ответ ИИ-помощника</h3>
               {knowledgeResult.answer_mode === "llm" && (
@@ -1073,6 +1302,9 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const currentContext = /middle|senior/i.test(currentRole)
     ? "Сотрудник ИТ-кластера"
     : formatDisplayText(currentRole);
+  const employeeRoleLabel = currentContext === "Сотрудник ИТ-кластера"
+    ? "Системный аналитик"
+    : currentContext;
   const targetContext = /middle|senior/i.test(targetRole)
     ? "Решение рабочей задачи"
     : formatDisplayText(targetRole);
@@ -1081,12 +1313,11 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
     <main className="page">
       <section className="screenHeader">
         <div>
-         <div className="eyebrow">Проверка подборки</div>
-<h2>Проверка подборки материалов</h2>
-<p>
-  Руководитель видит подобранные материалы, источники и рекомендацию по
-  времени на изучение.
-</p>
+          <div className="eyebrow">Проверка руководителем</div>
+          <h2>Проверка подборки материалов</h2>
+          <p>
+            Руководитель видит подобранные материалы, источники и рекомендацию по времени на изучение.
+          </p>
         </div>
       </section>
 
@@ -1097,7 +1328,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <div>
             <h3>{employeeName}</h3>
             <p>
-              {currentContext} · {targetContext}
+              {employeeRoleLabel} · ИТ-кластер · {targetContext}
             </p>
           </div>
 
@@ -1118,21 +1349,27 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 
           <div className="buttonRow">
             <button
+              type="button"
               className="primaryButton"
+              onPointerDown={() => updateManagerStatus("Время на изучение согласовано")}
               onClick={() => updateManagerStatus("Время на изучение согласовано")}
             >
               Согласовать время на изучение
             </button>
 
             <button
+              type="button"
               className="secondaryButton"
+              onPointerDown={() => updateManagerStatus("Требуется уточнить подборку")}
               onClick={() => updateManagerStatus("Требуется уточнить подборку")}
             >
               Попросить уточнить подборку
             </button>
 
             <button
-              className="dangerButton"
+              type="button"
+              className="secondaryButton ownerButton"
+              onPointerDown={() => updateManagerStatus("Отправлено владельцу направления")}
               onClick={() => updateManagerStatus("Отправлено владельцу направления")}
             >
               Отправить владельцу направления
@@ -1140,13 +1377,13 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           </div>
         </div>
 
-        <div className="card">
-          <h3>Роль руководителя в процессе</h3>
-          <ul className="plainList">
-            <li>Руководитель остается в контуре принятия решений</li>
-            <li>ИИ не назначает обучение автоматически</li>
-            <li>Проверяются источники, ответственные и актуальность материалов</li>
-            <li>Система помогает согласовать время на изучение с учетом загрузки</li>
+        <div className="card managerChecklistCard">
+          <h3>Что проверяет руководитель</h3>
+          <ul className="plainList managerChecklist">
+            <li><span>✓</span> Подборка соответствует рабочей задаче сотрудника</li>
+            <li><span>✓</span> Источники и ответственные указаны корректно</li>
+            <li><span>✓</span> Проверяются источники, ответственные и актуальность материалов</li>
+            <li><span>✓</span> Время на изучение согласовано с учетом загрузки</li>
           </ul>
         </div>
       </section>
@@ -1193,7 +1430,7 @@ function LoadingLabel({ text }) {
 
 function PipelineBlock({ pipeline = [] }) {
   return (
-    <div className="card largeCard">
+    <div className="card largeCard pipelineCompact">
       <h3>Как сформирована подборка</h3>
       <div className="pipelineList">
         {pipeline.map((item, index) => {
@@ -1234,6 +1471,63 @@ function CourseList({ courses = [] }) {
   return <MaterialList materials={courses} />;
 }
 
+function GuardrailBlock({ answer }) {
+  return (
+    <div className="card largeCard guardrailCard">
+      <div className="sectionTitleRow">
+        <h3>Запрос не относится к подбору корпоративных материалов</h3>
+        <span className="softBadge">Запрос вне сценария</span>
+      </div>
+
+      <p className="answerText">
+        {formatDisplayText(answer) ||
+          "Опишите рабочую задачу или цель развития, чтобы подобрать внутренние материалы, источники и ответственных."}
+      </p>
+
+      <div className="guardrailHint">
+        Пример: нужно разобраться, как описывать API и интеграции в проекте
+      </div>
+    </div>
+  );
+}
+
+function QualityAlerts({ alerts = [] }) {
+  if (!alerts.length) {
+    return null;
+  }
+
+  return (
+    <div className="card largeCard qualityAlertsCard">
+      <div className="qualityAlertsHeader">
+        <h3>Требует проверки владельцем</h3>
+        <p>
+          {alerts.length === 1
+            ? "1 материал требует подтверждения актуальности."
+            : `${alerts.length} материала требуют подтверждения актуальности.`}
+        </p>
+      </div>
+
+      <div className="qualityAlertsList">
+        {alerts.map((item, index) => {
+          const alert =
+            typeof item === "object" && item !== null
+              ? item
+              : { message: String(item) };
+          const message = getText(alert.message, "Замечание по подборке");
+          const ownerAction = getText(alert.owner_action);
+
+          return (
+            <div className="qualityAlertItem" key={`${message}-${index}`}>
+                <strong>{formatDisplayText(message)}</strong>
+                {ownerAction && <p>Действие владельца: {formatDisplayText(ownerAction)}</p>}
+              </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function MaterialList({ materials = [] }) {
   if (!materials.length) {
     return <p className="emptyStateText">Материалы пока не найдены. Попробуйте уточнить рабочую задачу.</p>;
@@ -1247,30 +1541,38 @@ function MaterialList({ materials = [] }) {
             ? item
             : { title: String(item) };
         const materialType =
-          material.course_type_label ||
+          material.material_type_label ||
           material.material_type ||
+          material.course_type_label ||
           material.course_type ||
           "Материал";
         const provider = material.provider || material.source;
         const responsible = material.responsible_label || material.responsible;
-        const approval =
-          material.approval_label ||
-          (typeof material.requires_approval === "boolean"
-            ? material.requires_approval
-              ? "Требует согласования"
-              : "Не требует согласования"
-            : "");
-        const score = formatScore(material.score);
+        const actuality = material.actuality_label || material.actuality_status;
+        const match = material.match_label || formatScore(material.score);
+        const isVideo =
+          material.material_type === "video_transcript" ||
+          material.material_type_label === "Видео-транскрипт" ||
+          material.transcript_status;
 
         return (
           <div className="materialItemCard courseItem" key={material.id || material.title || index}>
             <div className="materialCardHeader">
               <div>
                 <strong>{formatDisplayText(material.title) || "Материал"}</strong>
-                <span>{formatDisplayText(materialType) || "Материал"}</span>
+                <div className="materialBadges">
+                  <span>{formatDisplayText(materialType) || "Материал"}</span>
+                  {isVideo && formatDisplayText(materialType) !== "Видео-транскрипт" && (
+                    <span>Видео-транскрипт</span>
+                  )}
+                </div>
               </div>
 
-              {material.duration_hours && (
+              {material.video_duration_min && (
+                <span className="hours">{material.video_duration_min} мин</span>
+              )}
+
+              {!material.video_duration_min && material.duration_hours && (
                 <span className="hours">{material.duration_hours} ч</span>
               )}
             </div>
@@ -1281,8 +1583,10 @@ function MaterialList({ materials = [] }) {
             <div className="materialMeta courseMeta">
               {provider && <span>{formatDisplayText(provider)}</span>}
               {responsible && <span>Ответственный: {formatDisplayText(responsible)}</span>}
-              {approval && <span>{formatDisplayText(approval)}</span>}
-              {score && <span>Совпадение: {score}</span>}
+              {actuality && <span>{formatDisplayText(actuality)}</span>}
+              {match && <span>{formatDisplayText(match)}</span>}
+              {material.video_duration_min && <span>Длительность: {material.video_duration_min} мин</span>}
+              {material.transcript_status && <span>Транскрипт: {formatDisplayText(material.transcript_status)}</span>}
             </div>
 
             {material.url && (
@@ -1297,41 +1601,28 @@ function MaterialList({ materials = [] }) {
   );
 }
 
-function NumberedList({ items = [] }) {
-  return (
-    <ol className="numberedList">
-      {items.map((item, index) => {
-        const text =
-          typeof item === "string"
-            ? item
-            : item?.title || item?.text || item?.description || "Пункт подборки";
-
-        return <li key={`${text}-${index}`}>{formatDisplayText(text)}</li>;
-      })}
-    </ol>
-  );
-}
-
 function SourceList({ sources = [] }) {
   return (
-    <div className="sourceList">
+    <div className="sourceList sourceCompact">
       {sources.map((item, index) => {
         const source =
           typeof item === "object" && item !== null
             ? item
             : { title: String(item) };
-        const score = formatScore(source.score);
+        const score = source.match_label || formatScore(source.score);
+        const sourceType = source.type || source.kind || source.source || "Документ";
+        const sourceTitle = source.title || source.name || source.text;
 
         return (
-        <div className="sourceItem" key={`${source.title || "source"}-${index}`}>
-          <strong>{formatDisplayText(source.title || source.name) || "Источник"}</strong>
+        <div className="sourceItem" key={`${sourceTitle || "source"}-${index}`}>
+          <strong>{formatDisplayText(sourceTitle) || "Источник"}</strong>
 
           <span>
-            {formatDisplayText(source.type) || "Документ"}
+            {formatDisplayText(sourceType) || "Документ"}
             {score ? ` · совпадение: ${score}` : ""}
           </span>
 
-          {source.text && <p>{formatDisplayText(source.text)}</p>}
+          {source.text && source.text !== sourceTitle && <p>{truncateDisplayText(source.text)}</p>}
         </div>
         );
       })}
