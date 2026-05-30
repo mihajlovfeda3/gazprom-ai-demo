@@ -7,7 +7,6 @@ import {
 import "./styles.css";
 
 const API_URL = "http://127.0.0.1:8000";
-const INTRO_STORAGE_KEY = "gazprom-ai-demo-intro-seen";
 
 function App() {
   const [screen, setScreen] = useState("landing");
@@ -240,13 +239,7 @@ function AppShell({
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [introOpen, setIntroOpen] = useState(() => {
-    try {
-      return window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "true";
-    } catch {
-      return true;
-    }
-  });
+  const [introOpen, setIntroOpen] = useState(true);
 
   const menuItems = [
   { id: "knowledge", label: "База знаний", icon: "materials" },
@@ -259,12 +252,6 @@ function AppShell({
   }
 
   function closeIntro() {
-    try {
-      window.localStorage?.setItem(INTRO_STORAGE_KEY, "true");
-    } catch {
-      // Ignore storage restrictions in embedded or private browser contexts.
-    }
-
     setIntroOpen(false);
   }
 
