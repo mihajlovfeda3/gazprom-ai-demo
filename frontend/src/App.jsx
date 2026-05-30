@@ -19,7 +19,7 @@ function App() {
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
-  const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
+  const [managerStatus, setManagerStatus] = useState("Подборка готова к согласованию");
   const managerDecisionTouched = useRef(false);
 
   async function fetchRouteAgent(queryText = materialTask) {
@@ -138,7 +138,7 @@ function App() {
         data.route_status ||
         employeeObject.status ||
         employeeObject.route_status ||
-        "Подборка готова к проверке",
+        "Подборка готова к согласованию",
       workload:
         data.workload ||
         employeeObject.workload ||
@@ -146,7 +146,7 @@ function App() {
       recommendation:
         data.recommendation ||
         employeeObject.recommendation ||
-        "Согласовать время на изучение после текущего спринта и проверить актуальность источников."
+        "Согласовать 4-6 часов на изучение материалов после текущего спринта и попросить владельца направления проверить актуальность источников."
     };
 
     setManagerResult(normalizedManager);
@@ -157,7 +157,7 @@ function App() {
     console.warn("Backend unavailable, using mock manager response");
     setManagerResult(mockManagerResponse);
     if (!managerDecisionTouched.current) {
-      setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
+      setManagerStatus(mockManagerResponse.status || "Подборка готова к согласованию");
     }
   }
 }
@@ -1285,11 +1285,6 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
     employeeObject.current_role ||
     "Сотрудник ИТ-кластера";
 
-  const targetRole =
-    managerResult.target_role ||
-    employeeObject.target_role ||
-    "Решение рабочей задачи";
-
   const workload =
     managerResult.workload ||
     employeeObject.workload ||
@@ -1305,14 +1300,23 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const employeeRoleLabel = currentContext === "Сотрудник ИТ-кластера"
     ? "Системный аналитик"
     : currentContext;
-  const targetContext = /middle|senior/i.test(targetRole)
-    ? "Решение рабочей задачи"
-    : formatDisplayText(targetRole);
+  const approvalStatus = managerStatus === "Подборка готова к проверке"
+    ? "Подборка готова к согласованию"
+    : managerStatus;
   const reviewMetrics = [
     { label: "Материалов", value: "12" },
     { label: "Требуют уточнения", value: "2" },
-    { label: "Готовность", value: "47%" },
-    { label: "Рекомендованное время", value: "4-6 ч" }
+    { label: "Готовность", value: "47%" }
+  ];
+  const availabilityWindows = [
+    "Чт, 15:00-17:00 — можно изучить 1 материал",
+    "Пт, 10:00-12:00 — можно пройти блок API design"
+  ];
+  const systemSignals = [
+    "Календарь: высокая загрузка ближайшие 2 недели",
+    "Задачи: активный спринт до 10 июня",
+    "База знаний: 12 материалов подобрано",
+    "Владельцы источников: 2 материала требуют подтверждения"
   ];
   const reviewChecks = [
     "Подборка соответствует рабочей задаче сотрудника.",
@@ -1326,9 +1330,9 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
       <section className="screenHeader">
         <div>
           <div className="eyebrow">Проверка руководителем</div>
-          <h2>Проверка подборки материалов</h2>
+          <h2>Согласование обучения и загрузки</h2>
           <p>
-            Руководитель видит подобранные материалы, источники и рекомендацию по времени на изучение.
+            Руководитель видит материалы, занятость сотрудника и рекомендуемое окно для изучения.
           </p>
         </div>
       </section>
@@ -1342,37 +1346,62 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
                 <span className="managerSectionLabel">Сотрудник</span>
                 <h3>{employeeName}</h3>
                 <p>{employeeRoleLabel} · ИТ-кластер</p>
-                <span className="managerContextPill">{targetContext}</span>
+                <span className="managerContextPill">Рабочая задача: проектирование API и интеграций</span>
               </div>
             </div>
 
-            <div className="managerMetrics">
-              {reviewMetrics.map((metric) => (
-                <div className="managerMetric" key={metric.label}>
-                  <span>{metric.label}</span>
-                  <strong>{metric.value}</strong>
-                </div>
-              ))}
+            <div className="managerApprovalStatus">
+              <span className="managerSectionLabel">Статус подборки</span>
+              <strong>{approvalStatus}</strong>
+              <div className="managerMetrics">
+                {reviewMetrics.map((metric) => (
+                  <div className="managerMetric" key={metric.label}>
+                    <span>{metric.label}</span>
+                    <strong>{metric.value}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="managerWindowBlock">
+              <span className="managerSectionLabel">Рекомендация</span>
+              <strong>Рекомендуемое окно: 4-6 часов после текущего спринта</strong>
+              <p>Причина: {formatDisplayText(workload).toLowerCase()}</p>
             </div>
           </div>
+        </div>
 
-          <div className="managerReviewBody">
-            <div className="managerStatusGrid">
-              <div className="statusBlock">
-                <span>Статус</span>
-                <strong>{managerStatus}</strong>
-              </div>
-
-              <div className="infoBlock">
-                <span>Загрузка</span>
-                <p>{formatDisplayText(workload)}</p>
-              </div>
+        <div className="managerInsightGrid">
+          <div className="card managerInsightCard">
+            <h3>Загрузка и доступные окна</h3>
+            <div className="availabilityStrip" aria-hidden="true">
+              <span className="loadHigh">Высокая</span>
+              <span className="loadMedium">Средняя</span>
+              <span className="loadFree">Окно</span>
             </div>
+            <p>Ближайшие 2 недели: высокая загрузка.</p>
+            <strong>Найдено 2 возможных окна:</strong>
+            <ul className="managerSignalList">
+              {availabilityWindows.map((window) => (
+                <li key={window}>{window}</li>
+              ))}
+            </ul>
+          </div>
 
-            <div className="infoBlock recommendationBlock">
-              <span>Рекомендация</span>
-              <p>{formatDisplayText(recommendation)}</p>
-            </div>
+          <div className="card managerInsightCard">
+            <h3>Сигналы учтены</h3>
+            <ul className="managerSignalList">
+              {systemSignals.map((signal) => (
+                <li key={signal}>{signal}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="card managerDecisionCard">
+          <div>
+            <span className="managerSectionLabel">Рекомендованное решение</span>
+            <p>{formatDisplayText(recommendation)}</p>
           </div>
 
           <div className="buttonRow managerActions">
@@ -1382,7 +1411,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
               onPointerDown={() => updateManagerStatus("Время на изучение согласовано")}
               onClick={() => updateManagerStatus("Время на изучение согласовано")}
             >
-              Согласовать время на изучение
+              Согласовать время
             </button>
 
             <button
@@ -1400,7 +1429,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
               onPointerDown={() => updateManagerStatus("Отправлено владельцу направления")}
               onClick={() => updateManagerStatus("Отправлено владельцу направления")}
             >
-              Отправить владельцу направления
+              Перенести / отправить владельцу направления
             </button>
           </div>
         </div>
