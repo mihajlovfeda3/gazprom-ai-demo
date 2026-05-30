@@ -6656,6 +6656,7 @@ h3,
   background: var(--gn-blue);
   color: #ffffff;
   font-family: inherit;
+  font-size: 16px;
   font-weight: 650;
   cursor: pointer;
 }

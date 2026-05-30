@@ -508,7 +508,7 @@ function AppShell({
 	            </p>
 	
 	            <button className="introPrimary" type="button" onClick={closeIntro}>
-	              Понятно, перейти в кабинет
+	              Понятно
 	            </button>
 	          </section>
 	        </div>
