@@ -13,7 +13,7 @@ function App() {
   const [routeResult, setRouteResult] = useState(null);
   const [knowledgeResult, setKnowledgeResult] = useState(null);
   const [knowledgeQuestion, setKnowledgeQuestion] = useState("Какие материалы помогут разобраться с проектированием API?");
-  const [materialTask, setMaterialTask] = useState("Какие материалы помогут разобраться с проектированием API?");
+  const [materialTask, setMaterialTask] = useState("Нужно разобраться, как описывать API и интеграции в проекте");
   const [globalSearch, setGlobalSearch] = useState("");
   const [managerResult, setManagerResult] = useState(mockManagerResponse);
   const [routeLoading, setRouteLoading] = useState(false);
@@ -21,78 +21,37 @@ function App() {
   const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
   const [mode, setMode] = useState("demo");
 
-  async function fetchRouteAgent(taskText = materialTask) {
+  async function fetchRouteAgent(queryText = materialTask) {
     setRouteLoading(true);
 
-    const finalTask =
-      taskText && taskText.trim().length > 0
-        ? taskText.trim()
-        : "Какие материалы помогут разобраться с проектированием API?";
-
-    const newPayload = {
-      employee_id: "emp_001",
-      task: finalTask,
-      question: finalTask,
-      current_role: "Сотрудник ИТ-кластера",
-      target_role: "Решение рабочей задачи"
-    };
-
-    const legacyPayload = {
-      current_role: "Middle системный аналитик",
-      target_role: "Senior системный аналитик",
-      employee_id: "emp_001"
-    };
+    const finalQuery =
+      queryText && queryText.trim().length > 0
+        ? queryText.trim()
+        : "Нужно разобраться, как описывать API и интеграции в проекте";
 
     try {
-      let response = await fetch(`${API_URL}/api/route-agent`, {
+      const response = await fetch(`${API_URL}/api/material-agent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(newPayload)
+        body: JSON.stringify({
+          query: finalQuery,
+          employee_id: "emp_001"
+        })
       });
 
       if (!response.ok) {
-        response = await fetch(`${API_URL}/api/route-agent`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(legacyPayload)
-        });
+        throw new Error("Material agent backend error");
       }
 
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
+      const data = await response.json();
 
-      let data = await response.json();
-
-      if (data.status === "error") {
-        response = await fetch(`${API_URL}/api/route-agent`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(legacyPayload)
-        });
-
-        if (!response.ok) {
-          throw new Error("Backend error");
-        }
-
-        data = await response.json();
-
-        if (data.status === "error") {
-          throw new Error(data.message || "Backend error");
-        }
-      }
-
-      console.log("MATERIAL SELECTION DATA:", data);
+      console.log("MATERIAL AGENT DATA:", data);
       setRouteResult(data);
       setMode("live backend");
     } catch (error) {
-      console.warn("Backend unavailable, using mock route response");
+      console.warn("Material agent unavailable, using mock response", error);
       setRouteResult(mockRouteResponse);
       setMode("fallback demo");
     } finally {
@@ -785,7 +744,7 @@ function RouteAgentScreen({
     "Какие материалы помогут разобраться с проектированием API?",
     "Что изучить перед задачей по системному дизайну?",
     "Где найти актуальные материалы по интеграциям?",
-    "Какие внутренние материалы есть по архитектурному мышлению?"
+    "Есть ли запись или вебинар про проектирование API?"
   ];
   const selection = normalizeSelectionData(routeResult || {});
 
