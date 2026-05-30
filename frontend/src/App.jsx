@@ -1077,21 +1077,27 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
 
           <div className="buttonRow">
             <button
+              type="button"
               className="primaryButton"
+              onPointerDown={() => updateManagerStatus("Время на изучение согласовано")}
               onClick={() => updateManagerStatus("Время на изучение согласовано")}
             >
               Согласовать время на изучение
             </button>
 
             <button
+              type="button"
               className="secondaryButton"
+              onPointerDown={() => updateManagerStatus("Требуется уточнить подборку")}
               onClick={() => updateManagerStatus("Требуется уточнить подборку")}
             >
               Попросить уточнить подборку
             </button>
 
             <button
+              type="button"
               className="secondaryButton ownerButton"
+              onPointerDown={() => updateManagerStatus("Отправлено владельцу направления")}
               onClick={() => updateManagerStatus("Отправлено владельцу направления")}
             >
               Отправить владельцу направления
