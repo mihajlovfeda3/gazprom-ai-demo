@@ -401,7 +401,7 @@ function AppShell({
 </form>
 
           <div className="topActions cleanTopActions" aria-label="Контекст">
-            <span className="workContext">ИТ-кластер · Тюмень</span>
+            <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
           </div>
         </header>
 
@@ -543,26 +543,125 @@ function formatDisplayText(value) {
 }
 
 function LandingScreen({ setScreen }) {
+  const [materialsDrawerOpen, setMaterialsDrawerOpen] = useState(false);
+  const [materialsSearch, setMaterialsSearch] = useState("");
+  const [materialsFilter, setMaterialsFilter] = useState("Все");
+
   const courses = [
     {
       title: "Проектирование интеграций и API",
       meta: "Подборка в работе · владелец: ЦК системного анализа",
       progress: 65,
-      type: "courseBlue"
+      type: "courseBlue",
+      typeLabel: "НМД"
     },
     {
       title: "Шаблон описания интеграционного решения",
       meta: "Новый материал · архитектурный офис",
       progress: 0,
-      type: "courseOrange"
+      type: "courseOrange",
+      typeLabel: "Метод"
     },
     {
       title: "Архитектурное мышление для аналитиков",
       meta: "Рекомендовано · ЦК архитектуры",
       progress: 35,
-      type: "courseGreen"
+      type: "courseGreen",
+      typeLabel: "Видео"
     }
   ];
+
+  const materialFilters = [
+    "Все",
+    "НМД",
+    "Видео",
+    "Методички",
+    "Внутренние курсы",
+    "Требуют уточнения",
+    "Актуально"
+  ];
+
+  const dashboardMaterials = [
+    {
+      typeLabel: "НМД",
+      typeGroup: "НМД",
+      title: "Стандарт описания REST API и интеграций",
+      responsibleLabel: "ЦК системного анализа",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 94%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Видео",
+      typeGroup: "Видео",
+      title: "Вебинар: проектирование API в продуктовой команде",
+      responsibleLabel: "Архитектурный офис",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 91%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Метод",
+      typeGroup: "Методички",
+      title: "Шаблон интеграционного решения",
+      responsibleLabel: "ЦК системного анализа",
+      actualityLabel: "Требует уточнения",
+      matchLabel: "Совпадение 88%",
+      needsClarification: true
+    },
+    {
+      typeLabel: "Курс",
+      typeGroup: "Внутренние курсы",
+      title: "Системный дизайн для аналитиков",
+      responsibleLabel: "Корпоративный университет",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 84%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "НМД",
+      typeGroup: "НМД",
+      title: "Регламент согласования API-контрактов",
+      responsibleLabel: "ИТ-архитектура",
+      actualityLabel: "Требует уточнения",
+      matchLabel: "Совпадение 81%",
+      needsClarification: true
+    },
+    {
+      typeLabel: "Метод",
+      typeGroup: "Методички",
+      title: "Чек-лист качества интеграционного описания",
+      responsibleLabel: "Офис качества ИТ",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 79%",
+      needsClarification: false
+    },
+    {
+      typeLabel: "Видео",
+      typeGroup: "Видео",
+      title: "Разбор ошибок при описании интеграций",
+      responsibleLabel: "Команда API-платформы",
+      actualityLabel: "Актуально",
+      matchLabel: "Совпадение 76%",
+      needsClarification: false
+    }
+  ];
+
+  const filteredDashboardMaterials = dashboardMaterials.filter((material) => {
+    const searchText = materialsSearch.trim().toLowerCase();
+    const matchesSearch =
+      !searchText ||
+      `${material.title} ${material.typeLabel} ${material.responsibleLabel}`
+        .toLowerCase()
+        .includes(searchText);
+    const matchesFilter =
+      materialsFilter === "Все" ||
+      material.typeGroup === materialsFilter ||
+      (materialsFilter === "Требуют уточнения" && material.needsClarification) ||
+      (materialsFilter === "Актуально" && material.actualityLabel === "Актуально");
+
+    return matchesSearch && matchesFilter;
+  });
 
   const materials = [
     {
@@ -594,22 +693,16 @@ function LandingScreen({ setScreen }) {
           <div className="employeeGreeting">
             <div>
               <span className="sectionKicker">Рабочий стол</span>
-              <h1>Добрый день, Александр</h1>
+              <h1>Добрый день, Александр!</h1>
               <p>
-                ИТ-кластер · Тюмень · текущий фокус: подбор материалов под рабочую задачу
+                ИТ-кластер · Санкт-Петербург · текущий фокус: подбор материалов под рабочую задачу
               </p>
             </div>
 
           </div>
 
-          <div className="heroActionsRow">
-            <button className="gnPrimaryButton" onClick={() => setScreen("route")}>
-              Найти материалы под задачу
-            </button>
-
-            <button className="gnSecondaryButton" onClick={() => setScreen("knowledge")}>
-              Открыть базу знаний
-            </button>
+          <div className="heroStatusLine">
+            Последний запрос: проектирование API и интеграций · 12 материалов · 2 требуют уточнения · готово к проверке
           </div>
         </div>
       </section>
@@ -638,13 +731,15 @@ function LandingScreen({ setScreen }) {
         <div className="dashboardCard coursesPanel">
           <div className="cardHeaderLine">
             <h2>Текущие материалы</h2>
-            <button onClick={() => setScreen("route")}>Все материалы</button>
+            <button onClick={() => setMaterialsDrawerOpen(true)}>Все материалы</button>
           </div>
 
           <div className="courseRows">
             {courses.map((course) => (
               <div className="courseRow" key={course.title}>
-                <div className={`courseIcon ${course.type}`} />
+                <span className={`courseTypeBadge ${course.type}`}>
+                  {course.typeLabel}
+                </span>
                 <div className="courseBody">
                   <div className="courseTop">
                     <strong>{course.title}</strong>
@@ -668,22 +763,32 @@ function LandingScreen({ setScreen }) {
             <button onClick={() => setScreen("route")}>Открыть</button>
           </div>
 
-          <div className="trajectoryRoles">
+          <div className="selectionSummary">
             <div>
               <span>Рабочая задача</span>
-              <strong>Проектирование API</strong>
+              <strong>Проектирование API и интеграций</strong>
             </div>
 
             <div>
-              <span>Цель</span>
-              <strong>Найти проверенные материалы</strong>
+              <span>Темы</span>
+              <strong>API · интеграции · системный дизайн</strong>
+            </div>
+
+            <div>
+              <span>Материалов</span>
+              <strong>12</strong>
+            </div>
+
+            <div>
+              <span>Требуют уточнения</span>
+              <strong>2</strong>
             </div>
           </div>
 
           <div className="trajectoryProgress">
             <div>
-              <span>Темы запроса</span>
-              <strong>4 темы</strong>
+              <span>Готово к проверке</span>
+              <strong>47%</strong>
             </div>
 
             <div className="wideProgress">
@@ -739,6 +844,81 @@ function LandingScreen({ setScreen }) {
           </button>
         </div>
       </section>
+
+      {materialsDrawerOpen && (
+        <div
+          className="materialsDrawerLayer"
+          role="presentation"
+          onClick={() => setMaterialsDrawerOpen(false)}
+        >
+          <aside
+            className="materialsDrawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="materialsDrawerTitle"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="materialsDrawerHeader">
+              <div>
+                <span>Подборка</span>
+                <h2 id="materialsDrawerTitle">Все материалы подборки</h2>
+                <p>Материалы по рабочей задаче “Проектирование API и интеграций”</p>
+              </div>
+
+              <button type="button" onClick={() => setMaterialsDrawerOpen(false)}>
+                Закрыть
+              </button>
+            </div>
+
+            <input
+              className="materialsDrawerSearch"
+              value={materialsSearch}
+              onChange={(event) => setMaterialsSearch(event.target.value)}
+              placeholder="Найти по названию или типу"
+            />
+
+            <div className="materialsDrawerFilters" aria-label="Фильтры материалов">
+              {materialFilters.map((filter) => (
+                <button
+                  className={materialsFilter === filter ? "active" : ""}
+                  key={filter}
+                  type="button"
+                  onClick={() => setMaterialsFilter(filter)}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+
+            <div className="materialsDrawerList">
+              {filteredDashboardMaterials.map((material) => (
+                <div className="materialsDrawerItem" key={material.title}>
+                  <span className="drawerMaterialType">{material.typeLabel}</span>
+
+                  <div>
+                    <strong>{material.title}</strong>
+                    <p>{material.responsibleLabel}</p>
+                    <div className="drawerMaterialMeta">
+                      <span>{material.actualityLabel}</span>
+                      <span>{material.matchLabel}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMaterialsDrawerOpen(false);
+                      setScreen("route");
+                    }}
+                  >
+                    Открыть
+                  </button>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }
