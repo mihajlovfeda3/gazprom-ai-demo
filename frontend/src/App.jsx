@@ -1341,7 +1341,6 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
                 <span className="managerSectionLabel">Сотрудник</span>
                 <h3>{employeeName}</h3>
                 <p>{employeeRoleLabel} · ИТ-кластер</p>
-                <span className="managerContextPill">Рабочая задача: проектирование API и интеграций</span>
               </div>
             </div>
 

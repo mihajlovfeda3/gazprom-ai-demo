@@ -8070,6 +8070,37 @@ h3,
   min-width: 0;
 }
 
+.managerEmployeeBlock {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 18px;
+  padding-left: 22px;
+}
+
+.managerEmployeeBlock .managerAvatar {
+  justify-self: start;
+}
+
+.managerEmployeeBlock > div:not(.employeeAvatar) {
+  min-width: 0;
+}
+
+.managerEmployeeBlock .managerSectionLabel {
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.managerEmployeeBlock h3 {
+  margin: 0;
+  text-align: left;
+}
+
+.managerEmployeeBlock p {
+  margin: 6px 0 0;
+  text-align: left;
+}
+
 @media (max-width: 1180px) {
   .managerReviewTop,
   .managerInsightGrid {
@@ -8086,6 +8117,12 @@ h3,
   .managerApprovalStatus,
   .managerWindowBlock {
     padding: 14px;
+  }
+
+  .managerEmployeeBlock {
+    grid-template-columns: 60px minmax(0, 1fr);
+    column-gap: 14px;
+    padding-left: 14px;
   }
 
   .managerMetrics,
