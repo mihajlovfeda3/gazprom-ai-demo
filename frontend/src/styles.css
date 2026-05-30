@@ -4551,3 +4551,50 @@ h3,
 .plainList li {
   margin-bottom: 8px;
 }
+
+.materialBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qualityAlertsCard,
+.guardrailCard {
+  border-left: 3px solid var(--gn-accent);
+}
+
+.qualityAlertsList {
+  display: grid;
+  gap: 8px;
+}
+
+.qualityAlertItem {
+  padding: 12px;
+  border: 1px solid #efd1bc;
+  border-radius: 8px;
+  background: #fff8f3;
+}
+
+.qualityAlertItem strong {
+  display: block;
+  color: var(--gn-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.qualityAlertItem p {
+  margin: 5px 0 0;
+  color: var(--gn-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.guardrailHint {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--gn-blue-soft);
+  color: var(--gn-blue);
+  font-size: 13px;
+  font-weight: 500;
+}

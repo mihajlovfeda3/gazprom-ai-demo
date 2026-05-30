@@ -432,17 +432,32 @@ function AppShell({
 
 function normalizeSelectionData(data = {}) {
   return {
+    answer: data.answer || "",
+    answerMode: data.answer_mode || "",
+    llmModel: data.llm_model || "",
     topics: data.detected_topics || data.topics || data.skill_gap || [],
     materials:
       data.recommended_materials ||
       data.materials ||
       data.recommended_courses ||
       [],
-    draft: data.draft_selection || data.selection_draft || data.ipr_draft || [],
+    qualityAlerts: data.quality_alerts || [],
     sources: data.sources || [],
     summary: data.summary || "",
     pipeline: data.pipeline || []
   };
+}
+
+function getText(value, fallback = "") {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return fallback;
 }
 
 function getTopicTitle(topic) {
@@ -747,6 +762,15 @@ function RouteAgentScreen({
     "Есть ли запись или вебинар про проектирование API?"
   ];
   const selection = normalizeSelectionData(routeResult || {});
+  const isGuardrail = selection.answerMode === "guardrail";
+  const answerBadge =
+    selection.answerMode === "llm"
+      ? selection.llmModel && selection.llmModel.toLowerCase().includes("qwen")
+        ? "Ответ сформирован Qwen"
+        : "Ответ сформирован ИИ"
+      : selection.answerMode === "template_fallback"
+        ? "Ответ сформирован по шаблону"
+        : "";
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -799,42 +823,63 @@ function RouteAgentScreen({
 
       {routeResult && !routeLoading && (
         <section className="resultGrid">
-          <PipelineBlock pipeline={selection.pipeline} />
+          {isGuardrail ? (
+            <GuardrailBlock answer={selection.answer} />
+          ) : (
+            <>
+              {selection.answer && (
+                <div className="card largeCard">
+                  <div className="sectionTitleRow">
+                    <h3>Ответ ИИ-помощника</h3>
+                    {answerBadge && <span className="softBadge">{answerBadge}</span>}
+                  </div>
+                  <p className="answerText">{formatDisplayText(selection.answer)}</p>
+                </div>
+              )}
 
-          <div className="card">
-            <h3>Темы запроса</h3>
-            <TagList items={selection.topics} />
-          </div>
+              {selection.topics.length > 0 && (
+                <div className="card">
+                  <h3>Темы запроса</h3>
+                  <TagList items={selection.topics} />
+                </div>
+              )}
 
-          <div className="card largeCard">
-            <h3>Рекомендованные материалы</h3>
-            <MaterialList materials={selection.materials} />
-          </div>
+              {selection.pipeline.length > 0 && <PipelineBlock pipeline={selection.pipeline} />}
 
-          <div className="card largeCard">
-            <h3>Черновик подборки для развития</h3>
-            <NumberedList items={selection.draft} />
-          </div>
+              {selection.materials.length > 0 && (
+                <div className="card largeCard">
+                  <h3>Рекомендованные материалы</h3>
+                  <MaterialList materials={selection.materials} />
+                </div>
+              )}
 
-          <div className="card largeCard sourcesCard">
-            <h3>Использованные источники</h3>
-            <SourceList sources={selection.sources} />
-          </div>
+              {selection.qualityAlerts.length > 0 && (
+                <QualityAlerts alerts={selection.qualityAlerts} />
+              )}
 
-          {selection.summary && (
-            <div className="card">
-              <h3>Пояснение</h3>
-              <p className="answerText">{formatDisplayText(selection.summary)}</p>
-            </div>
+              {selection.sources.length > 0 && (
+                <div className="card largeCard sourcesCard">
+                  <h3>Использованные источники</h3>
+                  <SourceList sources={selection.sources} />
+                </div>
+              )}
+
+              {selection.summary && (
+                <div className="card">
+                  <h3>Пояснение</h3>
+                  <p className="answerText">{formatDisplayText(selection.summary)}</p>
+                </div>
+              )}
+
+              <div className="card actionCard">
+                <h3>Проверка подборки руководителем</h3>
+                <p>
+                  После проверки подборку можно отправить руководителю для согласования времени на изучение.
+                </p>
+                <button className="primaryButton" onClick={sendToManager}>Отправить подборку руководителю</button>
+              </div>
+            </>
           )}
-
-          <div className="card actionCard">
-            <h3>Проверка подборки</h3>
-            <p>
-  После проверки подборку можно отправить руководителю для согласования времени на изучение.
-</p>
-            <button className="primaryButton" onClick={sendToManager}>Отправить подборку руководителю</button>
-          </div>
         </section>
       )}
     </main>
@@ -1137,6 +1182,56 @@ function CourseList({ courses = [] }) {
   return <MaterialList materials={courses} />;
 }
 
+function GuardrailBlock({ answer }) {
+  return (
+    <div className="card largeCard guardrailCard">
+      <div className="sectionTitleRow">
+        <h3>Запрос не относится к подбору корпоративных материалов</h3>
+        <span className="softBadge">Запрос вне сценария</span>
+      </div>
+
+      <p className="answerText">
+        {formatDisplayText(answer) ||
+          "Опишите рабочую задачу или цель развития, чтобы подобрать внутренние материалы, источники и ответственных."}
+      </p>
+
+      <div className="guardrailHint">
+        Пример: нужно разобраться, как описывать API и интеграции в проекте
+      </div>
+    </div>
+  );
+}
+
+function QualityAlerts({ alerts = [] }) {
+  if (!alerts.length) {
+    return null;
+  }
+
+  return (
+    <div className="card largeCard qualityAlertsCard">
+      <h3>Замечания по качеству подборки</h3>
+
+      <div className="qualityAlertsList">
+        {alerts.map((item, index) => {
+          const alert =
+            typeof item === "object" && item !== null
+              ? item
+              : { message: String(item) };
+          const message = getText(alert.message, "Замечание по подборке");
+          const ownerAction = getText(alert.owner_action);
+
+          return (
+            <div className="qualityAlertItem" key={`${message}-${index}`}>
+              <strong>{formatDisplayText(message)}</strong>
+              {ownerAction && <p>Действие владельца: {formatDisplayText(ownerAction)}</p>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function MaterialList({ materials = [] }) {
   if (!materials.length) {
     return <p className="emptyStateText">Материалы пока не найдены. Попробуйте уточнить рабочую задачу.</p>;
@@ -1150,30 +1245,36 @@ function MaterialList({ materials = [] }) {
             ? item
             : { title: String(item) };
         const materialType =
-          material.course_type_label ||
+          material.material_type_label ||
           material.material_type ||
+          material.course_type_label ||
           material.course_type ||
           "Материал";
         const provider = material.provider || material.source;
         const responsible = material.responsible_label || material.responsible;
-        const approval =
-          material.approval_label ||
-          (typeof material.requires_approval === "boolean"
-            ? material.requires_approval
-              ? "Требует согласования"
-              : "Не требует согласования"
-            : "");
-        const score = formatScore(material.score);
+        const actuality = material.actuality_label || material.actuality_status;
+        const match = material.match_label || formatScore(material.score);
+        const isVideo =
+          material.material_type === "video_transcript" ||
+          material.material_type_label === "Видео-транскрипт" ||
+          material.transcript_status;
 
         return (
           <div className="materialItemCard courseItem" key={material.id || material.title || index}>
             <div className="materialCardHeader">
               <div>
                 <strong>{formatDisplayText(material.title) || "Материал"}</strong>
-                <span>{formatDisplayText(materialType) || "Материал"}</span>
+                <div className="materialBadges">
+                  <span>{formatDisplayText(materialType) || "Материал"}</span>
+                  {isVideo && <span>Видео-транскрипт</span>}
+                </div>
               </div>
 
-              {material.duration_hours && (
+              {material.video_duration_min && (
+                <span className="hours">{material.video_duration_min} мин</span>
+              )}
+
+              {!material.video_duration_min && material.duration_hours && (
                 <span className="hours">{material.duration_hours} ч</span>
               )}
             </div>
@@ -1184,8 +1285,10 @@ function MaterialList({ materials = [] }) {
             <div className="materialMeta courseMeta">
               {provider && <span>{formatDisplayText(provider)}</span>}
               {responsible && <span>Ответственный: {formatDisplayText(responsible)}</span>}
-              {approval && <span>{formatDisplayText(approval)}</span>}
-              {score && <span>Совпадение: {score}</span>}
+              {actuality && <span>{formatDisplayText(actuality)}</span>}
+              {match && <span>{formatDisplayText(match)}</span>}
+              {material.video_duration_min && <span>Длительность: {material.video_duration_min} мин</span>}
+              {material.transcript_status && <span>Транскрипт: {formatDisplayText(material.transcript_status)}</span>}
             </div>
 
             {material.url && (
@@ -1223,18 +1326,20 @@ function SourceList({ sources = [] }) {
           typeof item === "object" && item !== null
             ? item
             : { title: String(item) };
-        const score = formatScore(source.score);
+        const score = source.match_label || formatScore(source.score);
+        const sourceType = source.type || source.kind || source.source || "Документ";
+        const sourceTitle = source.title || source.name || source.text;
 
         return (
-        <div className="sourceItem" key={`${source.title || "source"}-${index}`}>
-          <strong>{formatDisplayText(source.title || source.name) || "Источник"}</strong>
+        <div className="sourceItem" key={`${sourceTitle || "source"}-${index}`}>
+          <strong>{formatDisplayText(sourceTitle) || "Источник"}</strong>
 
           <span>
-            {formatDisplayText(source.type) || "Документ"}
+            {formatDisplayText(sourceType) || "Документ"}
             {score ? ` · совпадение: ${score}` : ""}
           </span>
 
-          {source.text && <p>{formatDisplayText(source.text)}</p>}
+          {source.text && source.text !== sourceTitle && <p>{formatDisplayText(source.text)}</p>}
         </div>
         );
       })}
