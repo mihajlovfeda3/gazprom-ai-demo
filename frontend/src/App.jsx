@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   mockRouteResponse,
   mockKnowledgeResponse,
@@ -20,6 +20,7 @@ function App() {
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
   const [mode, setMode] = useState("demo");
+  const managerDecisionTouched = useRef(false);
 
   async function fetchRouteAgent(queryText = materialTask) {
     setRouteLoading(true);
@@ -153,23 +154,33 @@ function App() {
     };
 
     setManagerResult(normalizedManager);
-    setManagerStatus(normalizedManager.status);
+    if (!managerDecisionTouched.current) {
+      setManagerStatus(normalizedManager.status);
+    }
     setMode("live backend");
   } catch (error) {
     console.warn("Backend unavailable, using mock manager response");
     setManagerResult(mockManagerResponse);
-    setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
+    if (!managerDecisionTouched.current) {
+      setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
+    }
     setMode("fallback demo");
   }
 }
 
   function sendToManager() {
+    managerDecisionTouched.current = false;
     fetchManagerAgent();
     setScreen("manager");
   }
 
 function updateManagerStatus(status) {
+    managerDecisionTouched.current = true;
     setManagerStatus(status);
+    setManagerResult((currentResult) => ({
+      ...currentResult,
+      status
+    }));
   }
 
   function handleGlobalSearch(query = globalSearch) {
