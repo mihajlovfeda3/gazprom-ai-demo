@@ -4386,6 +4386,14 @@ h3,
 }
 
 @media (max-width: 760px) {
+  .productAppCompact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cleanRail {
+    display: none;
+  }
+
   .knowledgeForm button.primaryButton,
   .materialTaskForm button.primaryButton {
     max-width: 100%;
