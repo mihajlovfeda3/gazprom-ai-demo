@@ -19,7 +19,6 @@ function App() {
   const [routeLoading, setRouteLoading] = useState(false);
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [managerStatus, setManagerStatus] = useState("Подборка готова к проверке");
-  const [mode, setMode] = useState("demo");
   const managerDecisionTouched = useRef(false);
 
   async function fetchRouteAgent(queryText = materialTask) {
@@ -50,11 +49,9 @@ function App() {
 
       console.log("MATERIAL AGENT DATA:", data);
       setRouteResult(data);
-      setMode("live backend");
     } catch (error) {
       console.warn("Material agent unavailable, using mock response", error);
       setRouteResult(mockRouteResponse);
-      setMode("fallback demo");
     } finally {
       setTimeout(() => {
         setRouteLoading(false);
@@ -88,11 +85,9 @@ function App() {
     const data = await response.json();
     console.log("KNOWLEDGE DATA:", data);
     setKnowledgeResult(data);
-    setMode("live backend");
-  } catch (error) {
+  } catch {
     console.warn("Backend unavailable, using mock knowledge response");
     setKnowledgeResult(mockKnowledgeResponse);
-    setMode("fallback demo");
   } finally {
     setTimeout(() => {
       setKnowledgeLoading(false);
@@ -157,14 +152,12 @@ function App() {
     if (!managerDecisionTouched.current) {
       setManagerStatus(normalizedManager.status);
     }
-    setMode("live backend");
-  } catch (error) {
+  } catch {
     console.warn("Backend unavailable, using mock manager response");
     setManagerResult(mockManagerResponse);
     if (!managerDecisionTouched.current) {
       setManagerStatus(mockManagerResponse.status || "Подборка готова к проверке");
     }
-    setMode("fallback demo");
   }
 }
 
@@ -200,7 +193,6 @@ function updateManagerStatus(status) {
   <AppShell
   screen={screen}
   setScreen={setScreen}
-  mode={mode}
   globalSearch={globalSearch}
   setGlobalSearch={setGlobalSearch}
   onGlobalSearch={handleGlobalSearch}
@@ -241,7 +233,6 @@ function updateManagerStatus(status) {
 function AppShell({
   screen,
   setScreen,
-  mode,
   children,
   globalSearch,
   setGlobalSearch,
@@ -923,16 +914,6 @@ function LandingScreen({ setScreen }) {
 }
 
 
-function AgentCard({ title, text, button, onClick }) {
-  return (
-    <div className="card agentCard">
-      <h3>{title}</h3>
-      <p>{text}</p>
-      <button className="smallButton" onClick={onClick}>{button}</button>
-    </div>
-  );
-}
-
 function RouteAgentScreen({
   routeResult,
   routeLoading,
@@ -1492,21 +1473,6 @@ function MaterialList({ materials = [] }) {
         );
       })}
     </div>
-  );
-}
-
-function NumberedList({ items = [] }) {
-  return (
-    <ol className="numberedList">
-      {items.map((item, index) => {
-        const text =
-          typeof item === "string"
-            ? item
-            : item?.title || item?.text || item?.description || "Пункт подборки";
-
-        return <li key={`${text}-${index}`}>{formatDisplayText(text)}</li>;
-      })}
-    </ol>
   );
 }
 

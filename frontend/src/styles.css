@@ -6031,29 +6031,41 @@ h3,
 }
 
 .employeeHeroMain::after {
-  left: -60%;
-  width: 92%;
-  opacity: 0.56;
+  top: -72%;
+  left: -68%;
+  width: 52%;
+  height: 260%;
+  opacity: 0.82;
   background:
     linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.16) 22%,
-      rgba(255, 255, 255, 0.56) 49%,
-      rgba(112, 183, 255, 0.24) 61%,
-      rgba(255, 255, 255, 0.12) 78%,
+      rgba(255, 255, 255, 0.1) 18%,
+      rgba(255, 255, 255, 0.34) 36%,
+      rgba(255, 255, 255, 0.78) 50%,
+      rgba(117, 197, 255, 0.4) 62%,
+      rgba(255, 255, 255, 0.16) 78%,
       transparent 100%
     );
-  filter: blur(1.5px) drop-shadow(0 0 18px rgba(255, 255, 255, 0.38));
+  filter: blur(3px) drop-shadow(0 0 30px rgba(188, 226, 255, 0.5));
   mix-blend-mode: screen;
-  animation-duration: 8s;
+  animation-duration: 7s;
+  animation-timing-function: ease-in-out;
 }
 
 .trajectoryPanel .cardHeaderLine h2 {
   max-width: none;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.12;
   white-space: nowrap;
+}
+
+.trajectoryPanel .cardHeaderLine {
+  gap: 12px;
+}
+
+.trajectoryPanel .cardHeaderLine button {
+  flex: 0 0 auto;
 }
 
 .employeeStatCard span,
@@ -6067,22 +6079,159 @@ h3,
   font-weight: 400;
 }
 
-.cardHeaderLine h2 {
+.cardHeaderLine h2,
+.courseTop strong,
+.materialItem strong,
+.selectionSummary strong,
+.trajectoryProgress strong,
+.managerDecisionPreview strong {
+  color: #263447;
+  font-weight: 550;
+}
+
+.cardHeaderLine h2,
+.managerPanel h2 {
   font-weight: 400;
+}
+
+.coursesPanel .cardHeaderLine h2,
+.knowledgePanel .cardHeaderLine h2,
+.managerPanel .cardHeaderLine h2 {
+  color: #65717f;
+  font-size: 23px;
+  line-height: 1.18;
+}
+
+.courseBody p,
+.selectionSummary span,
+.trajectoryProgress span,
+.materialItem p,
+.managerPanel p,
+.managerDecisionPreview span {
+  color: #728096;
+  line-height: 1.48;
+}
+
+.managerPanel {
+  padding: 22px;
+}
+
+.managerPanel p {
+  margin: 14px 0 16px;
+  text-align: left;
+}
+
+.managerDecisionPreview {
+  box-shadow: none;
 }
 
 @keyframes heroLightSweep {
   0% {
-    transform: translateX(-58%) rotate(-12deg);
+    transform: translateX(-90%) rotate(-12deg);
   }
 
   50% {
-    transform: translateX(18%) rotate(-12deg);
+    transform: translateX(165%) rotate(-12deg);
   }
 
   100% {
-    transform: translateX(78%) rotate(-12deg);
+    transform: translateX(420%) rotate(-12deg);
   }
+}
+
+.drawerBackdrop {
+  background: rgba(11, 31, 58, 0.18);
+  backdrop-filter: blur(2px);
+}
+
+.menuDrawer {
+  left: 92px;
+  width: 304px;
+  max-width: min(304px, calc(100vw - 92px));
+  padding: 18px;
+  border: 1px solid #dfe8f2;
+  border-left: 0;
+  border-radius: 0 24px 24px 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 18px 0 42px rgba(11, 31, 58, 0.14);
+}
+
+.drawerHeader {
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid #e3ebf4;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.drawerHeader span {
+  color: #7a8797;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.drawerHeader h2 {
+  margin-top: 3px;
+  color: #13233a;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.drawerHeader button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dce6f0;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #516173;
+  font-size: 18px;
+}
+
+.drawerNav {
+  gap: 7px;
+}
+
+.drawerNavItem {
+  min-height: 48px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  color: #44566d;
+  font-weight: 600;
+}
+
+.drawerNavItem span {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background: #edf4ff;
+  color: var(--gn-blue);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.drawerNavItem:hover,
+.drawerNavItem.active {
+  border-color: #cdddf2;
+  background: #eef5ff;
+  color: var(--gn-blue);
+}
+
+.drawerNavItem.active {
+  box-shadow: inset 3px 0 0 var(--gn-accent);
+}
+
+.drawerHint {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border: 1px solid #e4ebf3;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #69788e;
+  font-size: 12px;
 }
 
 @media (max-width: 1180px) {
@@ -6103,5 +6252,10 @@ h3,
   .railIconLabel {
     max-width: 58px;
     font-size: 9px;
+  }
+
+  .menuDrawer {
+    left: 78px;
+    max-width: min(304px, calc(100vw - 78px));
   }
 }
