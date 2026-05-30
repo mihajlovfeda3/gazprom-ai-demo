@@ -392,8 +392,10 @@ function AppShell({
 
       <main className="mainWorkspace">
         <header className="topBar cleanTopBar">
-          <div
-            className="topBrandBlock"
+          <button
+            className="topBrandBlock homeLogoButton"
+            type="button"
+            onClick={() => openScreen("landing")}
             aria-label="Газпром"
           >
             <img
@@ -401,7 +403,7 @@ function AppShell({
               src="/gazprom-emblem.jpg"
               alt="Газпром"
             />
-          </div>
+          </button>
 
           <form
   className="searchPill activeSearch"

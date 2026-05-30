@@ -5913,6 +5913,23 @@ h3,
   box-shadow: none;
 }
 
+.topBrandBlock.homeLogoButton {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.topBrandBlock.homeLogoButton:hover {
+  background: #ffffff;
+  border-color: #bfd0f3;
+  box-shadow: 0 8px 18px rgba(0, 80, 143, 0.12);
+  transform: translateY(-1px);
+}
+
+.topBrandBlock.homeLogoButton:focus-visible {
+  outline: 2px solid rgba(47, 115, 185, 0.5);
+  outline-offset: 3px;
+}
+
 .cleanRailIcons {
   width: 100%;
   gap: 8px;
