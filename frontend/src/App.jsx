@@ -249,9 +249,7 @@ function AppShell({
   });
 
   const menuItems = [
-  { id: "landing", label: "Главная", icon: "home" },
-  { id: "knowledge", label: "Материалы", icon: "materials" },
-  { id: "route", label: "Подборки", icon: "collections" },
+  { id: "knowledge", label: "База знаний", icon: "materials" },
   { id: "manager", label: "Проверка", icon: "review" }
 ];
 
@@ -434,9 +432,6 @@ function AppShell({
 		              </button>
 	
 		              <div className="topActionDropdown">
-		                <button type="button" onClick={() => openScreen("route")}>
-		                  Найти материалы
-		                </button>
 		                <button type="button" onClick={() => openScreen("knowledge")}>
 		                  База знаний
 		                </button>
