@@ -5798,8 +5798,23 @@ h3,
 
 .employeeHeroMain::after {
   z-index: 1;
-  opacity: 0.22;
-  animation-duration: 16s;
+  opacity: 0.34;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.12) 80%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  animation-duration: 12s;
+}
+
+.employeeHeroMain > * {
+  position: relative;
+  z-index: 2;
 }
 
 .employeeGreeting,
@@ -5861,5 +5876,19 @@ h3,
 
   .courseRowValue {
     min-width: 62px;
+  }
+}
+
+@keyframes heroLightSweep {
+  0% {
+    transform: translateX(-45%) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateX(10%) rotate(-12deg);
+  }
+
+  100% {
+    transform: translateX(55%) rotate(-12deg);
   }
 }
