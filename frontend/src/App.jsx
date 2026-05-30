@@ -240,7 +240,6 @@ function AppShell({
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [actionMenuOpen, setActionMenuOpen] = useState(false);
   const [introOpen, setIntroOpen] = useState(() => {
     try {
       return window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "true";
@@ -250,16 +249,15 @@ function AppShell({
   });
 
   const menuItems = [
-  { id: "landing", label: "Главная", icon: "⌂" },
-  { id: "knowledge", label: "Материалы", icon: "▤" },
-  { id: "route", label: "Подборки", icon: "◫" },
-  { id: "manager", label: "Проверка", icon: "✓" }
+  { id: "landing", label: "Главная", icon: "home" },
+  { id: "knowledge", label: "Материалы", icon: "materials" },
+  { id: "route", label: "Подборки", icon: "collections" },
+  { id: "manager", label: "Проверка", icon: "review" }
 ];
 
   function openScreen(screenId) {
     setScreen(screenId);
     setMenuOpen(false);
-    setActionMenuOpen(false);
   }
 
   function closeIntro() {
@@ -342,13 +340,13 @@ function AppShell({
           {menuItems.map((item) => (
 	            <button
 	              key={item.id}
-	              className={screen === item.id ? "railIconButton active" : "railIconButton"}
-	              onClick={() => openScreen(item.id)}
-	              title={item.label}
-	            >
-	              <span className="railIconGlyph">{item.icon}</span>
-	              <span className="railIconLabel">{item.label}</span>
-	            </button>
+		              className={screen === item.id ? "railIconButton active" : "railIconButton"}
+		              onClick={() => openScreen(item.id)}
+		              title={item.label}
+		            >
+		              <span className={`railIconGlyph ${item.icon}`} />
+		              <span className="railIconLabel">{item.label}</span>
+		            </button>
 	          ))}
         </div>
 
@@ -381,23 +379,15 @@ function AppShell({
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
-                  onClick={() => openScreen(item.id)}
-                >
-	                  <span>{item.icon}</span>
-	                  {item.label}
-	                </button>
+	                  className={screen === item.id ? "drawerNavItem active" : "drawerNavItem"}
+	                  onClick={() => openScreen(item.id)}
+	                >
+		                  <span className={`drawerNavIcon ${item.icon}`} />
+		                  {item.label}
+		                </button>
               ))}
             </nav>
 
-	            <div className="drawerHint">
-	              <div>
-	                <strong>Агент материалов</strong>
-	                <span>Активен сейчас</span>
-	              </div>
-	              <p>12 источников подобрано</p>
-	              <p>2 требуют уточнения</p>
-	            </div>
 	          </aside>
         </>
       )}
@@ -435,30 +425,26 @@ function AppShell({
 </form>
 
 	          <div className="topActions cleanTopActions" aria-label="Контекст">
-	            <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
-	            <div className="topStatusMenu">
-	              <button
-	                className="demoContourBadge"
-	                type="button"
-	                onClick={() => setActionMenuOpen((isOpen) => !isOpen)}
-	              >
-	                Демо-контур
-	              </button>
+		            <div className="topStatusMenu">
+		              <button
+		                className="demoContourBadge"
+		                type="button"
+		              >
+		                Демо-контур
+		              </button>
 	
-	              {actionMenuOpen && (
-	                <div className="topActionDropdown">
-	                  <button type="button" onClick={() => openScreen("route")}>
-	                    Найти материалы
-	                  </button>
-	                  <button type="button" onClick={() => openScreen("knowledge")}>
-	                    База знаний
-	                  </button>
-	                  <button type="button" onClick={() => openScreen("manager")}>
-	                    Проверка
-	                  </button>
-	                </div>
-	              )}
-	            </div>
+		              <div className="topActionDropdown">
+		                <button type="button" onClick={() => openScreen("route")}>
+		                  Найти материалы
+		                </button>
+		                <button type="button" onClick={() => openScreen("knowledge")}>
+		                  База знаний
+		                </button>
+		                <button type="button" onClick={() => openScreen("manager")}>
+		                  Проверка
+		                </button>
+		              </div>
+		            </div>
 	
 	            <div className="agentProfileWrap">
 	              <button
@@ -646,6 +632,16 @@ function formatDisplayText(value) {
     .replace(/\([^)]*₽[^)]*\)/g, "")
     .replace(/\s{2,}/g, " ")
     .trim();
+}
+
+function truncateDisplayText(value, maxLength = 220) {
+  const text = formatDisplayText(value);
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength).trim()}...`;
 }
 
 function LandingScreen({ setScreen }) {
@@ -1069,11 +1065,10 @@ function RouteAgentScreen({
       <section className="screenHeader">
         <div>
           <div className="eyebrow">Подбор материалов</div>
-<h2>Найти материалы под задачу</h2>
-<p>
-  Опишите рабочую задачу или цель развития. ИИ-помощник подберет проверенные
-  материалы, источники и ответственных по теме.
-</p>
+          <h2>Найти материалы под задачу</h2>
+          <p>
+            Опишите рабочую задачу, а помощник подберет проверенные источники и ответственных.
+          </p>
         </div>
       </section>
 
@@ -1115,19 +1110,19 @@ function RouteAgentScreen({
           ) : (
             <>
               {selection.answer && (
-                <div className="card largeCard">
+                <div className="card largeCard answerCard">
                   <div className="sectionTitleRow">
                     <h3>Ответ ИИ-помощника</h3>
                     {answerBadge && <span className="softBadge">{answerBadge}</span>}
                   </div>
                   <p className="answerText">{formatDisplayText(selection.answer)}</p>
-                </div>
-              )}
 
-              {selection.topics.length > 0 && (
-                <div className="card">
-                  <h3>Темы запроса</h3>
-                  <TagList items={selection.topics} />
+                  {selection.topics.length > 0 && (
+                    <div className="answerMetaRow">
+                      <span>Темы запроса:</span>
+                      <TagList items={selection.topics} />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1192,11 +1187,10 @@ function KnowledgeAgentScreen({
       <section className="screenHeader">
         <div>
           <div className="eyebrow">Корпоративные знания</div>
-<h2>База знаний</h2>
-<p>
-  Пользователь задает вопрос, а ИИ-помощник ищет релевантные материалы,
-  источники и ответственных в корпоративной базе знаний.
-</p>
+          <h2>База знаний</h2>
+          <p>
+            Найдите внутренние материалы, регламенты, НМД и записи вебинаров по рабочей задаче.
+          </p>
         </div>
       </section>
 
@@ -1246,7 +1240,7 @@ function KnowledgeAgentScreen({
         <section className="resultGrid">
           <PipelineBlock pipeline={knowledgeResult.pipeline} />
 
-          <div className="card largeCard">
+          <div className="card largeCard answerCard">
             <div className="sectionTitleRow">
               <h3>Ответ ИИ-помощника</h3>
               {knowledgeResult.answer_mode === "llm" && (
@@ -1308,6 +1302,9 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const currentContext = /middle|senior/i.test(currentRole)
     ? "Сотрудник ИТ-кластера"
     : formatDisplayText(currentRole);
+  const employeeRoleLabel = currentContext === "Сотрудник ИТ-кластера"
+    ? "Системный аналитик"
+    : currentContext;
   const targetContext = /middle|senior/i.test(targetRole)
     ? "Решение рабочей задачи"
     : formatDisplayText(targetRole);
@@ -1316,12 +1313,11 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
     <main className="page">
       <section className="screenHeader">
         <div>
-         <div className="eyebrow">Проверка подборки</div>
-<h2>Проверка подборки материалов</h2>
-<p>
-  Руководитель видит подобранные материалы, источники и рекомендацию по
-  времени на изучение.
-</p>
+          <div className="eyebrow">Проверка руководителем</div>
+          <h2>Проверка подборки материалов</h2>
+          <p>
+            Руководитель видит подобранные материалы, источники и рекомендацию по времени на изучение.
+          </p>
         </div>
       </section>
 
@@ -1332,7 +1328,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           <div>
             <h3>{employeeName}</h3>
             <p>
-              {currentContext} · {targetContext}
+              {employeeRoleLabel} · ИТ-кластер · {targetContext}
             </p>
           </div>
 
@@ -1381,13 +1377,13 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card managerChecklistCard">
           <h3>Что проверяет руководитель</h3>
-          <ul className="plainList">
-            <li>Подборка соответствует рабочей задаче сотрудника</li>
-            <li>Источники и ответственные указаны корректно</li>
-            <li>Проверяются источники, ответственные и актуальность материалов</li>
-            <li>Время на изучение согласовано с учетом загрузки</li>
+          <ul className="plainList managerChecklist">
+            <li><span>✓</span> Подборка соответствует рабочей задаче сотрудника</li>
+            <li><span>✓</span> Источники и ответственные указаны корректно</li>
+            <li><span>✓</span> Проверяются источники, ответственные и актуальность материалов</li>
+            <li><span>✓</span> Время на изучение согласовано с учетом загрузки</li>
           </ul>
         </div>
       </section>
@@ -1502,7 +1498,14 @@ function QualityAlerts({ alerts = [] }) {
 
   return (
     <div className="card largeCard qualityAlertsCard">
-      <h3>Замечания по качеству подборки</h3>
+      <div className="qualityAlertsHeader">
+        <h3>Требует проверки владельцем</h3>
+        <p>
+          {alerts.length === 1
+            ? "1 материал требует подтверждения актуальности."
+            : `${alerts.length} материала требуют подтверждения актуальности.`}
+        </p>
+      </div>
 
       <div className="qualityAlertsList">
         {alerts.map((item, index) => {
@@ -1515,9 +1518,9 @@ function QualityAlerts({ alerts = [] }) {
 
           return (
             <div className="qualityAlertItem" key={`${message}-${index}`}>
-              <strong>{formatDisplayText(message)}</strong>
-              {ownerAction && <p>Действие владельца: {formatDisplayText(ownerAction)}</p>}
-            </div>
+                <strong>{formatDisplayText(message)}</strong>
+                {ownerAction && <p>Действие владельца: {formatDisplayText(ownerAction)}</p>}
+              </div>
           );
         })}
       </div>
@@ -1559,7 +1562,9 @@ function MaterialList({ materials = [] }) {
                 <strong>{formatDisplayText(material.title) || "Материал"}</strong>
                 <div className="materialBadges">
                   <span>{formatDisplayText(materialType) || "Материал"}</span>
-                  {isVideo && <span>Видео-транскрипт</span>}
+                  {isVideo && formatDisplayText(materialType) !== "Видео-транскрипт" && (
+                    <span>Видео-транскрипт</span>
+                  )}
                 </div>
               </div>
 
@@ -1617,7 +1622,7 @@ function SourceList({ sources = [] }) {
             {score ? ` · совпадение: ${score}` : ""}
           </span>
 
-          {source.text && source.text !== sourceTitle && <p>{formatDisplayText(source.text)}</p>}
+          {source.text && source.text !== sourceTitle && <p>{truncateDisplayText(source.text)}</p>}
         </div>
         );
       })}
