@@ -6273,11 +6273,11 @@ h3,
 .employeeHeroMain::before {
   z-index: 0;
   background:
-    radial-gradient(circle at 12% 28%, rgba(255, 255, 255, 0.13), transparent 24%),
-    radial-gradient(circle at 76% 70%, rgba(75, 192, 255, 0.24), transparent 32%),
-    linear-gradient(115deg, transparent 0 24%, rgba(255, 255, 255, 0.1) 25% 26%, transparent 27% 52%, rgba(99, 203, 255, 0.12) 53% 54%, transparent 55% 100%),
-    repeating-linear-gradient(104deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 112px);
-  opacity: 0.72;
+    radial-gradient(circle at 16% 26%, rgba(255, 213, 142, 0.24), transparent 27%),
+    radial-gradient(circle at 76% 70%, rgba(75, 192, 255, 0.2), transparent 32%),
+    linear-gradient(115deg, transparent 0 18%, rgba(244, 190, 92, 0.18) 28%, transparent 42%, rgba(255, 224, 162, 0.16) 58%, transparent 76%),
+    linear-gradient(28deg, transparent 0%, rgba(214, 171, 88, 0.1) 42%, transparent 68%);
+  opacity: 0.82;
   mix-blend-mode: screen;
   animation: heroAmbientFlow 18s ease-in-out infinite alternate;
 }
@@ -6292,14 +6292,14 @@ h3,
     linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.12) 16%,
-      rgba(176, 230, 255, 0.46) 33%,
-      rgba(255, 255, 255, 0.9) 50%,
-      rgba(95, 205, 255, 0.5) 64%,
-      rgba(255, 255, 255, 0.18) 82%,
+      rgba(255, 224, 164, 0.16) 16%,
+      rgba(244, 191, 96, 0.42) 33%,
+      rgba(255, 238, 196, 0.78) 50%,
+      rgba(108, 205, 255, 0.32) 64%,
+      rgba(255, 213, 134, 0.18) 82%,
       transparent 100%
     );
-  filter: blur(3.5px) drop-shadow(0 0 34px rgba(188, 226, 255, 0.62));
+  filter: blur(3.5px) drop-shadow(0 0 32px rgba(255, 210, 122, 0.42));
   animation-duration: 6.5s;
 }
 
@@ -6361,29 +6361,23 @@ h3,
   background: rgba(255, 255, 255, 0.28);
 }
 
-.heroStatusArrow {
-  font-size: 15px;
-  line-height: 1;
-}
-
 .demoContourBadge {
-  cursor: default;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
   background: #f8fbff;
-}
-
-.statusDot,
-.agentStatusDot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: #2dba73;
-  box-shadow: 0 0 0 3px rgba(45, 186, 115, 0.12);
 }
 
 .agentProfileWrap {
   position: relative;
+}
+
+.agentProfileWrap::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 360px;
+  height: 14px;
 }
 
 .agentProfileTrigger {
@@ -6428,17 +6422,9 @@ h3,
   flex: 0 0 auto;
 }
 
-.agentStatusDot {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 8px;
-  height: 8px;
-}
-
 .agentProfilePopover {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
   z-index: 75;
   width: 340px;

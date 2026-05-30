@@ -240,6 +240,7 @@ function AppShell({
   onGlobalSearch
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [actionMenuOpen, setActionMenuOpen] = useState(false);
   const [introOpen, setIntroOpen] = useState(() => {
     try {
       return window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "true";
@@ -258,6 +259,7 @@ function AppShell({
   function openScreen(screenId) {
     setScreen(screenId);
     setMenuOpen(false);
+    setActionMenuOpen(false);
   }
 
   function closeIntro() {
@@ -434,10 +436,29 @@ function AppShell({
 
 	          <div className="topActions cleanTopActions" aria-label="Контекст">
 	            <span className="workContext">ИТ-кластер · Санкт-Петербург</span>
-	            <span className="demoContourBadge">
-	              <span className="statusDot" />
-	              Демо-контур
-	            </span>
+	            <div className="topStatusMenu">
+	              <button
+	                className="demoContourBadge"
+	                type="button"
+	                onClick={() => setActionMenuOpen((isOpen) => !isOpen)}
+	              >
+	                Демо-контур
+	              </button>
+	
+	              {actionMenuOpen && (
+	                <div className="topActionDropdown">
+	                  <button type="button" onClick={() => openScreen("route")}>
+	                    Найти материалы
+	                  </button>
+	                  <button type="button" onClick={() => openScreen("knowledge")}>
+	                    База знаний
+	                  </button>
+	                  <button type="button" onClick={() => openScreen("manager")}>
+	                    Проверка
+	                  </button>
+	                </div>
+	              )}
+	            </div>
 	
 	            <div className="agentProfileWrap">
 	              <button
@@ -446,7 +467,6 @@ function AppShell({
 	                aria-label="Профиль агента подбора материалов"
 	              >
 	                <span className="agentAvatar">ИИ</span>
-	                <span className="agentStatusDot" />
 	              </button>
 	
 	              <div className="agentProfilePopover" role="dialog" aria-label="Профиль агента">
@@ -791,7 +811,6 @@ function LandingScreen({ setScreen }) {
             <span>Текущий курс: Интеграционная архитектура и API</span>
             <span className="heroStatusDivider" />
             <strong>Продолжить</strong>
-            <span className="heroStatusArrow">→</span>
           </button>
         </div>
       </section>
