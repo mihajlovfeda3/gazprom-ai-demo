@@ -1298,7 +1298,7 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const recommendation =
     managerResult.recommendation ||
     employeeObject.recommendation ||
-    "Согласовать время на изучение после текущего спринта и проверить актуальность источников.";
+    "Согласовать 4-6 часов на изучение материалов после текущего спринта и попросить владельца направления проверить актуальность источников.";
   const currentContext = /middle|senior/i.test(currentRole)
     ? "Сотрудник ИТ-кластера"
     : formatDisplayText(currentRole);
@@ -1308,6 +1308,18 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
   const targetContext = /middle|senior/i.test(targetRole)
     ? "Решение рабочей задачи"
     : formatDisplayText(targetRole);
+  const reviewMetrics = [
+    { label: "Материалов", value: "12" },
+    { label: "Требуют уточнения", value: "2" },
+    { label: "Готовность", value: "47%" },
+    { label: "Рекомендованное время", value: "4-6 ч" }
+  ];
+  const reviewChecks = [
+    "Подборка соответствует рабочей задаче сотрудника.",
+    "Источники и ответственные указаны корректно.",
+    "Проверяются актуальность материалов и владельцы источников.",
+    "Время на изучение согласовано с учетом загрузки."
+  ];
 
   return (
     <main className="page">
@@ -1321,33 +1333,49 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
         </div>
       </section>
 
-      <section className="managerLayout">
-        <div className="card managerCard">
-          <div className="employeeAvatar">ИП</div>
+      <section className="managerReviewScreen">
+        <div className="card managerReviewCard">
+          <div className="managerReviewTop">
+            <div className="managerEmployeeBlock">
+              <div className="employeeAvatar managerAvatar">ИП</div>
+              <div>
+                <span className="managerSectionLabel">Сотрудник</span>
+                <h3>{employeeName}</h3>
+                <p>{employeeRoleLabel} · ИТ-кластер</p>
+                <span className="managerContextPill">{targetContext}</span>
+              </div>
+            </div>
 
-          <div>
-            <h3>{employeeName}</h3>
-            <p>
-              {employeeRoleLabel} · ИТ-кластер · {targetContext}
-            </p>
+            <div className="managerMetrics">
+              {reviewMetrics.map((metric) => (
+                <div className="managerMetric" key={metric.label}>
+                  <span>{metric.label}</span>
+                  <strong>{metric.value}</strong>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="statusBlock">
-            <span>Статус</span>
-            <strong>{managerStatus}</strong>
+          <div className="managerReviewBody">
+            <div className="managerStatusGrid">
+              <div className="statusBlock">
+                <span>Статус</span>
+                <strong>{managerStatus}</strong>
+              </div>
+
+              <div className="infoBlock">
+                <span>Загрузка</span>
+                <p>{formatDisplayText(workload)}</p>
+              </div>
+            </div>
+
+            <div className="infoBlock recommendationBlock">
+              <span>Рекомендация</span>
+              <p>{formatDisplayText(recommendation)}</p>
+            </div>
           </div>
 
-          <div className="infoBlock">
-            <span>Загрузка</span>
-            <p>{formatDisplayText(workload)}</p>
-          </div>
-
-          <div className="infoBlock">
-            <span>Рекомендация</span>
-            <p>{formatDisplayText(recommendation)}</p>
-          </div>
-
-          <div className="buttonRow">
+          <div className="buttonRow managerActions">
             <button
               type="button"
               className="primaryButton"
@@ -1380,10 +1408,9 @@ function ManagerScreen({ managerResult, managerStatus, updateManagerStatus }) {
         <div className="card managerChecklistCard">
           <h3>Что проверяет руководитель</h3>
           <ul className="plainList managerChecklist">
-            <li><span>✓</span> Подборка соответствует рабочей задаче сотрудника</li>
-            <li><span>✓</span> Источники и ответственные указаны корректно</li>
-            <li><span>✓</span> Проверяются источники, ответственные и актуальность материалов</li>
-            <li><span>✓</span> Время на изучение согласовано с учетом загрузки</li>
+            {reviewChecks.map((check) => (
+              <li key={check}><span>✓</span> {check}</li>
+            ))}
           </ul>
         </div>
       </section>

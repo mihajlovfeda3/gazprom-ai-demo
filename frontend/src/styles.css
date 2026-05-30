@@ -7503,3 +7503,321 @@ h3,
     margin-left: 0;
   }
 }
+
+/* Final review/search polish: keep dashboard intact, improve inner screens. */
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  border-color: rgba(255, 255, 255, 0.78);
+  background: linear-gradient(180deg, #4f86c7 0%, #2f73b9 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(0, 38, 151, 0.24);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  border-color: #ffffff;
+  background: linear-gradient(180deg, #5d93d0 0%, #245f9c 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:active,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:active {
+  transform: translateY(0);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:disabled,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:disabled {
+  border-color: rgba(255, 255, 255, 0.58);
+  background: linear-gradient(180deg, #6f9bcc 0%, #4779b1 100%);
+  color: #ffffff;
+  opacity: 1;
+  cursor: progress;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .primaryButton .loadingLabel,
+.workspaceContent > .page:not(.employeeDashboard) .primaryButton .loadingDots span {
+  color: inherit;
+}
+
+.managerReviewScreen {
+  display: grid;
+  gap: 18px;
+}
+
+.managerReviewCard {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 22px;
+  padding: 0 !important;
+  border-radius: 26px !important;
+  background: #ffffff;
+}
+
+.managerReviewCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 136px;
+  background:
+    radial-gradient(circle at 84% 0%, rgba(127, 184, 242, 0.42), transparent 34%),
+    linear-gradient(115deg, #f7fbff 0%, #eaf1ff 48%, #ffffff 100%);
+  pointer-events: none;
+}
+
+.managerReviewTop,
+.managerReviewBody,
+.managerActions {
+  position: relative;
+  z-index: 1;
+}
+
+.managerReviewTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+  gap: 22px;
+  align-items: start;
+  padding: 28px 28px 0;
+}
+
+.managerEmployeeBlock {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.managerAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #002697, #2f73b9);
+  box-shadow: 0 12px 28px rgba(0, 38, 151, 0.18);
+}
+
+.managerSectionLabel {
+  display: block;
+  margin-bottom: 5px;
+  color: #66758c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.managerEmployeeBlock h3 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.managerEmployeeBlock p {
+  margin: 5px 0 10px;
+  color: #66758c;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.managerContextPill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #eaf1ff;
+  color: #123f91;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.managerMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.managerMetric {
+  min-height: 76px;
+  padding: 13px 12px;
+  border: 1px solid #d9e6f5;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.managerMetric span {
+  display: block;
+  color: #66758c;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.managerMetric strong {
+  display: block;
+  margin-top: 8px;
+  color: #002697;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.managerReviewBody {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: 0 28px;
+}
+
+.managerStatusGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.managerReviewCard .statusBlock,
+.managerReviewCard .infoBlock {
+  padding: 16px;
+  border: 1px solid #d9e6f5;
+  border-radius: 18px;
+  background: #f8fbff;
+  box-shadow: none;
+}
+
+.managerReviewCard .statusBlock span,
+.managerReviewCard .infoBlock span {
+  color: #66758c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.managerReviewCard .statusBlock strong {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 3px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: #eaf1ff;
+  color: #002697;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.managerReviewCard .infoBlock p {
+  margin: 8px 0 0;
+  color: #40516a;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.recommendationBlock {
+  min-height: 100%;
+}
+
+.managerActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 28px 28px;
+}
+
+.managerActions .primaryButton,
+.managerActions .secondaryButton {
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.managerActions .primaryButton {
+  background: linear-gradient(180deg, #0039b7, #002697);
+  box-shadow: 0 12px 22px rgba(0, 38, 151, 0.16);
+}
+
+.managerActions .secondaryButton {
+  border: 1px solid #c6d8f1;
+  background: #ffffff;
+  color: #002697;
+}
+
+.managerActions .secondaryButton:hover {
+  background: #eaf1ff;
+}
+
+.managerActions .ownerButton {
+  border-color: #e7c8b0;
+  background: #fff8f3;
+  color: #a95422;
+}
+
+.managerActions .ownerButton:hover {
+  border-color: #c8672a;
+  background: #c8672a;
+  color: #ffffff;
+}
+
+.managerChecklistCard {
+  padding: 22px 24px !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.9), #ffffff),
+    #ffffff;
+}
+
+.managerChecklistCard h3 {
+  margin-bottom: 16px !important;
+}
+
+.managerChecklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+
+.managerChecklist li {
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #e4edf7;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #40516a;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.managerChecklist li span {
+  background: #eaf1ff;
+  color: #002697;
+}
+
+@media (max-width: 1040px) {
+  .managerReviewTop,
+  .managerReviewBody,
+  .managerActions,
+  .managerChecklist {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .managerReviewTop,
+  .managerReviewBody,
+  .managerActions {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .managerActions {
+    padding-bottom: 18px;
+  }
+
+  .managerMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
