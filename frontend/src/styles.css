@@ -7327,6 +7327,43 @@ h3,
   background: #ffffff;
 }
 
+/* Quick QA fixes for inner screens. */
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton {
+  border-color: #2f73b9;
+  background: #2f73b9;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(47, 115, 185, 0.16);
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:hover,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:hover {
+  border-color: #245f9c;
+  background: #245f9c;
+  color: #ffffff;
+}
+
+.workspaceContent > .page:not(.employeeDashboard) .knowledgeForm > .primaryButton:disabled,
+.workspaceContent > .page:not(.employeeDashboard) .materialTaskForm > .primaryButton:disabled {
+  border-color: #8eacd0;
+  background: #8eacd0;
+  color: #ffffff;
+  opacity: 1;
+}
+
+.materialCardHeader > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.materialCardHeader .hours {
+  flex: 0 0 auto;
+  margin-left: auto;
+  align-self: flex-start;
+  text-align: center;
+  white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .employeeHeroMain::before,
   .employeeHeroMain::after {
