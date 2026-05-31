@@ -1,0 +1,14 @@
+[Unit]
+Description=Gazprom AI Demo FastAPI Backend
+After=network.target ollama.service
+
+[Service]
+User=root
+WorkingDirectory=/opt/gazprom-ai-demo/backend
+ExecStart=/opt/gazprom-ai-demo/backend/venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
